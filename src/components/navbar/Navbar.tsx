@@ -4,7 +4,7 @@ const Navbar = () => {
     <div className="navbar">
       <div className="logo">
         <img src="logo.svg" alt="" />
-        <span>Admin</span>
+        <span>Admin Dashboard</span>
       </div>
       <div className="icons">
         <img src="search.svg" alt="" className="icon" />
@@ -14,7 +14,7 @@ const Navbar = () => {
           <span>1</span>
         </div>
         <div className="user">
-          <span>Suraj</span>
+          <span>Admin</span>
         </div>
         <img src="setting.svg" alt="" className="icon" />
       </div>

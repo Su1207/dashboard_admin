@@ -99,7 +99,7 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
               quickFilterProps: { debounceMs: 500 },
             },
           }}
-          pageSizeOptions={[7]}
+          pageSizeOptions={[10]}
           checkboxSelection
           disableRowSelectionOnClick
           disableColumnFilter

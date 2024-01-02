@@ -3,9 +3,11 @@ import "./users.scss";
 import { database } from "../../firebase";
 import { get, onValue, ref } from "firebase/database";
 import DataTable from "../../components/dataTable/DataTable";
+import AddUser from "../../components/dataTable/AddUser";
 
 const Users = () => {
   const [usersData, setUsersData] = useState<Record<string, any> | null>(null);
+  const [addUser, setAddUser] = useState(false);
 
   useEffect(() => {
     // Reference to the 'users' node in the database
@@ -33,11 +35,18 @@ const Users = () => {
     return () => unsubscribe();
   }, []); // Run effect only once on component mount
 
+  const handleClick = () => {
+    setAddUser(!addUser);
+  };
+
   // Render your component UI with the fetched data
   return (
     <div>
       <h1>Users</h1>
-      <button>Add new user</button>
+      <div>
+        <button onClick={handleClick}>Add New User</button>
+        {addUser && <AddUser addUser={addUser} />}
+      </div>
       {usersData !== null && <DataTable usersData={usersData} />}
     </div>
   );
