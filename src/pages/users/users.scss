@@ -1,0 +1,14 @@
+.users {
+  .users_heading {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 0.625rem;
+
+    .users_heading_options {
+      display: flex;
+      align-items: center;
+      gap: 20px;
+    }
+  }
+}

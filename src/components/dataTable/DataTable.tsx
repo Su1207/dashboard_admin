@@ -1,5 +1,8 @@
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import "./dataTable.scss";
+import { ref, remove, update } from "firebase/database";
+import { database } from "../../firebase";
+import BlockUnblockToggle from "../toggleButton/BlockUnblockToggle";
 
 // type User = {
 //   NAME: string;
@@ -14,17 +17,17 @@ import "./dataTable.scss";
 // type UsersData = Record<string, User>;
 
 interface DataTableProps {
-  usersData: Record<string, any> | null;
+  usersData: Record<string, any> | null | undefined;
 }
 
 const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
   const columns: GridColDef[] = [
-    { field: "id", headerName: "ID", width: 120 },
-    { field: "name", headerName: "User Name", width: 120 },
-    { field: "phone", headerName: "Phone", width: 120 },
+    { field: "id", headerName: "Phone", width: 120 },
+    { field: "name", headerName: "Name", width: 120 },
     { field: "createdOn", headerName: "Created On", width: 190 },
     { field: "lastSeen", headerName: "Last Seen", width: 190 },
     { field: "amount", headerName: "Amount", width: 100, editable: true },
+
     // { field: "isLoggedIn", headerName: "Is Logged In", width: 150 },
     {
       field: "actions",
@@ -46,6 +49,14 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
         </div>
       ),
     },
+
+    {
+      field: "block-unblock",
+      headerName: "Status",
+      width: 90,
+      sortable: false,
+      renderCell: (params) => <BlockUnblockToggle userId={params.row.id} />,
+    },
   ];
 
   const handleEdit = (userId: string) => {
@@ -54,8 +65,23 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
   };
 
   const handleDelete = (userId: string) => {
-    // Implement your delete logic here
-    console.log(`Delete user with ID ${userId}`);
+    // Reference to the specific user's ID under 'USERS' node
+    const userToDeleteRef = ref(database, `USERS/${userId}`);
+    const userListRef = ref(database, "USERS LIST");
+
+    // Remove the user from the database
+    remove(userToDeleteRef)
+      .then(() => {
+        console.log("User deleted successfully");
+
+        // Remove the user's ID from the 'users_list' node
+        update(userListRef, {
+          [userId]: null, // Set the user's ID to null to remove it
+        });
+      })
+      .catch((error) => {
+        console.error("Error deleting user", error);
+      });
   };
 
   const rows = Object.keys(usersData || {}).map((id) => {
@@ -68,9 +94,8 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
       : "";
 
     return {
-      id,
+      id: user?.PHONE,
       name: user?.NAME || "",
-      phone: user?.PHONE || "",
       createdOn: createdOnDate,
       lastSeen: lastSeenDate,
       amount: user?.AMOUNT || 0, // Assuming a default value for AMOUNT
@@ -88,7 +113,7 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
           initialState={{
             pagination: {
               paginationModel: {
-                pageSize: 10,
+                pageSize: 7,
               },
             },
           }}
@@ -99,7 +124,7 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
               quickFilterProps: { debounceMs: 500 },
             },
           }}
-          pageSizeOptions={[10]}
+          pageSizeOptions={[7]}
           checkboxSelection
           disableRowSelectionOnClick
           disableColumnFilter
