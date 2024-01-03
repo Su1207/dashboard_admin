@@ -9,8 +9,20 @@ import UserFilterDropDown from "../../components/filterOptions/UseFilterDropDown
 import "./users.scss";
 import { IoAddCircleOutline } from "react-icons/io5";
 
-const Users = () => {
-  const [usersData, setUsersData] = useState<Record<string, any> | null>(null);
+interface User {
+  AMOUNT: number;
+  APP_VERSION: number;
+  CREATED_ON: number;
+  LAST_SEEN: number;
+  NAME: string;
+  PASSWORD: string;
+  PHONE: string;
+  UID: string;
+  userId: string;
+}
+
+const Users: React.FC = () => {
+  const [usersData, setUsersData] = useState<User[] | null>(null);
   const [addUser, setAddUser] = useState(false);
   const [filterOption, setFilterOption] = useState("lastSeen"); // Default filter option
   const [selectedListOption, setSelectedListOption] = useState("total"); // Default list option
@@ -52,7 +64,8 @@ const Users = () => {
     // Fetch data once
     get(usersRef).then((snapshot) => {
       if (snapshot.exists()) {
-        setUsersData(snapshot.val());
+        const data = snapshot.val();
+        setUsersData(Object.values(data) as User[]);
       } else {
         console.log("No data available");
       }
@@ -61,7 +74,8 @@ const Users = () => {
     // Alternatively, fetch data in real-time
     const unsubscribe = onValue(usersRef, (snapshot) => {
       if (snapshot.exists()) {
-        setUsersData(snapshot.val());
+        const data = snapshot.val();
+        setUsersData(Object.values(data) as User[]);
       } else {
         console.log("No data available");
       }
@@ -69,7 +83,7 @@ const Users = () => {
 
     // Clean up the listener when the component unmounts
     return () => unsubscribe();
-  }, []); // Run effect only once on component mount
+  }, []);
 
   const handleClick = () => {
     setAddUser(!addUser);
@@ -95,27 +109,27 @@ const Users = () => {
     switch (selectedListOption) {
       case "blocked":
         // Filter users based on the blocked status
-        return Object.values(usersData).filter((user) => isBlocked(user.id));
+        return usersData.filter((user) => isBlocked(user.PHONE));
 
       case "today":
         // Filter users created today
-        return Object.values(usersData).filter((user) =>
+        return usersData.filter((user) =>
           isSameDay(user.CREATED_ON, currentTimestamp)
         );
 
       case "last24":
         // Filter users where "lastSeen" is within the last 24 hours
-        return Object.values(usersData).filter(
+        return usersData.filter(
           (user) => currentTimestamp - user.LAST_SEEN <= oneDayMilliseconds
         );
 
       case "0balance":
-        return Object.values(usersData).filter((user) => user.AMOUNT === 0);
+        return usersData.filter((user) => user.AMOUNT === 0);
 
       case "live":
         // Filter users who have been seen in the last 1 minutes (adjust as needed)
         const liveThreshold = 1 * 60 * 1000; // 1 minutes in milliseconds
-        return Object.values(usersData).filter(
+        return usersData.filter(
           (user) => currentTimestamp - user.LAST_SEEN <= liveThreshold
         );
 
