@@ -16,6 +16,35 @@ const Users = () => {
   const [selectedListOption, setSelectedListOption] = useState("total"); // Default list option
 
   // const [blockedUser,setBlockedUser] = useState(null);
+  const [usersListData, setUsersListData] = useState(null);
+
+  useEffect(() => {
+    const usersListRef = ref(database, "USERS LIST");
+
+    get(usersListRef).then((snapshot) => {
+      if (snapshot.exists()) {
+        setUsersListData(snapshot.val());
+      } else {
+        console.log("No data available for USERS LIST");
+      }
+    });
+
+    const unsubscribe = onValue(usersListRef, (snapshot) => {
+      if (snapshot.exists()) {
+        setUsersListData(snapshot.val());
+        // console.log(usersListData);
+      } else {
+        console.log("No data available for USERS LIST");
+      }
+    });
+
+    return () => unsubscribe();
+  }, []);
+
+  const isBlocked = (userId: string) => {
+    // Check the blocked status from the 'USERS LIST' node
+    return usersListData?.[userId] === false;
+  };
 
   useEffect(() => {
     const usersRef = ref(database, "USERS");
@@ -56,7 +85,7 @@ const Users = () => {
 
   // Filter users based on selected option
   const getFilteredUsers = () => {
-    if (usersData === null) {
+    if (usersData === null || usersListData === null) {
       return null;
     }
 
@@ -65,7 +94,8 @@ const Users = () => {
 
     switch (selectedListOption) {
       case "blocked":
-        return Object.values(usersData);
+        // Filter users based on the blocked status
+        return Object.values(usersData).filter((user) => isBlocked(user.PHONE));
 
       case "today":
         // Filter users created today

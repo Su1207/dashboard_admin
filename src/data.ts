@@ -29,8 +29,8 @@ export const menu = [
       },
       {
         id: 2,
-        title: "Products",
-        url: "/products",
+        title: "Games",
+        url: "/games",
         icon: "product.svg",
       },
       {
