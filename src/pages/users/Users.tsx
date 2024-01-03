@@ -95,7 +95,7 @@ const Users = () => {
     switch (selectedListOption) {
       case "blocked":
         // Filter users based on the blocked status
-        return Object.values(usersData).filter((user) => isBlocked(user.PHONE));
+        return Object.values(usersData).filter((user) => isBlocked(user.id));
 
       case "today":
         // Filter users created today

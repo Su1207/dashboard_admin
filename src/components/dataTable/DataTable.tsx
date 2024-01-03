@@ -37,11 +37,13 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
       renderCell: (params) => (
         <div className="actions_icons">
           <img
+            style={{ cursor: "pointer" }}
             src="view.svg"
             alt=""
             onClick={() => handleEdit(params.row.id)}
           />
           <img
+            style={{ cursor: "pointer" }}
             src="delete.svg"
             alt=""
             onClick={() => handleDelete(params.row.id)}
@@ -72,7 +74,7 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
     // Remove the user from the database
     remove(userToDeleteRef)
       .then(() => {
-        console.log("User deleted successfully");
+        console.log(`User ${userId} deleted successfully`);
 
         // Remove the user's ID from the 'users_list' node
         update(userListRef, {
