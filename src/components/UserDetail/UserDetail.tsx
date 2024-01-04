@@ -5,6 +5,7 @@ import { database } from "../../firebase";
 import profile from "../../assets/userProfile.png";
 import { FaEdit } from "react-icons/fa";
 import Copy from "../copy/Copy";
+import Single from "../transactionHistory/Single";
 
 interface UserDetails {
   CREATED_ON: number;
@@ -108,6 +109,9 @@ const UserDetail: React.FC<{ userId: number }> = ({ userId }) => {
 
       <div className="box-2 card"></div>
       <div className="box-3 card"></div>
+      <div>
+        <Single userId={userId} />
+      </div>
     </div>
   );
 };

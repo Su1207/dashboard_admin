@@ -1,9 +1,8 @@
-import { useState } from "react";
 import { FaCopy } from "react-icons/fa";
 import "./copy.scss";
 
 const Copy: React.FC<{ PhoneNumber: string }> = ({ PhoneNumber }) => {
-  const [phoneNumber, setPhoneNumber] = useState(`+91 ${PhoneNumber}`);
+  const phoneNumber = `+91 ${PhoneNumber}`;
 
   const copyPhoneNumber = async () => {
     try {

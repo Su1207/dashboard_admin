@@ -1,5 +1,4 @@
 import { useParams } from "react-router-dom";
-import Single from "../../components/transactionHistory/Single";
 import "./user.scss";
 import UserDetail from "../../components/UserDetail/UserDetail";
 

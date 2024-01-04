@@ -36,11 +36,11 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
   const navigate = useNavigate();
 
   const columns: GridColDef[] = [
-    { field: "id", headerName: "Phone", width: 120 },
+    { field: "id", headerName: "Phone", width: 110 },
     { field: "name", headerName: "Name", width: 120 },
     { field: "createdOn", headerName: "Created On", width: 190 },
     { field: "lastSeen", headerName: "Last Seen", width: 190 },
-    { field: "amount", headerName: "Amount", width: 100, editable: true },
+    { field: "amount", headerName: "Amount", width: 90, editable: true },
 
     // { field: "isLoggedIn", headerName: "Is Logged In", width: 150 },
     {
