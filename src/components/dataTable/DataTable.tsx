@@ -3,6 +3,8 @@ import "./dataTable.scss";
 import { ref, remove, update } from "firebase/database";
 import { database } from "../../firebase";
 import BlockUnblockToggle from "../toggleButton/BlockUnblockToggle";
+import { useNavigate } from "react-router-dom";
+import { toast } from "react-toastify";
 
 // type User = {
 //   NAME: string;
@@ -31,6 +33,8 @@ interface DataTableProps {
 }
 
 const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
+  const navigate = useNavigate();
+
   const columns: GridColDef[] = [
     { field: "id", headerName: "Phone", width: 120 },
     { field: "name", headerName: "Name", width: 120 },
@@ -72,11 +76,18 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
   ];
 
   const handleEdit = (userId: string) => {
-    // Implement your edit logic here
-    console.log(`Edit user with ID ${userId}`);
+    navigate(`/users/${userId}`);
   };
 
   const handleDelete = (userId: string) => {
+    const userConfirmed = window.confirm(
+      `Are you sure you want to delete user ${userId}?`
+    );
+
+    if (!userConfirmed) {
+      // User canceled the deletion
+      return;
+    }
     // Reference to the specific user's ID under 'USERS' node
     const userToDeleteRef = ref(database, `USERS/${userId}`);
     const userListRef = ref(database, "USERS LIST");
@@ -85,6 +96,7 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
     remove(userToDeleteRef)
       .then(() => {
         console.log(`User ${userId} deleted successfully`);
+        toast.success(`User ${userId} deleted successfully`);
 
         // Remove the user's ID from the 'users_list' node
         update(userListRef, {
@@ -93,15 +105,32 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
       })
       .catch((error) => {
         console.error("Error deleting user", error);
+        toast.error("Error deleting user");
       });
   };
 
   const rows = Object.entries(usersData || {}).map(([id, user]) => {
     const createdOnDate = user?.CREATED_ON
-      ? new Date(user.CREATED_ON).toLocaleString()
+      ? new Date(user.CREATED_ON).toLocaleString("en-GB", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: true,
+        })
       : "";
     const lastSeenDate = user?.LAST_SEEN
-      ? new Date(user.LAST_SEEN).toLocaleString()
+      ? new Date(user.LAST_SEEN).toLocaleString("en-GB", {
+          day: "2-digit",
+          month: "2-digit",
+          year: "numeric",
+          hour: "2-digit",
+          minute: "2-digit",
+          second: "2-digit",
+          hour12: true,
+        })
       : "";
 
     return {

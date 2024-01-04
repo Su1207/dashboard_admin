@@ -1,0 +1,67 @@
+@import "../../styles/variables.scss";
+
+.userDetails {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 1.5rem;
+  grid-auto-rows: minmax(180px, auto);
+
+  .card {
+    padding: 1rem;
+    border-radius: 10px;
+    border: 1px solid $soft-color;
+  }
+
+  .userDetails_card {
+    padding: 2rem;
+    grid-column: span 2;
+    grid-row: span 2;
+    background-color: aliceblue;
+    color: black;
+    font-weight: 600;
+    font-size: 1rem;
+
+    .card_top {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+
+      .card_top_name {
+        display: flex;
+        align-items: center;
+        gap: 2rem;
+
+        .profile_picture {
+          height: 6rem;
+          width: 6rem;
+          border-radius: 50%;
+        }
+      }
+    }
+
+    .card_bottom {
+      margin-top: 2rem;
+      display: flex;
+      flex-direction: column;
+      gap: 0.5rem;
+      //   align-items: start;
+
+      .detail {
+        display: flex;
+        justify-content: space-between;
+
+        p {
+          &:first-child {
+            color: grey;
+          }
+        }
+
+        .number_detail {
+          display: flex;
+          gap: 0.3rem;
+          align-items: center;
+        }
+      }
+    }
+  }
+}

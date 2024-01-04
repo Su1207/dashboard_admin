@@ -7,6 +7,10 @@ import Footer from "./components/footer/Footer";
 import Menu from "./components/menu/Menu";
 import Login from "./pages/login/Login";
 import "./styles/global.scss";
+import User from "./pages/user/User";
+import Game from "./pages/game/Game";
+import { ToastContainer, toast } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
 
 const Layout = () => {
   return (
@@ -35,12 +39,20 @@ const router = createBrowserRouter([
         element: <Home />,
       },
       {
-        path: "users",
+        path: "/users",
         element: <Users />,
       },
       {
-        path: "games",
+        path: "/games",
         element: <Games />,
+      },
+      {
+        path: "/users/:id",
+        element: <User />,
+      },
+      {
+        path: "/games/:id",
+        element: <Game />,
       },
     ],
   },
@@ -51,7 +63,12 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-  return <RouterProvider router={router} />;
+  return (
+    <>
+      <ToastContainer />
+      <RouterProvider router={router} />
+    </>
+  );
 }
 
 export default App;
