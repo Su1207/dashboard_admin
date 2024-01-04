@@ -14,10 +14,20 @@ import BlockUnblockToggle from "../toggleButton/BlockUnblockToggle";
 //   // ... other properties
 // };
 
+type User = {
+  NAME: string;
+  PHONE: string;
+  CREATED_ON: string;
+  LAST_SEEN: string;
+  AMOUNT: number;
+  isLoggedIn: boolean;
+  // ... other properties
+};
+
 // type UsersData = Record<string, User>;
 
 interface DataTableProps {
-  usersData: Record<string, any> | null | undefined;
+  usersData: Record<string, any> | User[] | null | undefined;
 }
 
 const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
@@ -86,8 +96,7 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
       });
   };
 
-  const rows = Object.keys(usersData || {}).map((id) => {
-    const user = usersData && usersData[id];
+  const rows = Object.entries(usersData || {}).map(([id, user]) => {
     const createdOnDate = user?.CREATED_ON
       ? new Date(user.CREATED_ON).toLocaleString()
       : "";
@@ -96,12 +105,11 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
       : "";
 
     return {
-      id: user?.PHONE,
+      id: user?.PHONE || id, // Use user?.PHONE if available, otherwise use the id
       name: user?.NAME || "",
       createdOn: createdOnDate,
       lastSeen: lastSeenDate,
-      amount: user?.AMOUNT || 0, // Assuming a default value for AMOUNT
-      //   isLoggedIn: user?.isLoggedIn || false,
+      amount: user?.AMOUNT || 0,
     };
   });
 

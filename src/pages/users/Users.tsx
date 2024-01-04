@@ -9,7 +9,7 @@ import UserFilterDropDown from "../../components/filterOptions/UseFilterDropDown
 import "./users.scss";
 import { IoAddCircleOutline } from "react-icons/io5";
 
-interface User {
+type User = {
   AMOUNT: number;
   APP_VERSION: number;
   CREATED_ON: number;
@@ -18,17 +18,23 @@ interface User {
   PASSWORD: string;
   PHONE: string;
   UID: string;
-  userId: string;
-}
+  isLoggedIn: boolean;
+};
+
+type UsersListData = Record<string, boolean>;
 
 const Users: React.FC = () => {
-  const [usersData, setUsersData] = useState<User[] | null>(null);
+  const [usersData, setUsersData] = useState<
+    Record<string, User> | User[] | null
+  >(null);
   const [addUser, setAddUser] = useState(false);
   const [filterOption, setFilterOption] = useState("lastSeen"); // Default filter option
   const [selectedListOption, setSelectedListOption] = useState("total"); // Default list option
 
   // const [blockedUser,setBlockedUser] = useState(null);
-  const [usersListData, setUsersListData] = useState(null);
+  const [usersListData, setUsersListData] = useState<UsersListData | null>(
+    null
+  );
 
   useEffect(() => {
     const usersListRef = ref(database, "USERS LIST");
@@ -64,8 +70,7 @@ const Users: React.FC = () => {
     // Fetch data once
     get(usersRef).then((snapshot) => {
       if (snapshot.exists()) {
-        const data = snapshot.val();
-        setUsersData(Object.values(data) as User[]);
+        setUsersData(snapshot.val());
       } else {
         console.log("No data available");
       }
@@ -74,8 +79,7 @@ const Users: React.FC = () => {
     // Alternatively, fetch data in real-time
     const unsubscribe = onValue(usersRef, (snapshot) => {
       if (snapshot.exists()) {
-        const data = snapshot.val();
-        setUsersData(Object.values(data) as User[]);
+        setUsersData(snapshot.val());
       } else {
         console.log("No data available");
       }
@@ -83,7 +87,7 @@ const Users: React.FC = () => {
 
     // Clean up the listener when the component unmounts
     return () => unsubscribe();
-  }, []);
+  }, []); // Run effect only once on component mount
 
   const handleClick = () => {
     setAddUser(!addUser);
@@ -109,27 +113,27 @@ const Users: React.FC = () => {
     switch (selectedListOption) {
       case "blocked":
         // Filter users based on the blocked status
-        return usersData.filter((user) => isBlocked(user.PHONE));
+        return Object.values(usersData).filter((user) => isBlocked(user.PHONE));
 
       case "today":
         // Filter users created today
-        return usersData.filter((user) =>
+        return Object.values(usersData).filter((user) =>
           isSameDay(user.CREATED_ON, currentTimestamp)
         );
 
       case "last24":
         // Filter users where "lastSeen" is within the last 24 hours
-        return usersData.filter(
+        return Object.values(usersData).filter(
           (user) => currentTimestamp - user.LAST_SEEN <= oneDayMilliseconds
         );
 
       case "0balance":
-        return usersData.filter((user) => user.AMOUNT === 0);
+        return Object.values(usersData).filter((user) => user.AMOUNT === 0);
 
       case "live":
         // Filter users who have been seen in the last 1 minutes (adjust as needed)
         const liveThreshold = 1 * 60 * 1000; // 1 minutes in milliseconds
-        return usersData.filter(
+        return Object.values(usersData).filter(
           (user) => currentTimestamp - user.LAST_SEEN <= liveThreshold
         );
 
@@ -186,6 +190,16 @@ const Users: React.FC = () => {
 
       {/* Display the UserList component with the usersData and filterOption */}
       <UserList usersData={getFilteredUsers()} filterOption={filterOption} />
+      {/* <ul>
+        {usersData &&
+          Object.entries(usersData).map(([userId, user]) => (
+            <li key={userId}>
+              <p>ID: {userId}</p>
+              <p>Name: {user.NAME}</p>
+              <p>Phone: {user.PHONE}</p>
+            </li>
+          ))}
+      </ul> */}
     </div>
   );
 };

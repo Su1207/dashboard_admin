@@ -1,29 +1,41 @@
 import React, { useMemo } from "react";
 import DataTable from "./DataTable";
 
+type User = {
+  AMOUNT: number;
+  APP_VERSION: number;
+  CREATED_ON: number;
+  LAST_SEEN: number;
+  NAME: string;
+  PASSWORD: string;
+  PHONE: string;
+  UID: string;
+  isLoggedIn: boolean;
+};
+
 interface UserListProps {
-  usersData: Record<string, any> | null | undefined;
+  usersData: Record<string, User> | User[] | null | undefined;
   filterOption: string;
 }
 
 const UserList: React.FC<UserListProps> = ({ usersData, filterOption }) => {
   // Sorting function based on last_seen timestamp in descending order
-  const sortByLastSeen = (users: any[]) => {
+  const sortByLastSeen = (users: User[]) => {
     return users.sort((a, b) => b.LAST_SEEN - a.LAST_SEEN);
   };
 
   // Sorting function based on alphabetical order of user names
-  const sortAlphabetically = (users: any[]) => {
+  const sortAlphabetically = (users: User[]) => {
     return users.sort((a, b) => a.NAME.localeCompare(b.NAME));
   };
 
   // Sorting function based on amount in ascending order
-  const sortByAmount = (users: any[]) => {
+  const sortByAmount = (users: User[]) => {
     return users.sort((a, b) => b.AMOUNT - a.AMOUNT);
   };
 
   // Sorting function based on versions (assuming there is a property named "version")
-  const sortByVersions = (users: any[]) => {
+  const sortByVersions = (users: User[]) => {
     return users.sort((a, b) => b.APP_VERSION - a.APP_VERSION);
   };
 
