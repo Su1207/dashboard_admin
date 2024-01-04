@@ -1,11 +1,28 @@
+@import "../../styles/responsive.scss";
+
 .dataTable {
   .dataGrid {
     background-color: white;
     padding: 20px;
+
+    @include md {
+      padding: 10px;
+    }
   }
 
   .MuiDataGrid-toolbarContainer {
     flex-direction: row-reverse;
+
+    @include sm {
+      flex-direction: column-reverse;
+      align-items: flex-start;
+    }
+  }
+
+  @include sm {
+    .MuiDataGrid-footerContainer {
+      flex-direction: row-reverse;
+    }
   }
 
   .actions_icons {
