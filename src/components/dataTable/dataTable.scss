@@ -13,10 +13,10 @@
   .MuiDataGrid-toolbarContainer {
     flex-direction: row-reverse;
 
-    // @include sm {
-    //   flex-direction: column-reverse;
-    //   align-items: flex-start;
-    // }
+    @include sm {
+      flex-direction: column-reverse;
+      align-items: flex-start;
+    }
   }
 
   // @include sm {
@@ -27,7 +27,7 @@
 
   .MuiInputBase-input {
     @include sm {
-      font-size: 0.875rem;
+      font-size: 1rem;
     }
   }
 
