@@ -2,6 +2,16 @@
 @import "../../styles/responsive.scss";
 
 .menu {
+  // .hamburger {
+  //   display: none;
+
+  //   @include md {
+  //     display: block;
+  //     font-size: 25px;
+  //     // margin-right: 3px;
+  //     // font-weight: bold;
+  //   }
+  //}
   .item {
     display: flex;
     flex-direction: column;
@@ -40,5 +50,41 @@
         }
       }
     }
+  }
+}
+
+.temp_menu_drawer {
+  .item {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-bottom: 20px;
+
+    .title {
+      font-size: 12px;
+      font-weight: 200;
+      color: $soft-color;
+      text-transform: uppercase;
+    }
+
+    .listItem {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px;
+      border-radius: 5px;
+
+      &:hover {
+        background-color: $soft-bg;
+      }
+    }
+  }
+}
+
+.menuDrawer {
+  display: none;
+
+  @include md {
+    display: initial;
   }
 }

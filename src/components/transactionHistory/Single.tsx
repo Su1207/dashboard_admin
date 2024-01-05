@@ -41,20 +41,20 @@ const Single: React.FC<{ userId: number }> = ({ userId }) => {
 
       for (const key in data) {
         const node = data[key];
-        const timestamp = parseInt(key, 10);
-        const formattedDate = new Date(timestamp).toLocaleString("en-GB", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: true,
-        });
+        // const timestamp = parseInt(key, 12);
+        // const formattedDate = new Date(timestamp).toLocaleString("en-GB", {
+        //   day: "2-digit",
+        //   month: "2-digit",
+        //   year: "numeric",
+        //   hour: "2-digit",
+        //   minute: "2-digit",
+        //   second: "2-digit",
+        //   hour12: true,
+        // });
 
         const transactionDetails: TransactionDetails = {
           amount: node.AMOUNT,
-          date: formattedDate,
+          date: node.DATE,
           name: node.NAME,
           total: node.TOTAL,
           uid: node.UID,
@@ -77,8 +77,8 @@ const Single: React.FC<{ userId: number }> = ({ userId }) => {
       setTransactionHistory((prevData) => {
         const combinedNodes = [...(prevData || []), ...nodesArray];
         return combinedNodes.sort((a, b) => {
-          const dateA = new Date(a.date).getTime();
-          const dateB = new Date(b.date).getTime();
+          const dateA = new Date(a.date.replace("|", "")).getTime();
+          const dateB = new Date(b.date.replace("|", "")).getTime();
           return dateB - dateA;
         });
       });
@@ -97,11 +97,15 @@ const Single: React.FC<{ userId: number }> = ({ userId }) => {
       off(depositRef, "value", depositCallback);
       off(withdrawalRef, "value", withdrawalCallback);
     };
-  }, [userId]);
+  }, []);
+
+  // console.log(transactionHistory);
 
   return (
     <div>
-      <h2>Transaction History for User ID: {userId}</h2>
+      <h2>Transaction History</h2>
+      <hr />
+      <br />
       {transactionHistory ? (
         <div>
           {transactionHistory.map((node, index) => (

@@ -11,6 +11,10 @@
     grid-template-columns: repeat(2, 1fr);
   }
 
+  @include md {
+    grid-auto-rows: minmax(120px, auto);
+  }
+
   @include sm {
     grid-template-columns: repeat(1, 1fr);
   }
@@ -39,7 +43,6 @@
       font-size: 0.76rem;
       grid-column: 1;
       padding: 0.5rem;
-      
     }
 
     .card_top {
@@ -61,10 +64,9 @@
           border-radius: 50%;
 
           @include sm {
-      height: 4rem;
-          width: 4rem;
-      
-    }
+            height: 4rem;
+            width: 4rem;
+          }
         }
       }
     }

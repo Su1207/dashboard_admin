@@ -11,6 +11,7 @@ import User from "./pages/user/User";
 import Game from "./pages/game/Game";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
+import TemporaryDrawer from "./components/menu/TemporaryDrawer";
 
 const Layout = () => {
   return (
@@ -19,6 +20,9 @@ const Layout = () => {
       <div className="container">
         <div className="menuContainer">
           <Menu />
+        </div>
+        <div className="menu_drawer">
+          <TemporaryDrawer />
         </div>
         <div className="contentContainer">
           <Outlet />
