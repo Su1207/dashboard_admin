@@ -16,13 +16,15 @@ import TemporaryDrawer from "./components/menu/TemporaryDrawer";
 const Layout = () => {
   return (
     <div className="main">
-      <Navbar />
+      <div className="main_navbar">
+        <div className="menu_drawer">
+          <TemporaryDrawer />
+        </div>
+        <Navbar />
+      </div>
       <div className="container">
         <div className="menuContainer">
           <Menu />
-        </div>
-        <div className="menu_drawer">
-          <TemporaryDrawer />
         </div>
         <div className="contentContainer">
           <Outlet />

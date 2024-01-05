@@ -7,13 +7,13 @@ import "./menu.scss";
 import { menu } from "../../data";
 import { Link } from "react-router-dom";
 import {
-  Box,
+  //   Box,
   Drawer,
   List,
-  ListItem,
-  ListItemButton,
-  ListItemIcon,
-  ListItemText,
+  //   ListItem,
+  //   ListItemButton,
+  //   ListItemIcon,
+  //   ListItemText,
 } from "@mui/material";
 
 type Anchor = "left";
@@ -38,34 +38,25 @@ export default function TemporaryDrawer() {
     };
 
   const list = (anchor: Anchor) => (
-    <Box
-      role="presentation"
+    <List
       onClick={toggleDrawer(anchor, false)}
       onKeyDown={toggleDrawer(anchor, false)}
     >
-      <List>
-        <div className="temp_menu_drawer">
-          {menu.map((item) => (
-            <div className="item" key={item.id}>
-              <span className="title">{item.title}</span>
-              {item.listItems.map((listItem) => (
-                <Link to={listItem.url} className="listItem" key={listItem.id}>
-                  <ListItem key={listItem.id} disablePadding>
-                    <ListItemButton>
-                      <ListItemIcon>
-                        <img src={listItem.icon} alt="" />
-                      </ListItemIcon>
-                      <ListItemText primary={listItem.title} />
-                      {/* <span className="listItemTitle">{listItem.title}</span> */}
-                    </ListItemButton>
-                  </ListItem>
-                </Link>
-              ))}
-            </div>
-          ))}
-        </div>
-      </List>
-    </Box>
+      <div className="temp_menu_drawer">
+        {menu.map((item) => (
+          <div className="item" key={item.id}>
+            <span className="title">{item.title}</span>
+            {item.listItems.map((listItem) => (
+              <Link to={listItem.url} className="listItem" key={listItem.id}>
+                <img src={listItem.icon} alt="" className="listItem_icon" />
+                {/* <ListItemText primary={listItem.title} /> */}
+                <span className="listItemTitle">{listItem.title}</span>
+              </Link>
+            ))}
+          </div>
+        ))}
+      </div>
+    </List>
   );
 
   return (
@@ -83,7 +74,7 @@ export default function TemporaryDrawer() {
         open={state.left}
         onClose={toggleDrawer("left", false)}
       >
-        {list("left")}
+        <div style={{ background: "#F5F5F5" }}>{list("left")}</div>
       </Drawer>
     </div>
   );
