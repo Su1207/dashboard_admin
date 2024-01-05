@@ -31,6 +31,12 @@ a {
   @include lg {
     width: max-content;
   }
+
+  @include md {
+    width: 0;
+    border-right: none;
+    padding: 0;
+  }
 }
 
 .contentContainer {

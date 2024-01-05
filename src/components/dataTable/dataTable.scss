@@ -13,15 +13,22 @@
   .MuiDataGrid-toolbarContainer {
     flex-direction: row-reverse;
 
-    @include sm {
-      flex-direction: column-reverse;
-      align-items: flex-start;
-    }
+    // @include sm {
+    //   flex-direction: column-reverse;
+    //   align-items: flex-start;
+    // }
   }
 
-  @include sm {
-    .MuiDataGrid-footerContainer {
-      flex-direction: row-reverse;
+  // @include sm {
+  //   .MuiDataGrid-footerContainer {
+  //     flex-direction: row-reverse;
+  //   }
+  // }
+
+  .MuiInputBase-input {
+    @include sm {
+      font-size: 0.875rem;
+      width: 60%;
     }
   }
 

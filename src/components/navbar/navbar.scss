@@ -12,7 +12,20 @@
   display: flex;
   align-items: center;
   font-weight: bold;
-  gap: 10px;
+  gap: 8px;
+
+  .hamburger {
+    display: none;
+    display: flex;
+    align-items: center;
+
+    @include md {
+      display: block;
+      font-size: 25px;
+      margin-right: 3px;
+      // font-weight: bold;
+    }
+  }
 }
 
 .icons {

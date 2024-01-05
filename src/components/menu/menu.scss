@@ -8,6 +8,10 @@
     gap: 10px;
     margin-bottom: 20px;
 
+    @include md {
+      display: none;
+    }
+
     .title {
       font-size: 12px;
       font-weight: 200;
