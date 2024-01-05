@@ -8,12 +8,12 @@ import { menu } from "../../data";
 import { Link } from "react-router-dom";
 import {
   Box,
+  Drawer,
   List,
   ListItem,
   ListItemButton,
   ListItemIcon,
   ListItemText,
-  SwipeableDrawer,
 } from "@mui/material";
 
 type Anchor = "left";
@@ -78,14 +78,13 @@ export default function TemporaryDrawer() {
       >
         <MenuIcon />
       </IconButton>
-      <SwipeableDrawer
+      <Drawer
         anchor="left"
         open={state.left}
         onClose={toggleDrawer("left", false)}
-        onOpen={toggleDrawer("left", true)}
       >
         {list("left")}
-      </SwipeableDrawer>
+      </Drawer>
     </div>
   );
 }
