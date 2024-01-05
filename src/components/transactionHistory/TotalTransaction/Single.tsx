@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import "./single.scss";
 import { off, onValue, ref } from "firebase/database";
-import { database } from "../../firebase";
+import { database } from "../../../firebase";
 
 interface TransactionDetails {
   amount: number;

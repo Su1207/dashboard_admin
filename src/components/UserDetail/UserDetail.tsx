@@ -5,7 +5,11 @@ import { database } from "../../firebase";
 import profile from "../../assets/userProfile.png";
 import { FaEdit } from "react-icons/fa";
 import Copy from "../copy/Copy";
-import Single from "../transactionHistory/Single";
+import Single from "../transactionHistory/TotalTransaction/Single";
+// import BidTransaction from "../transactionHistory/BidTransaction/BidTransaction";
+// import WinTransaction from "../transactionHistory/WinTransaction/WinTransaction";
+// import DepositTransaction from "../transactionHistory/DepositTransaction/DepositTransaction";
+// import WithdrawTransaction from "../transactionHistory/WithdrawTransaction/WithdrawTransaction";
 
 interface UserDetails {
   CREATED_ON: number;
@@ -60,7 +64,7 @@ const UserDetail: React.FC<{ userId: number }> = ({ userId }) => {
           <div className="card_top">
             <div className="card_top_name">
               <img src={profile} alt="" className="profile_picture" />
-              <h1>{userDetails.NAME}</h1>
+              <h1 className="user_name">{userDetails.NAME}</h1>
             </div>
             <FaEdit size={25} />
           </div>
@@ -111,6 +115,10 @@ const UserDetail: React.FC<{ userId: number }> = ({ userId }) => {
       <div className="box-3 card"></div>
       <div>
         <Single userId={userId} />
+        {/* <BidTransaction userId={userId} /> */}
+        {/* <DepositTransaction userId={userId} />
+        <WithdrawTransaction userId={userId} />
+        <WinTransaction userId={userId} /> */}
       </div>
     </div>
   );

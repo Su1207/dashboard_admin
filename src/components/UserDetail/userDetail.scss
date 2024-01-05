@@ -42,7 +42,7 @@
     @include sm {
       font-size: 0.76rem;
       grid-column: 1;
-      padding: 0.5rem;
+      //   padding: 1rem;
     }
 
     .card_top {
@@ -67,6 +67,10 @@
             height: 4rem;
             width: 4rem;
           }
+        }
+
+        .user_name {
+          text-transform: capitalize;
         }
       }
     }
