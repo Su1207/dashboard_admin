@@ -6,6 +6,10 @@
   padding: 20px;
   align-items: center;
   justify-content: space-between;
+
+  @include sm {
+    padding-left: 4px;
+  }
 }
 
 .logo {
@@ -13,6 +17,10 @@
   align-items: center;
   font-weight: bold;
   gap: 8px;
+
+  @include sm {
+    gap: 2px;
+  }
 }
 
 .icons {
