@@ -6,7 +6,6 @@ const Navbar = () => {
     <div className="navbar">
       <div className="logo">
         <div className="hamburger">
-          <input type="checkbox" />
           <RiMenu3Line />
         </div>
         <img src="/logo.svg" alt="" />
