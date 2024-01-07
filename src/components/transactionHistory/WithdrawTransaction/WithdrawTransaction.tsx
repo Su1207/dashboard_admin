@@ -1,8 +1,9 @@
 import "./WithdrawTransaction.scss";
 
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { off, onValue, ref } from "firebase/database";
 import { database } from "../../../firebase";
+import { useTransactionContext } from "../TransactionContext";
 
 interface WithdrawalDetails {
   amount: number;
@@ -17,9 +18,7 @@ interface WithdrawalDetails {
 }
 
 const WithdrawTransaction: React.FC<{ userId: number }> = ({ userId }) => {
-  const [withdrawData, setWithdrawData] = useState<WithdrawalDetails[] | null>(
-    null
-  );
+  const { withdrawData, setWithdrawData } = useTransactionContext();
 
   useEffect(() => {
     const withdrawalRef = ref(
@@ -61,6 +60,12 @@ const WithdrawTransaction: React.FC<{ userId: number }> = ({ userId }) => {
         withdrawalDetailsArray.push(withdrawalDetails);
       }
 
+      withdrawalDetailsArray.sort((a, b) => {
+        const dateA = new Date(a.date.replace("|", "")).getTime();
+        const dateB = new Date(b.date.replace("|", "")).getTime();
+        return dateB - dateA;
+      });
+
       setWithdrawData(withdrawalDetailsArray);
     };
 
@@ -74,8 +79,8 @@ const WithdrawTransaction: React.FC<{ userId: number }> = ({ userId }) => {
   }, [userId]);
 
   return (
-    <div>
-      <h2>Withdrawal History for User ID: {userId}</h2>
+    <div className="withdraw_data">
+      <h2>Withdraw History</h2>
       <hr />
       <br />
       {withdrawData ? (

@@ -1,7 +1,8 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import "./DepositTransaction.scss";
 import { off, onValue, ref } from "firebase/database";
 import { database } from "../../../firebase";
+import { useTransactionContext } from "../TransactionContext";
 
 interface DepositDetails {
   amount: number;
@@ -15,7 +16,7 @@ interface DepositDetails {
 }
 
 const DepositTransaction: React.FC<{ userId: number }> = ({ userId }) => {
-  const [depositData, setDepositData] = useState<DepositDetails[] | null>(null);
+  const { depositData, setDepositData } = useTransactionContext();
 
   useEffect(() => {
     const depositRef = ref(
@@ -33,16 +34,6 @@ const DepositTransaction: React.FC<{ userId: number }> = ({ userId }) => {
 
       for (const key in data) {
         const depositNode = data[key];
-        // const timestamp = parseInt(key, 10);
-        // const formattedDate = new Date(timestamp).toLocaleString("en-GB", {
-        //   day: "2-digit",
-        //   month: "2-digit",
-        //   year: "numeric",
-        //   hour: "2-digit",
-        //   minute: "2-digit",
-        //   second: "2-digit",
-        //   hour12: true,
-        // });
 
         const depositDetails: DepositDetails = {
           amount: depositNode.AMOUNT,
@@ -58,6 +49,12 @@ const DepositTransaction: React.FC<{ userId: number }> = ({ userId }) => {
         depositDetailsArray.push(depositDetails);
       }
 
+      depositDetailsArray.sort((a, b) => {
+        const dateA = new Date(a.date.replace("|", "")).getTime();
+        const dateB = new Date(b.date.replace("|", "")).getTime();
+        return dateB - dateA;
+      });
+
       setDepositData(depositDetailsArray);
     };
 
@@ -72,23 +69,39 @@ const DepositTransaction: React.FC<{ userId: number }> = ({ userId }) => {
 
   return (
     <div>
-      <h2>Deposit History for User ID: {userId}</h2>
-      <hr />
-      <br />
+      {/* <h2>Deposit History</h2> */}
+      {/* <hr />
+      <br /> */}
       {depositData ? (
         <div>
           {depositData.map((deposit, index) => (
-            <div key={index}>
-              <h3>Deposit</h3>
-              <p>Amount: {deposit.amount}</p>
-              <p>Date: {deposit.date}</p>
-              <p>Name: {deposit.name}</p>
-              <p>Payment App: {deposit.paymentApp}</p>
-              <p>Payment By: {deposit.paymentBy}</p>
+            <div key={index} className="depositContainer">
+              <div className="pointsAdded_side">
+                <div className="pointsAdded">+{deposit.amount}</div>
+              </div>
+              <div className="divider"></div>
+              <div className="details_side">
+                <div className="details_item">
+                  Date - <span className="item_value">{deposit.date}</span>
+                </div>
+                <div className="details_item">
+                  Total - <span className="item_value">{deposit.total}</span>
+                </div>
+                <div className="details_item">
+                  Payment App -{" "}
+                  <span className="item_value">{deposit.paymentApp}</span>
+                </div>
+                <div className="details_item">
+                  Payment By -{" "}
+                  <span className="item_value">{deposit.paymentBy}</span>
+                </div>
+              </div>
+
+              {/* <p>Name: {deposit.name}</p>
+
               <p>Payment To: {deposit.paymentTo}</p>
-              <p>Total: {deposit.total}</p>
-              <p>UID: {deposit.uid}</p>
-              <hr />
+
+              <p>UID: {deposit.uid}</p> */}
             </div>
           ))}
         </div>

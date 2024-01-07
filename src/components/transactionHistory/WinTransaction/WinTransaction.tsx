@@ -1,7 +1,8 @@
 import "./WinTransaction.scss";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { off, onValue, ref } from "firebase/database";
 import { database } from "../../../firebase";
+import { useTransactionContext } from "../TransactionContext";
 
 interface WinDetails {
   date: string;
@@ -19,7 +20,7 @@ interface WinDetails {
 }
 
 const WinTransaction: React.FC<{ userId: number }> = ({ userId }) => {
-  const [winData, setWinData] = useState<WinDetails[] | null>(null);
+  const { winData, setWinData } = useTransactionContext();
 
   useEffect(() => {
     const winRef = ref(database, `USERS TRANSACTION/${userId}/WIN/TOTAL`);
@@ -72,7 +73,7 @@ const WinTransaction: React.FC<{ userId: number }> = ({ userId }) => {
   }, [userId]);
 
   return (
-    <div>
+    <div className="win_data">
       <h2>WIN Data for User ID: {userId}</h2>
       {winData ? (
         <div>

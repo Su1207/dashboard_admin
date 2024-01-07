@@ -8,6 +8,7 @@ import UserListDropdown from "../../components/filterOptions/UserListDropDown";
 import UserFilterDropDown from "../../components/filterOptions/UseFilterDropDown";
 import "./users.scss";
 import { IoAddCircleOutline } from "react-icons/io5";
+import AddUser from "../../components/AddUser/AddUser";
 
 type User = {
   AMOUNT: number;
@@ -166,8 +167,7 @@ const Users: React.FC = () => {
         <h1>Users</h1>
         <div className="users_heading_options">
           <div onClick={handleClick} className="add_user_option">
-            <IoAddCircleOutline size={25} />
-            {/* {addUser && <AddUser addUser={addUser} />} */}
+            {!addUser && <IoAddCircleOutline size={25} />}
           </div>
 
           {/* User List Dropdown */}
@@ -187,6 +187,12 @@ const Users: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {addUser && (
+        <div>
+          <AddUser setAddUser={setAddUser} />
+        </div>
+      )}
 
       {/* Display the UserList component with the usersData and filterOption */}
       <UserList usersData={getFilteredUsers()} filterOption={filterOption} />

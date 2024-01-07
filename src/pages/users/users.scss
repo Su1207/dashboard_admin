@@ -27,6 +27,11 @@
         flex-direction: column;
         align-items: flex-start;
       }
+
+      .add_user_option {
+        position: relative;
+        cursor: pointer;
+      }
     }
   }
 }

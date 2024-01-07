@@ -20,6 +20,7 @@ const UserFilterDropDown: React.FC<UserFilterDropdownProps> = ({
         </div>
         <select
           id="filterOptions"
+          className="select_filter_option"
           value={filterOption}
           onChange={(e) => onFilterOptionChange(e.target.value)}
         >

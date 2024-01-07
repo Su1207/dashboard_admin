@@ -6,6 +6,7 @@
   grid-template-columns: repeat(3, 1fr);
   gap: 1.5rem;
   grid-auto-rows: minmax(180px, auto);
+  margin-bottom: 1rem;
 
   @include lg {
     grid-template-columns: repeat(2, 1fr);
@@ -49,6 +50,10 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
+
+      .edit_option {
+        cursor: pointer;
+      }
 
       .card_top_name {
         display: flex;

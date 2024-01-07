@@ -1,7 +1,8 @@
 import "./BidTransaction.scss";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { off, onValue, ref } from "firebase/database";
 import { database } from "../../../firebase";
+import { useTransactionContext } from "../TransactionContext";
 
 // Define the interface for BID details
 interface BidDetails {
@@ -17,7 +18,7 @@ interface BidDetails {
 }
 
 const BidTransaction: React.FC<{ userId: number }> = ({ userId }) => {
-  const [bidData, setBidData] = useState<BidDetails[] | null>(null);
+  const { bidData, setBidData } = useTransactionContext();
 
   useEffect(() => {
     const bidRef = ref(database, `USERS TRANSACTION/${userId}/BID/TOTAL`);
@@ -52,6 +53,15 @@ const BidTransaction: React.FC<{ userId: number }> = ({ userId }) => {
         }
       }
 
+      bidDetailsArray.sort((a, b) => {
+        const dateA = new Date(a.date.replace("|", "")).getTime();
+        const dateB = new Date(b.date.replace("|", "")).getTime();
+        if (dateA === dateB) {
+          return a.previousPoints - b.previousPoints;
+        }
+        return dateB - dateA;
+      });
+
       setBidData(bidDetailsArray);
     };
 
@@ -66,9 +76,11 @@ const BidTransaction: React.FC<{ userId: number }> = ({ userId }) => {
   }, [userId]);
 
   return (
-    <div>
-      <h2>BID Data for User ID: {userId}</h2>
-      <p>{bidData?.length}</p>
+    <div className="bid_transaction">
+      <h2>Bid History</h2>
+      <hr />
+      <br />
+
       {bidData ? (
         <div>
           {bidData.map((bid, index) => (

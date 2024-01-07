@@ -38,8 +38,8 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
   const columns: GridColDef[] = [
     { field: "id", headerName: "Phone", width: 110 },
     { field: "name", headerName: "Name", width: 120 },
-    { field: "createdOn", headerName: "Created On", width: 190 },
-    { field: "lastSeen", headerName: "Last Seen", width: 190 },
+    { field: "createdOn", headerName: "Created On", width: 200 },
+    { field: "lastSeen", headerName: "Last Seen", width: 200 },
     { field: "amount", headerName: "Amount", width: 90, editable: true },
 
     // { field: "isLoggedIn", headerName: "Is Logged In", width: 150 },
@@ -109,38 +109,57 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
       });
   };
 
+  console.log(usersData);
+
   const rows = Object.entries(usersData || {}).map(([id, user]) => {
+    const convertTimestamp = (timestamp: string) => {
+      const dateObj = new Date(timestamp);
+
+      const day = dateObj.getDate().toString().padStart(2, "0");
+      const month = getMonthName(dateObj.getMonth());
+      const year = dateObj.getFullYear();
+      const hours = dateObj.getHours();
+      const minutes = dateObj.getMinutes().toString().padStart(2, "0");
+      const seconds = dateObj.getSeconds().toString().padStart(2, "0");
+      const meridiem = hours >= 12 ? "PM" : "AM";
+      const formattedHours = (hours % 12 || 12).toString().padStart(2, "0");
+
+      return `${day}-${month}-${year} | ${formattedHours}:${minutes}:${seconds} ${meridiem}`;
+    };
+
     const createdOnDate = user?.CREATED_ON
-      ? new Date(user.CREATED_ON).toLocaleString("en-GB", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: true,
-        })
+      ? convertTimestamp(user.CREATED_ON)
       : "";
     const lastSeenDate = user?.LAST_SEEN
-      ? new Date(user.LAST_SEEN).toLocaleString("en-GB", {
-          day: "2-digit",
-          month: "2-digit",
-          year: "numeric",
-          hour: "2-digit",
-          minute: "2-digit",
-          second: "2-digit",
-          hour12: true,
-        })
+      ? convertTimestamp(user.LAST_SEEN)
       : "";
 
     return {
-      id: user?.PHONE || id, // Use user?.PHONE if available, otherwise use the id
+      id: user?.PHONE || id,
       name: user?.NAME || "",
       createdOn: createdOnDate,
       lastSeen: lastSeenDate,
       amount: user?.AMOUNT || 0,
     };
   });
+
+  function getMonthName(monthIndex: number): string {
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    return months[monthIndex];
+  }
 
   return (
     <div className="dataTable">
