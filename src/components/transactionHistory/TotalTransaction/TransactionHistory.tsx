@@ -173,7 +173,10 @@ const DataGridDemo: React.FC<DataGridDemoProps> = ({ totalData }) => {
     })
     .filter((transaction) => transaction !== null) as CustomRow[];
 
-  const getRowId = (row: CustomRow) => row.date;
+  const getRowId = (row: CustomRow) => {
+    // Use a combination of date and number (if it exists) as the unique identifier
+    return `${row.date}${"number" in row ? row.number : ""}`;
+  };
   const getRowHeight = () => {
     // Adjust the height as per your requirement
     return 80;
@@ -200,7 +203,7 @@ const DataGridDemo: React.FC<DataGridDemoProps> = ({ totalData }) => {
             },
           }}
           pageSizeOptions={[7]}
-          checkboxSelection
+          //   checkboxSelection
           disableRowSelectionOnClick
           disableColumnFilter
           disableColumnSelector
