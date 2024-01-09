@@ -188,9 +188,7 @@ const columns: GridColDef[] = [
             case "Withdraw":
               return (
                 <div>
-                  {params.row.pending === "true" ? (
-                    <div>{params.row.total}</div>
-                  ) : params.row.isRejected === "true" ? (
+                  {params.row.isRejected === "true" ? (
                     <div>{params.row.total}</div>
                   ) : (
                     <div>{params.row.amount + params.row.total}</div>

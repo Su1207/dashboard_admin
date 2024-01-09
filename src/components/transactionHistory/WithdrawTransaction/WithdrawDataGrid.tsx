@@ -37,9 +37,9 @@ const WithdrawDataGrid: React.FC<WithdrawDataGridProps> = ({
       renderCell: (params) => (
         <>
           {params.row.pending === "true" ? (
-            <Chip label="Pending" color="warning" />
+            <Chip label="pending" color="warning" />
           ) : params.row.isRejected === "true" ? (
-            <Chip label="Rejected" color="error" />
+            <Chip label="rejected" color="error" />
           ) : (
             <Chip label="Success" color="success" />
           )}
@@ -52,9 +52,7 @@ const WithdrawDataGrid: React.FC<WithdrawDataGridProps> = ({
       width: 150,
       renderCell: (params) => (
         <>
-          {params.row.pending === "true" ? (
-            <div>{params.row.total}</div>
-          ) : params.row.isRejected === "true" ? (
+          {params.row.isRejected === "true" ? (
             <div>{params.row.total}</div>
           ) : (
             <div>{params.row.amount + params.row.total}</div>
