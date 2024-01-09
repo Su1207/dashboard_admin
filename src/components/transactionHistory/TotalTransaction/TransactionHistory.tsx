@@ -171,8 +171,8 @@ const columns: GridColDef[] = [
   },
   {
     field: "previousPoints",
-    headerName: "Previous",
-    width: 120,
+    headerName: "Previous Points",
+    width: 150,
     sortable: false,
     renderCell: (params) => (
       <>
@@ -227,8 +227,8 @@ const columns: GridColDef[] = [
   },
   {
     field: "currentPoints",
-    headerName: "Current",
-    width: 120,
+    headerName: "Current Points",
+    width: 150,
     sortable: false,
     renderCell: (params) => (
       <>
