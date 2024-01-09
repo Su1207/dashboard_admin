@@ -8,6 +8,10 @@
   justify-content: center;
 }
 
+.details_name {
+  color: rgb(133, 130, 130);
+}
+
 .sub_points {
   color: rgb(234, 10, 10);
   font-weight: 600;
@@ -15,12 +19,51 @@
 }
 
 .dataTable_transaction {
+  .dataTable_transaction .MuiDataGrid-root .MuiDataGrid-cell {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    text-align: center; /* Center text within the cell */
+  }
+
   .dataGrid_transaction {
     background-color: white;
     padding: 20px;
 
     @include md {
       padding: 10px;
+    }
+    .MuiDataGrid-cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    // .MuiDataGrid-cell--withRenderer {
+    //   display: flex;
+    //   align-items: center;
+    //   justify-content: center;
+    // }
+  }
+
+  .MuiDataGrid-columnHeaderDraggableContainer {
+    background-color: rgb(250, 169, 18);
+    border: 2px solid rgb(220, 212, 212);
+    text-align: center;
+    // padding-left: 12px;
+
+    .MuiDataGrid-columnHeaderTitleContainer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .MuiDataGrid-iconButtonContainer {
+        display: none;
+      }
+    }
+
+    .MuiDataGrid-menuIcon {
+      display: none;
     }
   }
 
@@ -30,12 +73,6 @@
 
   .MuiFormControl-root {
     display: none;
-  }
-
-  .MuiInputBase-input {
-    @include sm {
-      font-size: 1rem;
-    }
   }
 }
 

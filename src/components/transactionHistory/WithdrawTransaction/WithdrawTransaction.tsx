@@ -3,19 +3,13 @@ import "./WithdrawTransaction.scss";
 import { useEffect } from "react";
 import { off, onValue, ref } from "firebase/database";
 import { database } from "../../../firebase";
-import { useTransactionContext } from "../TransactionContext";
+import {
+  useTransactionContext,
+  WithdrawalDetails,
+} from "../TransactionContext";
+import WithdrawDataGrid from "./WithdrawDataGrid";
 
-interface WithdrawalDetails {
-  amount: number;
-  date: string;
-  name: string;
-  app: string;
-  payoutTo: string;
-  pending: string;
-  type: string;
-  total: number;
-  uid: string;
-}
+type Withdrawaldetails = WithdrawalDetails;
 
 const WithdrawTransaction: React.FC<{ userId: number }> = ({ userId }) => {
   const { withdrawData, setWithdrawData } = useTransactionContext();
@@ -30,7 +24,7 @@ const WithdrawTransaction: React.FC<{ userId: number }> = ({ userId }) => {
       const data = snapshot.val();
       if (!data) return;
 
-      const withdrawalDetailsArray: WithdrawalDetails[] = [];
+      const withdrawalDetailsArray: Withdrawaldetails[] = [];
 
       for (const key in data) {
         const withdrawalNode = data[key];
@@ -55,6 +49,7 @@ const WithdrawTransaction: React.FC<{ userId: number }> = ({ userId }) => {
           type: withdrawalNode.TYPE,
           total: withdrawalNode.TOTAL,
           uid: withdrawalNode.UID,
+          isRejected: withdrawalNode.isRejected,
         };
 
         withdrawalDetailsArray.push(withdrawalDetails);
@@ -81,28 +76,27 @@ const WithdrawTransaction: React.FC<{ userId: number }> = ({ userId }) => {
   return (
     <div className="withdraw_data">
       <h2>Withdraw History</h2>
-      <hr />
-      <br />
       {withdrawData ? (
-        <div>
-          {withdrawData.map((withdrawal, index) => (
-            <div key={index}>
-              <h3>Withdrawal</h3>
-              <p>Amount: {withdrawal.amount}</p>
-              <p>Date: {withdrawal.date}</p>
-              <p>Name: {withdrawal.name}</p>
-              <p>App: {withdrawal.app}</p>
-              <p>Payout To: {withdrawal.payoutTo}</p>
-              <p>Pending: {withdrawal.pending}</p>
-              <p>Type: {withdrawal.type}</p>
-              <p>Total: {withdrawal.total}</p>
-              <p>UID: {withdrawal.uid}</p>
-              <hr />
-            </div>
-          ))}
-        </div>
+        <WithdrawDataGrid withdrawData={withdrawData} />
       ) : (
-        <p>Loading withdrawal history...</p>
+        // <div>
+        //   {withdrawData.map((withdrawal, index) => (
+        //     <div key={index}>
+        //       <h3>Withdrawal</h3>
+        //       <p>Amount: {withdrawal.amount}</p>
+        //       <p>Date: {withdrawal.date}</p>
+        //       <p>Name: {withdrawal.name}</p>
+        //       <p>App: {withdrawal.app}</p>
+        //       <p>Payout To: {withdrawal.payoutTo}</p>
+        //       <p>Pending: {withdrawal.pending}</p>
+        //       <p>Type: {withdrawal.type}</p>
+        //       <p>Total: {withdrawal.total}</p>
+        //       <p>UID: {withdrawal.uid}</p>
+        //       <hr />
+        //     </div>
+        //   ))}
+        // </div>
+        <p>No withdrawal data...</p>
       )}
     </div>
   );

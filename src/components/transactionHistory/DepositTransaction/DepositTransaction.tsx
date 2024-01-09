@@ -2,18 +2,10 @@ import { useEffect } from "react";
 import "./DepositTransaction.scss";
 import { off, onValue, ref } from "firebase/database";
 import { database } from "../../../firebase";
-import { useTransactionContext } from "../TransactionContext";
+import { useTransactionContext, DepositDetails } from "../TransactionContext";
+import DepositDataGrid from "./DepositDataGrid";
 
-interface DepositDetails {
-  amount: number;
-  date: string;
-  name: string;
-  paymentApp: string;
-  paymentBy: string;
-  paymentTo: string;
-  total: number;
-  uid: string;
-}
+type Depositdetails = DepositDetails;
 
 const DepositTransaction: React.FC<{ userId: number }> = ({ userId }) => {
   const { depositData, setDepositData } = useTransactionContext();
@@ -30,12 +22,12 @@ const DepositTransaction: React.FC<{ userId: number }> = ({ userId }) => {
         return;
       }
 
-      const depositDetailsArray: DepositDetails[] = [];
+      const depositDetailsArray: Depositdetails[] = [];
 
       for (const key in data) {
         const depositNode = data[key];
 
-        const depositDetails: DepositDetails = {
+        const depositDetails: Depositdetails = {
           amount: depositNode.AMOUNT,
           date: depositNode.DATE,
           name: depositNode.NAME,
@@ -69,11 +61,15 @@ const DepositTransaction: React.FC<{ userId: number }> = ({ userId }) => {
 
   return (
     <div>
-      {/* <h2>Deposit History</h2> */}
+      <h2>Deposit History</h2>
       {/* <hr />
       <br /> */}
       {depositData ? (
-        <div>
+        <DepositDataGrid depositData={depositData} />
+      ) : (
+        <p>No deposit data...</p>
+      )}
+      {/* <div>
           {depositData.map((deposit, index) => (
             <div key={index} className="depositContainer">
               <div className="pointsAdded_side">
@@ -101,13 +97,9 @@ const DepositTransaction: React.FC<{ userId: number }> = ({ userId }) => {
 
               <p>Payment To: {deposit.paymentTo}</p>
 
-              <p>UID: {deposit.uid}</p> */}
+              <p>UID: {deposit.uid}</p> 
             </div>
-          ))}
-        </div>
-      ) : (
-        <p>Loading deposit history...</p>
-      )}
+          ))} */}
     </div>
   );
 };

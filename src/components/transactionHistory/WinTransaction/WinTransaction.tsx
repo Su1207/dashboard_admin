@@ -2,22 +2,10 @@ import "./WinTransaction.scss";
 import { useEffect } from "react";
 import { off, onValue, ref } from "firebase/database";
 import { database } from "../../../firebase";
-import { useTransactionContext } from "../TransactionContext";
+import { useTransactionContext, WinDetails } from "../TransactionContext";
+import WinDataGrid from "./WinDataGrid";
 
-interface WinDetails {
-  date: string;
-  marketId: string;
-  marketName: string;
-  name: string;
-  newPoints: number;
-  number: string;
-  openClose: string;
-  phone: string;
-  points: string;
-  previousPoints: number;
-  type: string;
-  winPoints: number;
-}
+type Windetails = WinDetails;
 
 const WinTransaction: React.FC<{ userId: number }> = ({ userId }) => {
   const { winData, setWinData } = useTransactionContext();
@@ -29,12 +17,13 @@ const WinTransaction: React.FC<{ userId: number }> = ({ userId }) => {
       const data = snapshot.val();
       if (!data) return;
 
-      const winDetailsArray: WinDetails[] = [];
+      const winDetailsArray: Windetails[] = [];
+
+      // Function to get short month name from month number
 
       // Iterate through each game key
       for (const gameKey in data) {
         const gameData = data[gameKey];
-        console.log(gameKey);
 
         // Iterate through each time key inside the game
         for (const timeKey in gameData) {
@@ -58,6 +47,16 @@ const WinTransaction: React.FC<{ userId: number }> = ({ userId }) => {
           winDetailsArray.push(winDetails);
         }
       }
+      winDetailsArray.sort((a, b) => {
+        const dateA = new Date(a.date.replace("|", "")).getTime();
+        const dateB = new Date(b.date.replace("|", "")).getTime();
+        if (dateA === dateB) {
+          return b.previousPoints - a.previousPoints;
+        }
+        console.log(a.date, dateA);
+        console.log(b.date, dateB);
+        return dateB - dateA;
+      });
 
       setWinData(winDetailsArray);
     };
@@ -74,30 +73,8 @@ const WinTransaction: React.FC<{ userId: number }> = ({ userId }) => {
 
   return (
     <div className="win_data">
-      <h2>WIN Data for User ID: {userId}</h2>
-      {winData ? (
-        <div>
-          {winData.map((win, index) => (
-            <div key={index}>
-              <p>Date: {win.date}</p>
-              <p>Market ID: {win.marketId}</p>
-              <p>Market Name: {win.marketName}</p>
-              <p>Name: {win.name}</p>
-              <p>New Points: {win.newPoints}</p>
-              <p>Number: {win.number}</p>
-              <p>Open/Close: {win.openClose}</p>
-              <p>Phone: {win.phone}</p>
-              <p>Points: {win.points}</p>
-              <p>Previous Points: {win.previousPoints}</p>
-              <p>Type: {win.type}</p>
-              <p>Win Points: {win.winPoints}</p>
-              <hr />
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p>Loading WIN data...</p>
-      )}
+      <h2>Win History</h2>
+      {winData ? <WinDataGrid winData={winData} /> : <p>No data available</p>}
     </div>
   );
 };

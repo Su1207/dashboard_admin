@@ -1,4 +1,5 @@
 @import "../../../styles/variables.scss";
+@import "../../../styles/responsive.scss";
 
 .depositContainer {
   display: none;
@@ -51,4 +52,68 @@
       }
     }
   }
+}
+
+.centered-cell {
+  text-align: center !important;
+}
+
+.dataTable_deposit {
+  .dataGrid_deposit {
+    background-color: white;
+    padding: 15px;
+
+    @include md {
+      padding: 10px;
+    }
+
+    .MuiDataGrid-cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    // .MuiDataGrid-cell--withRenderer {
+    //   display: flex;
+    //   align-items: center;
+    //   justify-content: center;
+    // }
+  }
+
+  .MuiDataGrid-columnHeaderDraggableContainer {
+    background-color: rgb(250, 169, 18);
+    border: 2px solid rgb(220, 212, 212);
+    text-align: center;
+    // padding-left: 12px;
+
+    .MuiDataGrid-columnHeaderTitleContainer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .MuiDataGrid-iconButtonContainer {
+        display: none;
+      }
+    }
+
+    .MuiDataGrid-menuIcon {
+      display: none;
+    }
+  }
+
+  .MuiDataGrid-toolbarContainer {
+    flex-direction: row-reverse;
+  }
+
+  .MuiFormControl-root {
+    display: none;
+  }
+}
+
+.add_points {
+  color: rgb(18, 191, 133);
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }

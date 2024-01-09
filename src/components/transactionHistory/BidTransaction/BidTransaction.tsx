@@ -3,6 +3,7 @@ import { useEffect } from "react";
 import { off, onValue, ref } from "firebase/database";
 import { database } from "../../../firebase";
 import { useTransactionContext } from "../TransactionContext";
+import BidDataGrid from "./BidDataGrid";
 
 // Define the interface for BID details
 interface BidDetails {
@@ -78,29 +79,7 @@ const BidTransaction: React.FC<{ userId: number }> = ({ userId }) => {
   return (
     <div className="bid_transaction">
       <h2>Bid History</h2>
-      <hr />
-      <br />
-
-      {bidData ? (
-        <div>
-          {bidData.map((bid, index) => (
-            <div key={index}>
-              <p>Date: {bid.date}</p>
-              <p>Market Name: {bid.marketName}</p>
-              <p>Name: {bid.name}</p>
-              <p>Number: {bid.number}</p>
-              <p>Open/Close: {bid.openClose}</p>
-              <p>Points: {bid.points}</p>
-              <p>Previous Points: {bid.previousPoints}</p>
-              <p>Type: {bid.type}</p>
-              <p>UID: {bid.uid}</p>
-              <hr />
-            </div>
-          ))}
-        </div>
-      ) : (
-        <p>Loading BID data...</p>
-      )}
+      {bidData ? <BidDataGrid bidData={bidData} /> : <p>No BID data...</p>}
     </div>
   );
 };

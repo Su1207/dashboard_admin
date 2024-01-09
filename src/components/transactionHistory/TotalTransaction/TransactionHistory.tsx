@@ -6,6 +6,7 @@ import {
   WinDetails,
   WithdrawalDetails,
 } from "../TransactionContext";
+import Chip from "@mui/material/Chip";
 
 type CustomRow = DepositDetails | WinDetails | BidDetails | WithdrawalDetails;
 
@@ -25,11 +26,21 @@ const getTransactionType = (row: CustomRow) => {
 };
 
 const columns: GridColDef[] = [
-  { field: "date", headerName: "Date", width: 200 },
+  {
+    field: "date",
+    headerName: "Date",
+    width: 100,
+    renderCell: (params) => (
+      <div>
+        <div>{params.value.split(" | ")[0]}</div>
+        <div>{params.value.split(" | ")[1]}</div>
+      </div>
+    ),
+  },
   {
     field: "type",
     headerName: "Type",
-    width: 120,
+    width: 80,
     renderCell: (params) => <span>{getTransactionType(params.row)}</span>,
   },
   {
@@ -44,35 +55,146 @@ const columns: GridColDef[] = [
             case "Deposit":
               return (
                 <div className="row_details">
-                  <div>New Points: {params.row.total}</div>
-                  <div>Payment By: {params.row.paymentBy}</div>
-                  <div>Payment App: {params.row.paymentApp}</div>
+                  <div>
+                    <span className="details_name">Payment To -</span>{" "}
+                    {params.row.paymentTo}
+                  </div>
+                  <div>
+                    <span className="details_name">Payment App -</span>{" "}
+                    {params.row.paymentApp}
+                  </div>
+                  <div>
+                    <span className="details_name">Payment By -</span>{" "}
+                    {params.row.paymentBy}
+                  </div>
                 </div>
               );
             case "Win":
               return (
                 <div className="row_details">
-                  <div>New Points: {params.row.winPoints}</div>
-                  <div>Market Name: {params.row.marketName}</div>
-                  <div>Type: {params.row.type}</div>
+                  <div>
+                    <span className="details_name">Market Name -</span>{" "}
+                    {params.row.marketName}
+                  </div>
+                  <div>
+                    <span className="details_name">Number -</span>{" "}
+                    {params.row.number}
+                  </div>
+                  <div>
+                    <span className="details_name">Type-</span>{" "}
+                    {params.row.type}
+                  </div>
                 </div>
               );
             case "Bid":
               return (
                 <div className="row_details">
-                  <div>Market Name: {params.row.marketName}</div>
                   <div>
-                    New Points: {params.row.previousPoints - params.row.points}
+                    <span className="details_name">Market Name -</span>{" "}
+                    {params.row.marketName}
                   </div>
-                  <div>Type: {params.row.type}</div>
+                  <div>
+                    <span className="details_name">Number -</span>{" "}
+                    {params.row.number}
+                  </div>
+                  <div>
+                    <span className="details_name">Type -</span>{" "}
+                    {params.row.type}
+                  </div>
                 </div>
               );
             case "Withdraw":
               return (
                 <div className="row_details">
-                  <div>New Points: {params.row.total}</div>
-                  <div>App: {params.row.app}</div>
-                  <div>Pending: {params.row.pending}</div>
+                  <div>
+                    <span className="details_name">Payout To -</span>{" "}
+                    {params.row.payoutTo}
+                  </div>
+                  <div>
+                    <span className="details_name">App -</span> {params.row.app}
+                  </div>
+                  <div>
+                    <span className="details_name">Type -</span>{" "}
+                    {params.row.type}
+                  </div>
+                </div>
+              );
+          }
+        })()}
+      </>
+    ),
+  },
+  {
+    field: "status",
+    headerName: "Status",
+    width: 120,
+    sortable: false,
+    renderCell: (params) => (
+      <>
+        {(() => {
+          const transactionType = getTransactionType(params.row);
+          switch (transactionType) {
+            case "Deposit":
+              return (
+                <div>
+                  <Chip label="success" color="success" />
+                </div>
+              );
+            case "Win":
+              return (
+                <div>
+                  <Chip label="success" color="success" />
+                </div>
+              );
+            case "Bid":
+              return (
+                <div>
+                  <Chip label="success" color="success" />
+                </div>
+              );
+            case "Withdraw":
+              return (
+                <div>
+                  {params.row.pending === "true" ? (
+                    <Chip label="Pending" color="warning" />
+                  ) : params.row.isRejected === "true" ? (
+                    <Chip label="Rejected" color="error" />
+                  ) : (
+                    <Chip label="Success" color="success" />
+                  )}
+                </div>
+              );
+          }
+        })()}
+      </>
+    ),
+  },
+  {
+    field: "previousPoints",
+    headerName: "Previous",
+    width: 120,
+    sortable: false,
+    renderCell: (params) => (
+      <>
+        {(() => {
+          const transactionType = getTransactionType(params.row);
+          switch (transactionType) {
+            case "Deposit":
+              return <div>{params.row.total - params.row.amount}</div>;
+            case "Win":
+              return <div>{params.row.previousPoints}</div>;
+            case "Bid":
+              return <div>{params.row.previousPoints}</div>;
+            case "Withdraw":
+              return (
+                <div>
+                  {params.row.pending === "true" ? (
+                    <div>{params.row.total}</div>
+                  ) : params.row.isRejected === "true" ? (
+                    <div>{params.row.total}</div>
+                  ) : (
+                    <div>{params.row.amount + params.row.total}</div>
+                  )}
                 </div>
               );
           }
@@ -84,6 +206,7 @@ const columns: GridColDef[] = [
     field: "points",
     headerName: "Points",
     width: 120,
+    sortable: false,
     renderCell: (params) => (
       <>
         {(() => {
@@ -92,11 +215,34 @@ const columns: GridColDef[] = [
             case "Deposit":
               return <div className="add_points">+{params.row.amount}</div>;
             case "Win":
-              return <div className="add_points">+{params.row.points}</div>;
+              return <div className="add_points">+{params.row.winPoints}</div>;
             case "Bid":
               return <div className="sub_points">-{params.row.points}</div>;
             case "Withdraw":
               return <div className="sub_points">-{params.row.amount}</div>;
+          }
+        })()}
+      </>
+    ),
+  },
+  {
+    field: "currentPoints",
+    headerName: "Current",
+    width: 120,
+    sortable: false,
+    renderCell: (params) => (
+      <>
+        {(() => {
+          const transactionType = getTransactionType(params.row);
+          switch (transactionType) {
+            case "Deposit":
+              return <div>{params.row.total}</div>;
+            case "Win":
+              return <div>{params.row.newPoints}</div>;
+            case "Bid":
+              return <div>{params.row.previousPoints - params.row.points}</div>;
+            case "Withdraw":
+              return <div>{params.row.total}</div>;
           }
         })()}
       </>
@@ -167,6 +313,7 @@ const DataGridDemo: React.FC<DataGridDemoProps> = ({ totalData }) => {
           payoutTo: transaction.payoutTo || "",
           type: transaction.type || "",
           uid: transaction.uid || "",
+          isRejected: transaction.isRejected || "",
         };
         return withdrawalDetails;
       }
@@ -181,6 +328,7 @@ const DataGridDemo: React.FC<DataGridDemoProps> = ({ totalData }) => {
     // Adjust the height as per your requirement
     return 80;
   };
+
   return (
     <div className="dataTable_transaction">
       {flatData.length > 0 ? (

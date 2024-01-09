@@ -49,6 +49,7 @@ export interface WithdrawalDetails {
   type: string;
   total: number;
   uid: string;
+  isRejected: string;
 }
 
 // Define the interface for the context

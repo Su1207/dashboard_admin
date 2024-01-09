@@ -28,6 +28,8 @@ interface UserDetails {
 const UserDetail: React.FC<{ userId: number }> = ({ userId }) => {
   const [userDetails, setUserDetails] = useState<UserDetails | null>(null);
   const [editUser, setEditUser] = useState(false);
+  // const [selectedTransactionType, setSelectedTransactionType] =
+  useState<string>("total");
 
   useEffect(() => {
     const userRef = ref(database, `USERS/${userId}`);
