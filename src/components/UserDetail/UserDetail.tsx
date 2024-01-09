@@ -34,7 +34,7 @@ const UserDetail: React.FC<{ userId: number }> = ({ userId }) => {
 
   useEffect(() => {
     const userRef = ref(database, `USERS/${userId}`);
-    const statusRef = ref(database, `USERS TRANSACTION/${userId}`);
+    // const statusRef = ref(database, `USERS TRANSACTION/${userId}`);
 
     const handleUserData = (snapshot: any) => {
       const userData = snapshot.val();
