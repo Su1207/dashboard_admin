@@ -8,6 +8,8 @@ import { toast } from "react-toastify";
 // import AddCardIcon from "@mui/icons-material/AddCard";
 import addPoints from "../../assets/wallet.png";
 import Withdraw from "../../assets/withdrawal.png";
+import { useState } from "react";
+import AdminAddPointsForm from "../AdminAddPointsForm/AdminAddPointsForm";
 
 // type User = {
 //   NAME: string;
@@ -40,6 +42,13 @@ interface DataTableProps {
 
 const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
   const navigate = useNavigate();
+  const [selectedUserId, setSelectedUserId] = useState<string>("");
+  const [isAddPointsFormVisible, setIsAddPointsFormVisible] = useState(false);
+
+  const handleAddPoints = (userId: string) => {
+    setSelectedUserId(userId);
+    setIsAddPointsFormVisible(!isAddPointsFormVisible);
+  };
 
   const columns: GridColDef[] = [
     {
@@ -89,8 +98,11 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
       field: "addAmount",
       headerName: "Add Points",
       width: 100,
-      renderCell: () => (
-        <div>
+      renderCell: (params) => (
+        <div
+          className="add_points_button"
+          onClick={() => handleAddPoints(params.row.id)}
+        >
           <img src={addPoints} alt="Add Points" className="addPointsImage" />
         </div>
       ),
@@ -163,7 +175,7 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
     // Remove the user from the database
     remove(userToDeleteRef)
       .then(() => {
-        console.log(`User ${userId} deleted successfully`);
+        // console.log(`User ${userId} deleted successfully`);
         toast.success(`User ${userId} deleted successfully`);
 
         // Remove the user's ID from the 'users_list' node
@@ -177,7 +189,7 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
       });
   };
 
-  console.log(usersData);
+  // console.log(usersData);
 
   const rows = Object.entries(usersData || {}).map(([id, user]) => {
     const convertTimestamp = (timestamp: string) => {
@@ -259,6 +271,12 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
         />
       ) : (
         <p>No data available</p>
+      )}
+      {isAddPointsFormVisible && (
+        <AdminAddPointsForm
+          phoneNumber={selectedUserId}
+          setAddPointsFormVisible={setIsAddPointsFormVisible}
+        />
       )}
     </div>
   );

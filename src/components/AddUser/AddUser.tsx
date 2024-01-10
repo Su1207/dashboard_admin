@@ -35,6 +35,7 @@ const AddUser = (props: Props) => {
         // Extract data from the userData object
 
         const userRef = ref(database, `USERS/${phoneNumber}`);
+        const userStatusRef = ref(database, `USERS LIST/${phoneNumber}`);
 
         // Check if the user already exists
         const snapshot = await get(userRef);
@@ -58,6 +59,7 @@ const AddUser = (props: Props) => {
 
         // Set the user data in the database
         await set(userRef, user);
+        await set(userStatusRef, true);
 
         console.log("User added successfully!");
         props.setAddUser(false);

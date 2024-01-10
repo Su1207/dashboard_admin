@@ -2,7 +2,6 @@ import * as React from "react";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import "./DepositTransaction.scss";
 import { DepositDetails } from "../TransactionContext";
-import { Chip } from "@mui/material";
 
 type CustomRow = DepositDetails;
 
@@ -35,12 +34,7 @@ const DepositDataGrid: React.FC<DepositDataGridProps> = ({ depositData }) => {
     // { field: "name", headerName: "Name", width: 150 },
     { field: "paymentBy", headerName: "Payment By", width: 120 },
     // { field: "uid", headerName: "UID", width: 150 },
-    {
-      field: "status",
-      headerName: "Status",
-      width: 120,
-      renderCell: () => <Chip label="success" color="success" />,
-    },
+
     {
       field: "previous",
       headerName: "Previous Points",

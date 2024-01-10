@@ -2,7 +2,6 @@ import * as React from "react";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { BidDetails } from "../TransactionContext";
 import "./BidTransaction.scss";
-import { Chip } from "@mui/material";
 
 type CustomRow = BidDetails;
 
@@ -38,12 +37,6 @@ const BidDataGrid: React.FC<BidDataGridProps> = ({ bidData }) => {
     },
 
     { field: "number", headerName: "Number", width: 100 },
-    {
-      field: "status",
-      headerName: "Status",
-      width: 120,
-      renderCell: () => <Chip label="success" color="success" />,
-    },
 
     { field: "previousPoints", headerName: "Previous Points", width: 160 },
     {

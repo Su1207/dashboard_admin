@@ -2,7 +2,6 @@ import * as React from "react";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { WithdrawalDetails } from "../TransactionContext";
 import "./WithdrawTransaction.scss";
-import { Chip } from "@mui/material";
 
 type CustomRow = WithdrawalDetails;
 
@@ -30,22 +29,6 @@ const WithdrawDataGrid: React.FC<WithdrawDataGridProps> = ({
     { field: "type", headerName: "Type", width: 120 },
     // { field: "uid", headerName: "UID", width: 150 },
 
-    {
-      field: "status",
-      headerName: "Status",
-      width: 120,
-      renderCell: (params) => (
-        <>
-          {params.row.pending === "true" ? (
-            <Chip label="pending" color="warning" />
-          ) : params.row.isRejected === "true" ? (
-            <Chip label="rejected" color="error" />
-          ) : (
-            <Chip label="Success" color="success" />
-          )}
-        </>
-      ),
-    },
     {
       field: "previousPoints",
       headerName: "Previous Points",

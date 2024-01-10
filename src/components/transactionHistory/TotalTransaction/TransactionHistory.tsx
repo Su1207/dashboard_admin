@@ -6,7 +6,6 @@ import {
   WinDetails,
   WithdrawalDetails,
 } from "../TransactionContext";
-import Chip from "@mui/material/Chip";
 
 type CustomRow = DepositDetails | WinDetails | BidDetails | WithdrawalDetails;
 
@@ -124,51 +123,7 @@ const columns: GridColDef[] = [
       </>
     ),
   },
-  {
-    field: "status",
-    headerName: "Status",
-    width: 120,
-    sortable: false,
-    renderCell: (params) => (
-      <>
-        {(() => {
-          const transactionType = getTransactionType(params.row);
-          switch (transactionType) {
-            case "Deposit":
-              return (
-                <div>
-                  <Chip label="success" color="success" />
-                </div>
-              );
-            case "Win":
-              return (
-                <div>
-                  <Chip label="success" color="success" />
-                </div>
-              );
-            case "Bid":
-              return (
-                <div>
-                  <Chip label="success" color="success" />
-                </div>
-              );
-            case "Withdraw":
-              return (
-                <div>
-                  {params.row.pending === "true" ? (
-                    <Chip label="Pending" color="warning" />
-                  ) : params.row.isRejected === "true" ? (
-                    <Chip label="Rejected" color="error" />
-                  ) : (
-                    <Chip label="Success" color="success" />
-                  )}
-                </div>
-              );
-          }
-        })()}
-      </>
-    ),
-  },
+
   {
     field: "previousPoints",
     headerName: "Previous Points",
