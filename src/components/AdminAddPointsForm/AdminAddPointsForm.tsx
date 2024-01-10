@@ -4,6 +4,7 @@ import { get, ref, set, update } from "firebase/database";
 import ClearIcon from "@mui/icons-material/Clear";
 import "./AdminAddPointsForm.scss";
 import AddPoints from "../../assets/wallet.png";
+import { toast } from "react-toastify";
 
 interface AdminPointsData {
   phoneNumber: string;
@@ -33,99 +34,106 @@ const AdminAddPointsForm = (props: Props) => {
     const { phoneNumber, amount, paymentApp, paymentBy, paymentTo } = data;
 
     // Get the current total amount and user name from the database
-    const userRef = ref(database, `USERS/${phoneNumber}`);
-    try {
-      const snapshot = await get(userRef);
-      const currentAmount = snapshot.val()?.AMOUNT || 0;
-      const userName = snapshot.val()?.NAME || "";
+    if (amount !== 0 && paymentApp && paymentApp && paymentBy && paymentTo) {
+      const userRef = ref(database, `USERS/${phoneNumber}`);
+      try {
+        const snapshot = await get(userRef);
+        const currentAmount = snapshot.val()?.AMOUNT || 0;
+        const userName = snapshot.val()?.NAME || "";
 
-      // Calculate the new total amount
-      const newTotal = currentAmount + amount;
+        // Calculate the new total amount
+        const newTotal = currentAmount + amount;
 
-      console.log(newTotal);
+        console.log(newTotal);
 
-      // Update the total amount and name for the user
-      await update(userRef, { AMOUNT: newTotal });
+        // Update the total amount and name for the user
+        await update(userRef, { AMOUNT: newTotal });
 
-      // Add points to the deposit transactions
-      const timestamp = Date.now();
+        // Add points to the deposit transactions
+        const timestamp = Date.now();
 
-      const convertTimestamp = (timestamp: number) => {
-        const dateObj = new Date(timestamp);
+        const convertTimestamp = (timestamp: number) => {
+          const dateObj = new Date(timestamp);
 
-        const day = dateObj.getDate().toString().padStart(2, "0");
-        const month = getMonthName(dateObj.getMonth());
-        const year = dateObj.getFullYear();
-        const hours = dateObj.getHours();
-        const minutes = dateObj.getMinutes().toString().padStart(2, "0");
-        const seconds = dateObj.getSeconds().toString().padStart(2, "0");
-        const meridiem = hours >= 12 ? "PM" : "AM";
-        const formattedHours = (hours % 12 || 12).toString().padStart(2, "0");
+          const day = dateObj.getDate().toString().padStart(2, "0");
+          const month = getMonthName(dateObj.getMonth());
+          const year = dateObj.getFullYear();
+          const hours = dateObj.getHours();
+          const minutes = dateObj.getMinutes().toString().padStart(2, "0");
+          const seconds = dateObj.getSeconds().toString().padStart(2, "0");
+          const meridiem = hours >= 12 ? "PM" : "AM";
+          const formattedHours = (hours % 12 || 12).toString().padStart(2, "0");
 
-        return `${day}-${month}-${year} | ${formattedHours}:${minutes}:${seconds} ${meridiem}`;
-      };
+          return `${day}-${month}-${year} | ${formattedHours}:${minutes}:${seconds} ${meridiem}`;
+        };
 
-      function getMonthName(monthIndex: number): string {
-        const months = [
-          "Jan",
-          "Feb",
-          "Mar",
-          "Apr",
-          "May",
-          "Jun",
-          "Jul",
-          "Aug",
-          "Sep",
-          "Oct",
-          "Nov",
-          "Dec",
-        ];
-        return months[monthIndex];
+        function getMonthName(monthIndex: number): string {
+          const months = [
+            "Jan",
+            "Feb",
+            "Mar",
+            "Apr",
+            "May",
+            "Jun",
+            "Jul",
+            "Aug",
+            "Sep",
+            "Oct",
+            "Nov",
+            "Dec",
+          ];
+          return months[monthIndex];
+        }
+
+        const date = convertTimestamp(timestamp);
+
+        const year = new Date(timestamp).getFullYear();
+        const month = (new Date(timestamp).getMonth() + 1)
+          .toString()
+          .padStart(2, "0");
+        const day = new Date(timestamp).getDate();
+
+        const depositRef = ref(
+          database,
+          `USERS TRANSACTION/${phoneNumber}/DEPOSIT/DATE WISE/${year}/${month}/${day}/${timestamp}`
+        );
+
+        const totalRef = ref(
+          database,
+          `USERS TRANSACTION/${phoneNumber}/DEPOSIT/TOTAL/${timestamp}`
+        );
+
+        await set(depositRef, {
+          AMOUNT: amount,
+          DATE: date,
+          NAME: userName,
+          PAYMENT_APP: paymentApp,
+          PAYMENT_BY: paymentBy,
+          PAYMENT_TO: paymentTo,
+          TOTAL: newTotal,
+        });
+
+        await set(totalRef, {
+          AMOUNT: amount,
+          DATE: date,
+          NAME: userName,
+          PAYMENT_APP: paymentApp,
+          PAYMENT_BY: paymentBy,
+          PAYMENT_TO: paymentTo,
+          TOTAL: newTotal,
+        });
+
+        props.setAddPointsFormVisible(false);
+
+        toast.success("Points added successfully!");
+      } catch (error) {
+        console.error("Error adding points:", error);
       }
-
-      const date = convertTimestamp(timestamp);
-
-      const year = new Date(timestamp).getFullYear();
-      const month = (new Date(timestamp).getMonth() + 1)
-        .toString()
-        .padStart(2, "0");
-      const day = new Date(timestamp).getDate();
-
-      const depositRef = ref(
-        database,
-        `USERS TRANSACTION/${phoneNumber}/DEPOSIT/DATE WISE/${year}/${month}/${day}/${timestamp}`
-      );
-
-      const totalRef = ref(
-        database,
-        `USERS TRANSACTION/${phoneNumber}/DEPOSIT/TOTAL/${timestamp}`
-      );
-
-      await set(depositRef, {
-        AMOUNT: amount,
-        DATE: date,
-        NAME: userName,
-        PAYMENT_APP: paymentApp,
-        PAYMENT_BY: paymentBy,
-        PAYMENT_TO: paymentTo,
-        TOTAL: newTotal,
-      });
-
-      await set(totalRef, {
-        AMOUNT: amount,
-        DATE: date,
-        NAME: userName,
-        PAYMENT_APP: paymentApp,
-        PAYMENT_BY: paymentBy,
-        PAYMENT_TO: paymentTo,
-        TOTAL: newTotal,
-      });
-
+    } else if (amount === 0) {
       props.setAddPointsFormVisible(false);
-
-      console.log("Points added successfully!");
-    } catch (error) {
-      console.error("Error adding points:", error);
+      return;
+    } else {
+      toast.error("All field are required to fill");
     }
   };
 
