@@ -10,6 +10,7 @@ import addPoints from "../../assets/wallet.png";
 import Withdraw from "../../assets/withdrawal.png";
 import { useState } from "react";
 import AdminAddPointsForm from "../AdminAddPointsForm/AdminAddPointsForm";
+import AdminWithdrawPointsForm from "../AdminWithdrawPointsForm/AdminWithdrawPointsForm";
 
 // type User = {
 //   NAME: string;
@@ -44,10 +45,17 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
   const navigate = useNavigate();
   const [selectedUserId, setSelectedUserId] = useState<string>("");
   const [isAddPointsFormVisible, setIsAddPointsFormVisible] = useState(false);
+  const [isWithdrawPointsFormVisible, setIsWithdrawPointsFormVisible] =
+    useState(false);
 
   const handleAddPoints = (userId: string) => {
     setSelectedUserId(userId);
     setIsAddPointsFormVisible(!isAddPointsFormVisible);
+  };
+
+  const handleWithdrawPoints = (userId: string) => {
+    setSelectedUserId(userId);
+    setIsWithdrawPointsFormVisible(!isWithdrawPointsFormVisible);
   };
 
   const columns: GridColDef[] = [
@@ -112,8 +120,11 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
       field: "withdrawAmount",
       headerName: "Withdraw Points",
       width: 140,
-      renderCell: () => (
-        <div>
+      renderCell: (params) => (
+        <div
+          className="withdraw_points_button"
+          onClick={() => handleWithdrawPoints(params.row.id)}
+        >
           <img
             src={Withdraw}
             alt="Withdraw Points"
@@ -171,6 +182,7 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
     // Reference to the specific user's ID under 'USERS' node
     const userToDeleteRef = ref(database, `USERS/${userId}`);
     const userListRef = ref(database, "USERS LIST");
+    const userTransactionRef = ref(database, `USERS TRANSACTION/${userId}`);
 
     // Remove the user from the database
     remove(userToDeleteRef)
@@ -182,6 +194,8 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
         update(userListRef, {
           [userId]: null, // Set the user's ID to null to remove it
         });
+
+        remove(userTransactionRef);
       })
       .catch((error) => {
         console.error("Error deleting user", error);
@@ -276,6 +290,12 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
         <AdminAddPointsForm
           phoneNumber={selectedUserId}
           setAddPointsFormVisible={setIsAddPointsFormVisible}
+        />
+      )}
+      {isWithdrawPointsFormVisible && (
+        <AdminWithdrawPointsForm
+          phoneNumber={selectedUserId}
+          setWithdrawPointsFormVisible={setIsWithdrawPointsFormVisible}
         />
       )}
     </div>

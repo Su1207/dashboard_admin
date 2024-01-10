@@ -76,7 +76,14 @@
   }
 }
 
-.addPointsImage,
+.addPointsImage {
+  height: 30px;
+  width: 30px;
+  object-fit: cover;
+  object-position: center;
+  cursor: pointer;
+}
+
 .withdrawPointsImage {
   height: 30px;
   width: 30px;

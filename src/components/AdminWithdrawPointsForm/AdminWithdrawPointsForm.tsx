@@ -1,53 +1,55 @@
-import React, { useState } from "react";
-import { database } from "../../firebase";
+import { useState } from "react";
+import WithdrawPoint from "../../assets/withdrawal.png";
 import { get, ref, set, update } from "firebase/database";
-import ClearIcon from "@mui/icons-material/Clear";
-import "./AdminAddPointsForm.scss";
-import AddPoints from "../../assets/wallet.png";
+import { database } from "../../firebase";
 import { toast } from "react-toastify";
+import ClearIcon from "@mui/icons-material/Clear";
+import "./AdminWithdrawPointsForm.scss";
 
 interface AdminPointsData {
   phoneNumber: string;
   amount: number;
-  paymentApp: string;
-  paymentBy: string;
-  paymentTo: string;
+  app: string;
+  payout_to: string;
+  type: string;
 }
 
 type Props = {
   phoneNumber: string;
-  setAddPointsFormVisible: React.Dispatch<React.SetStateAction<boolean>>;
+  setWithdrawPointsFormVisible: React.Dispatch<React.SetStateAction<boolean>>;
 };
 
-const AdminAddPointsForm = (props: Props) => {
+const AdminWithdrawPointsForm = (props: Props) => {
   const [formData, setFormData] = useState<AdminPointsData>({
     phoneNumber: props.phoneNumber,
     amount: 0,
-    paymentApp: "",
-    paymentBy: "",
-    paymentTo: "",
+    app: "",
+    payout_to: "",
+    type: "",
   });
 
   const [modalOpen, setIsModalOpen] = useState(true);
 
-  const addPoints = async (data: AdminPointsData) => {
-    const { phoneNumber, amount, paymentApp, paymentBy, paymentTo } = data;
+  const withdrawPoints = async (data: AdminPointsData) => {
+    const { phoneNumber, amount, app, payout_to, type } = data;
 
-    // Get the current total amount and user name from the database
-    if (amount !== 0 && paymentApp && paymentApp && paymentBy && paymentTo) {
-      const userRef = ref(database, `USERS/${phoneNumber}`);
+    if (amount !== 0 && phoneNumber && amount && app && payout_to && type) {
       try {
+        const userRef = ref(database, `USERS/${phoneNumber}`);
+
         const snapshot = await get(userRef);
         const currentAmount = snapshot.val()?.AMOUNT || 0;
-        const userName = snapshot.val()?.NAME || "";
+        const username = snapshot.val()?.NAME || "";
 
-        // Calculate the new total amount
-        const newTotal = currentAmount + amount;
+        const newTotal = currentAmount - amount;
 
-        // Update the total amount and name for the user
+        if (newTotal < 0) {
+          toast.error("Insufficient points");
+          return;
+        }
+
         await update(userRef, { AMOUNT: newTotal });
 
-        // Add points to the deposit transactions
         const timestamp = Date.now();
 
         const convertTimestamp = (timestamp: number) => {
@@ -84,57 +86,60 @@ const AdminAddPointsForm = (props: Props) => {
         }
 
         const date = convertTimestamp(timestamp);
-
         const year = new Date(timestamp).getFullYear();
         const month = (new Date(timestamp).getMonth() + 1)
           .toString()
           .padStart(2, "0");
         const day = new Date(timestamp).getDate();
 
-        const depositRef = ref(
+        const withdrawRef = ref(
           database,
-          `USERS TRANSACTION/${phoneNumber}/DEPOSIT/DATE WISE/${year}/${month}/${day}/${timestamp}`
+          `USERS TRANSACTION/${phoneNumber}/WITHDRAW/DATE WISE/${year}/${month}/${day}/${timestamp}`
         );
 
         const totalRef = ref(
           database,
-          `USERS TRANSACTION/${phoneNumber}/DEPOSIT/TOTAL/${timestamp}`
+          `USERS TRANSACTION/${phoneNumber}/WITHDRAW/TOTAL/${timestamp}`
         );
 
-        await set(depositRef, {
+        await set(withdrawRef, {
           AMOUNT: amount,
+          APP: app,
           DATE: date,
-          NAME: userName,
-          PAYMENT_APP: paymentApp,
-          PAYMENT_BY: paymentBy,
-          PAYMENT_TO: paymentTo,
+          NAME: username,
+          PAYOUT_TO: payout_to,
+          PENDING: "false",
           TOTAL: newTotal,
+          TYPE: type,
+          UID: phoneNumber,
         });
 
         await set(totalRef, {
           AMOUNT: amount,
+          APP: app,
           DATE: date,
-          NAME: userName,
-          PAYMENT_APP: paymentApp,
-          PAYMENT_BY: paymentBy,
-          PAYMENT_TO: paymentTo,
+          NAME: username,
+          PAYOUT_TO: payout_to,
+          PENDING: "false",
           TOTAL: newTotal,
+          TYPE: type,
+          UID: phoneNumber,
         });
 
-        props.setAddPointsFormVisible(false);
-
-        toast.success("Points added successfully!");
+        props.setWithdrawPointsFormVisible(false);
+        toast.success("Points withdraw successfully!");
       } catch (error) {
         console.error("Error adding points:", error);
       }
     } else if (
       amount === 0 &&
-      paymentApp &&
-      paymentApp &&
-      paymentBy &&
-      paymentTo
+      phoneNumber &&
+      amount &&
+      app &&
+      payout_to &&
+      type
     ) {
-      props.setAddPointsFormVisible(false);
+      props.setWithdrawPointsFormVisible(false);
       return;
     } else {
       toast.error("All field are required to fill");
@@ -143,11 +148,12 @@ const AdminAddPointsForm = (props: Props) => {
 
   const toggleModal = () => {
     setIsModalOpen(!modalOpen);
-    props.setAddPointsFormVisible(false);
+    props.setWithdrawPointsFormVisible(false);
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
+
     setFormData((prevData) => ({
       ...prevData,
       [name]: name === "amount" ? parseFloat(value) : value,
@@ -156,7 +162,7 @@ const AdminAddPointsForm = (props: Props) => {
 
   const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    addPoints(formData);
+    withdrawPoints(formData);
   };
 
   return (
@@ -165,56 +171,57 @@ const AdminAddPointsForm = (props: Props) => {
         <span className="close" onClick={toggleModal}>
           <ClearIcon />
         </span>
-        <h1>
-          Add Points
-          <span className="addNew">
-            <img src={AddPoints} alt="Add New" className="add-new_img" />
+        <div className="title-card">
+          Withdraw Points{" "}
+          <span>
+            <img src={WithdrawPoint} alt="" className="withdraw_img" />
           </span>
-        </h1>
+        </div>
         <form onSubmit={handleSubmit}>
           <div className="item">
-            <label htmlFor="amount">Amount</label>
+            <label>Amount</label>
             <input
               type="number"
               name="amount"
+              placeholder="Amount"
+              inputMode="numeric"
               value={formData.amount}
               onChange={handleChange}
-              inputMode="numeric"
-              placeholder="Amount"
             />
           </div>
           <div className="item">
-            <label htmlFor="paymentApp">Payment App</label>
+            <label>App</label>
             <input
               type="text"
-              name="paymentApp"
-              value={formData.paymentApp}
+              name="app"
+              placeholder="App"
+              value={formData.app}
               onChange={handleChange}
-              placeholder="Payment App"
             />
           </div>
           <div className="item">
-            <label htmlFor="paymentBy">Payment By</label>
+            <label>Payout To</label>
             <input
               type="text"
-              name="paymentBy"
-              value={formData.paymentBy}
+              name="payout_to"
+              placeholder="Payout to"
+              value={formData.payout_to}
               onChange={handleChange}
-              placeholder="Payment By"
             />
           </div>
+
           <div className="item">
-            <label htmlFor="paymentTo">Payment To</label>
+            <label>Type</label>
             <input
               type="text"
-              name="paymentTo"
-              value={formData.paymentTo}
+              name="type"
+              placeholder="Type"
+              value={formData.type}
               onChange={handleChange}
-              placeholder="Payment To"
             />
           </div>
-          <button className="add-btn" type="submit">
-            Add Points
+          <button className="withdraw-btn" type="submit">
+            Withdraw Points
           </button>
         </form>
       </div>
@@ -222,4 +229,4 @@ const AdminAddPointsForm = (props: Props) => {
   );
 };
 
-export default AdminAddPointsForm;
+export default AdminWithdrawPointsForm;

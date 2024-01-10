@@ -20,6 +20,7 @@ interface UserDetails {
   PASSWORD: string;
   PHONE: string;
   AMOUNT: number;
+  PIN: string;
 
   //   UID: string;
   // Add other user details properties as needed
@@ -53,16 +54,37 @@ const UserDetail: React.FC<{ userId: number }> = ({ userId }) => {
   }, [userId]);
 
   const formatDateTime = (timestamp: number) => {
-    return new Date(timestamp).toLocaleString("en-GB", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-      hour: "2-digit",
-      minute: "2-digit",
-      second: "2-digit",
-      hour12: true,
-    });
+    const dateObj = new Date(timestamp);
+
+    const day = dateObj.getDate().toString().padStart(2, "0");
+    const month = getMonthName(dateObj.getMonth());
+    const year = dateObj.getFullYear();
+    const hours = dateObj.getHours();
+    const minutes = dateObj.getMinutes().toString().padStart(2, "0");
+    const seconds = dateObj.getSeconds().toString().padStart(2, "0");
+    const meridiem = hours >= 12 ? "PM" : "AM";
+    const formattedHours = (hours % 12 || 12).toString().padStart(2, "0");
+
+    return `${day}-${month}-${year} | ${formattedHours}:${minutes}:${seconds} ${meridiem}`;
   };
+
+  function getMonthName(monthIndex: number): string {
+    const months = [
+      "Jan",
+      "Feb",
+      "Mar",
+      "Apr",
+      "May",
+      "Jun",
+      "Jul",
+      "Aug",
+      "Sep",
+      "Oct",
+      "Nov",
+      "Dec",
+    ];
+    return months[monthIndex];
+  }
 
   const handleEditChange = () => {
     setEditUser(!editUser);
@@ -105,7 +127,7 @@ const UserDetail: React.FC<{ userId: number }> = ({ userId }) => {
 
                 <div className="detail pin_detail">
                   <p>PIN </p>
-                  <p>1234</p>
+                  <p>{userDetails.PIN}</p>
                 </div>
 
                 <div className="detail createdOn_detail">
