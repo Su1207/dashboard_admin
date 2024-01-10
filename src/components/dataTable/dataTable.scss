@@ -8,6 +8,37 @@
     @include md {
       padding: 10px;
     }
+
+    .MuiDataGrid-cell {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    .phone-column {
+      justify-content: flex-start !important;
+      padding-left: 1rem;
+    }
+  }
+
+  .MuiDataGrid-columnHeaderDraggableContainer {
+    .MuiDataGrid-columnHeaderTitleContainer {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .MuiDataGrid-columnHeaderTitle {
+        font-weight: 600;
+      }
+
+      .MuiDataGrid-iconButtonContainer {
+        display: none;
+      }
+    }
+
+    .MuiDataGrid-menuIcon {
+      display: none;
+    }
   }
 
   .MuiDataGrid-toolbarContainer {
@@ -34,10 +65,22 @@
   .actions_icons {
     display: flex;
     align-items: center;
-    gap: 10px;
+    gap: 2rem;
 
     &:focus {
       outline: none;
     }
   }
+}
+
+.addPointsImage,
+.withdrawPointsImage {
+  height: 30px;
+  width: 30px;
+  object-fit: cover;
+  object-position: center;
+}
+
+.user_name {
+  text-transform: capitalize;
 }

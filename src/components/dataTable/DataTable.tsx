@@ -5,6 +5,9 @@ import { database } from "../../firebase";
 import BlockUnblockToggle from "../toggleButton/BlockUnblockToggle";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
+// import AddCardIcon from "@mui/icons-material/AddCard";
+import addPoints from "../../assets/wallet.png";
+import Withdraw from "../../assets/withdrawal.png";
 
 // type User = {
 //   NAME: string;
@@ -17,13 +20,16 @@ import { toast } from "react-toastify";
 // };
 
 type User = {
-  NAME: string;
-  PHONE: string;
+  AMOUNT: number;
+  APP_VERSION: number;
   CREATED_ON: string;
   LAST_SEEN: string;
-  AMOUNT: number;
+  NAME: string;
+  PASSWORD: string;
+  PHONE: string;
+  PIN: string;
+  UID: string;
   isLoggedIn: boolean;
-  // ... other properties
 };
 
 // type UsersData = Record<string, User>;
@@ -36,17 +42,79 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
   const navigate = useNavigate();
 
   const columns: GridColDef[] = [
-    { field: "id", headerName: "Phone", width: 110 },
-    { field: "name", headerName: "Name", width: 120 },
-    { field: "createdOn", headerName: "Created On", width: 200 },
-    { field: "lastSeen", headerName: "Last Seen", width: 200 },
-    { field: "amount", headerName: "Amount", width: 90, editable: true },
+    {
+      field: "id",
+      headerName: "Phone",
+      width: 160,
+      renderCell: (params) => (
+        <div>
+          <div>{params.row.id}</div>
+          <div className="user_name">{params.row.name}</div>
+        </div>
+      ),
+      cellClassName: "phone-column",
+      headerClassName: "phone-header",
+    },
 
-    // { field: "isLoggedIn", headerName: "Is Logged In", width: 150 },
+    {
+      field: "createdOn",
+      headerName: "Created On",
+      width: 120,
+      renderCell: (params) => (
+        <div>
+          <div>{params.value.split(" | ")[0]}</div>
+          <div>{params.value.split(" | ")[1]}</div>
+        </div>
+      ),
+    },
+    {
+      field: "lastSeen",
+      headerName: "Last Seen",
+      width: 120,
+      renderCell: (params) => (
+        <div>
+          <div>{params.value.split(" | ")[0]}</div>
+          <div>{params.value.split(" | ")[1]}</div>
+        </div>
+      ),
+    },
+    {
+      field: "amount",
+      headerName: "Amount",
+      width: 100,
+      renderCell: (params) => <div>&#8377;{params.value}</div>,
+    },
+
+    {
+      field: "addAmount",
+      headerName: "Add Points",
+      width: 100,
+      renderCell: () => (
+        <div>
+          <img src={addPoints} alt="Add Points" className="addPointsImage" />
+        </div>
+      ),
+    },
+
+    {
+      field: "withdrawAmount",
+      headerName: "Withdraw Points",
+      width: 140,
+      renderCell: () => (
+        <div>
+          <img
+            src={Withdraw}
+            alt="Withdraw Points"
+            className="withdrawPointsImage"
+          />
+        </div>
+      ),
+    },
+
     {
       field: "actions",
       headerName: "Actions",
-      width: 90,
+      width: 110,
       sortable: false,
       renderCell: (params) => (
         <div className="actions_icons">
@@ -68,7 +136,7 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
 
     {
       field: "block-unblock",
-      headerName: "Status",
+      headerName: "Block",
       width: 90,
       sortable: false,
       renderCell: (params) => <BlockUnblockToggle userId={params.row.id} />,
@@ -183,7 +251,7 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
             },
           }}
           pageSizeOptions={[7]}
-          checkboxSelection
+          // checkboxSelection
           disableRowSelectionOnClick
           disableColumnFilter
           disableColumnSelector

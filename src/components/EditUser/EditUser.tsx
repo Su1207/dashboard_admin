@@ -5,12 +5,14 @@ import "./EditUser.scss";
 import ClearIcon from "@mui/icons-material/Clear";
 import { database } from "../../firebase";
 import "./EditUser.scss";
+import AddNew from "../../assets/add-new.png";
 
 // Function to update an existing user in the database
 type UserData = {
   phoneNumber: string;
   name: string;
   password: string;
+  pin: string;
   uid: string;
   amount: number; // Assuming AMOUNT is a number, adjust if needed
   createdOn: number; // Assuming CREATED_ON is a number, adjust if needed
@@ -26,6 +28,7 @@ const initialState = {
   phoneNumber: "",
   name: "",
   password: "",
+  pin: "",
   uid: "",
   amount: 0, // Assuming AMOUNT is a number, adjust if needed
   createdOn: 0, // Assuming CREATED_ON is a number, adjust if needed
@@ -37,7 +40,7 @@ const EditUser = (props: Props) => {
   //   const oldPhoneNumber = props.userId;
   //   const [newPhoneNumber, setNewPhoneNumber] = useState<any>();
 
-  const { phoneNumber, name, password, uid } = formData;
+  const { phoneNumber, name, password, pin } = formData;
 
   // Fetch user data based on the provided userId
   useEffect(() => {
@@ -53,9 +56,10 @@ const EditUser = (props: Props) => {
             phoneNumber: String(snapshot.val().PHONE), // Convert to string explicitly
             name: snapshot.val().NAME,
             password: snapshot.val().PASSWORD,
-            uid: snapshot.val().UID,
+            pin: snapshot.val().PIN,
             amount: snapshot.val().AMOUNT,
             createdOn: snapshot.val().CREATED_ON,
+            uid: String(snapshot.val().PHONE),
           }));
         } else {
           toast.error("User not found");
@@ -79,15 +83,13 @@ const EditUser = (props: Props) => {
       ...prevData,
       [name]: value,
     }));
-
-    // console.log(newPhoneNumber);
   };
 
   // Function to handle form submission
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    if (phoneNumber && password && name && uid) {
+    if (phoneNumber && password && name && pin) {
       try {
         // Update the user data in the database
         // setNewPhoneNumber(phoneNumber);
@@ -117,7 +119,8 @@ const EditUser = (props: Props) => {
           NAME: formData.name,
           PASSWORD: formData.password,
           PHONE: formData.phoneNumber,
-          UID: formData.uid,
+          UID: formData.phoneNumber,
+          PIN: formData.pin,
           CREATED_ON: formData.createdOn,
           AMOUNT: formData.amount,
         });
@@ -143,9 +146,24 @@ const EditUser = (props: Props) => {
           <span className="close" onClick={() => props.setEditUser(false)}>
             <ClearIcon />
           </span>
-          <h1>Update User</h1>
+          <h1>
+            Update User{" "}
+            <span className="addNew">
+              <img src={AddNew} alt="Add New" className="add-new_img" />
+            </span>
+          </h1>
 
           <form onSubmit={handleSubmit}>
+            <div className="item">
+              <label>Username </label>
+              <input
+                type="text"
+                name="name"
+                placeholder="Username"
+                value={name}
+                onChange={handleChange}
+              />
+            </div>
             <div className="item">
               <label>Phone Number</label>
               <input
@@ -155,17 +173,6 @@ const EditUser = (props: Props) => {
                 value={phoneNumber}
                 onChange={handleChange}
                 disabled
-              />
-            </div>
-
-            <div className="item">
-              <label>Username </label>
-              <input
-                type="text"
-                name="name"
-                placeholder="Username"
-                value={name}
-                onChange={handleChange}
               />
             </div>
 
@@ -180,13 +187,16 @@ const EditUser = (props: Props) => {
               />
             </div>
             <div className="item">
-              <label>UID</label>
+              <label>PIN</label>
               <input
                 type="text"
-                name="uid"
-                placeholder="UID"
-                value={uid}
+                name="pin"
+                placeholder="PIN"
+                value={pin}
                 onChange={handleChange}
+                pattern="[0-9]{4}"
+                inputMode="numeric" // Display numeric keyboard on mobile devices
+                title="Please enter a 4-digit PIN" // Display a custom validation message
               />
             </div>
 

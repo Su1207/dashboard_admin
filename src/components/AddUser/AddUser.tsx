@@ -4,13 +4,14 @@ import { database } from "../../firebase";
 import { toast } from "react-toastify";
 import "./AddUser.scss";
 import ClearIcon from "@mui/icons-material/Clear";
+import AddNew from "../../assets/add-new.png";
 
 // Function to add a new user to the database
 type UserData = {
   phoneNumber: string;
   name: string;
   password: string;
-  uid: string;
+  pin: string;
 };
 
 type Props = {
@@ -23,13 +24,13 @@ const AddUser = (props: Props) => {
     phoneNumber: "",
     name: "",
     password: "",
-    uid: "",
+    pin: "",
   });
 
   const addUser = async (userData: UserData) => {
-    const { phoneNumber, name, password, uid } = userData;
+    const { phoneNumber, name, password, pin } = userData;
 
-    if (phoneNumber && name && password && uid) {
+    if (phoneNumber && name && password && pin) {
       try {
         // Extract data from the userData object
 
@@ -51,7 +52,8 @@ const AddUser = (props: Props) => {
           NAME: name,
           PASSWORD: password,
           PHONE: phoneNumber,
-          UID: uid,
+          PIN: pin,
+          UID: phoneNumber,
         };
 
         // Set the user data in the database
@@ -99,20 +101,14 @@ const AddUser = (props: Props) => {
         <span className="close" onClick={toggleModal}>
           <ClearIcon />
         </span>
-        <h1>Add new</h1>
+        <h1>
+          Add new{" "}
+          <span className="addNew">
+            <img src={AddNew} alt="Add New" className="add-new_img" />
+          </span>
+        </h1>
 
         <form onSubmit={handleSubmit}>
-          <div className="item">
-            <label>Phone Number</label>
-            <input
-              type="text"
-              name="phoneNumber"
-              placeholder="Phone Number"
-              value={formData.phoneNumber}
-              onChange={handleChange}
-            />
-          </div>
-
           <div className="item">
             <label>Username </label>
             <input
@@ -121,6 +117,20 @@ const AddUser = (props: Props) => {
               placeholder="Username"
               value={formData.name}
               onChange={handleChange}
+            />
+          </div>
+
+          <div className="item">
+            <label>Phone Number</label>
+            <input
+              type="text"
+              name="phoneNumber"
+              placeholder="Phone Number"
+              value={formData.phoneNumber}
+              onChange={handleChange}
+              pattern="[0-9]{10}" // Allow only 10 numeric characters
+              inputMode="numeric" // Display numeric keyboard on mobile devices
+              title="Please enter a 10-digit phone number" // Display a custom validation message
             />
           </div>
 
@@ -135,13 +145,16 @@ const AddUser = (props: Props) => {
             />
           </div>
           <div className="item">
-            <label>UID</label>
+            <label>PIN</label>
             <input
               type="text"
-              name="uid"
-              placeholder="UID"
-              value={formData.uid}
+              name="pin"
+              placeholder="PIN"
+              value={formData.pin}
               onChange={handleChange}
+              pattern="[0-9]{4}"
+              inputMode="numeric" // Display numeric keyboard on mobile devices
+              title="Please enter a 4-digit PIN" // Display a custom validation message
             />
           </div>
 

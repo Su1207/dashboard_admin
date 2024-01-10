@@ -7,7 +7,7 @@ import UserList from "../../components/dataTable/UserList";
 import UserListDropdown from "../../components/filterOptions/UserListDropDown";
 import UserFilterDropDown from "../../components/filterOptions/UseFilterDropDown";
 import "./users.scss";
-import { IoAddCircleOutline } from "react-icons/io5";
+import { FaUserPlus } from "react-icons/fa6";
 import AddUser from "../../components/AddUser/AddUser";
 
 type User = {
@@ -18,6 +18,7 @@ type User = {
   NAME: string;
   PASSWORD: string;
   PHONE: string;
+  PIN: string;
   UID: string;
   isLoggedIn: boolean;
 };
@@ -167,7 +168,7 @@ const Users: React.FC = () => {
         <h1>Users</h1>
         <div className="users_heading_options">
           <div onClick={handleClick} className="add_user_option">
-            {!addUser && <IoAddCircleOutline size={25} />}
+            {!addUser && <FaUserPlus size={25} />}
           </div>
 
           {/* User List Dropdown */}
