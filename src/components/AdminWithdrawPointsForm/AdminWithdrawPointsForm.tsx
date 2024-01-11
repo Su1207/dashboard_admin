@@ -9,9 +9,6 @@ import "./AdminWithdrawPointsForm.scss";
 interface AdminPointsData {
   phoneNumber: string;
   amount: number;
-  app: string;
-  payout_to: string;
-  type: string;
 }
 
 type Props = {
@@ -23,17 +20,14 @@ const AdminWithdrawPointsForm = (props: Props) => {
   const [formData, setFormData] = useState<AdminPointsData>({
     phoneNumber: props.phoneNumber,
     amount: 0,
-    app: "",
-    payout_to: "",
-    type: "",
   });
 
   const [modalOpen, setIsModalOpen] = useState(true);
 
   const withdrawPoints = async (data: AdminPointsData) => {
-    const { phoneNumber, amount, app, payout_to, type } = data;
+    const { phoneNumber, amount } = data;
 
-    if (amount !== 0 && phoneNumber && amount && app && payout_to && type) {
+    if (amount >= 0 && phoneNumber) {
       try {
         const userRef = ref(database, `USERS/${phoneNumber}`);
 
@@ -104,25 +98,25 @@ const AdminWithdrawPointsForm = (props: Props) => {
 
         await set(withdrawRef, {
           AMOUNT: amount,
-          APP: app,
+          APP: "Admin",
           DATE: date,
           NAME: username,
-          PAYOUT_TO: payout_to,
+          PAYOUT_TO: "Admin",
           PENDING: "false",
           TOTAL: newTotal,
-          TYPE: type,
+          TYPE: "Admin",
           UID: phoneNumber,
         });
 
         await set(totalRef, {
           AMOUNT: amount,
-          APP: app,
+          APP: "Admin",
           DATE: date,
           NAME: username,
-          PAYOUT_TO: payout_to,
+          PAYOUT_TO: "Admin",
           PENDING: "false",
           TOTAL: newTotal,
-          TYPE: type,
+          TYPE: "Admin",
           UID: phoneNumber,
         });
 
@@ -131,14 +125,7 @@ const AdminWithdrawPointsForm = (props: Props) => {
       } catch (error) {
         console.error("Error adding points:", error);
       }
-    } else if (
-      amount === 0 &&
-      phoneNumber &&
-      amount &&
-      app &&
-      payout_to &&
-      type
-    ) {
+    } else if (amount === 0 && phoneNumber) {
       props.setWithdrawPointsFormVisible(false);
       return;
     } else {
@@ -189,7 +176,7 @@ const AdminWithdrawPointsForm = (props: Props) => {
               onChange={handleChange}
             />
           </div>
-          <div className="item">
+          {/* <div className="item">
             <label>App</label>
             <input
               type="text"
@@ -219,7 +206,7 @@ const AdminWithdrawPointsForm = (props: Props) => {
               value={formData.type}
               onChange={handleChange}
             />
-          </div>
+          </div> */}
           <button className="withdraw-btn" type="submit">
             Withdraw Points
           </button>

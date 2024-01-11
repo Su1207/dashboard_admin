@@ -9,9 +9,6 @@ import { toast } from "react-toastify";
 interface AdminPointsData {
   phoneNumber: string;
   amount: number;
-  paymentApp: string;
-  paymentBy: string;
-  paymentTo: string;
 }
 
 type Props = {
@@ -23,18 +20,15 @@ const AdminAddPointsForm = (props: Props) => {
   const [formData, setFormData] = useState<AdminPointsData>({
     phoneNumber: props.phoneNumber,
     amount: 0,
-    paymentApp: "",
-    paymentBy: "",
-    paymentTo: "",
   });
 
   const [modalOpen, setIsModalOpen] = useState(true);
 
   const addPoints = async (data: AdminPointsData) => {
-    const { phoneNumber, amount, paymentApp, paymentBy, paymentTo } = data;
+    const { phoneNumber, amount } = data;
 
     // Get the current total amount and user name from the database
-    if (amount !== 0 && paymentApp && paymentApp && paymentBy && paymentTo) {
+    if (amount >= 0 && phoneNumber) {
       const userRef = ref(database, `USERS/${phoneNumber}`);
       try {
         const snapshot = await get(userRef);
@@ -105,9 +99,9 @@ const AdminAddPointsForm = (props: Props) => {
           AMOUNT: amount,
           DATE: date,
           NAME: userName,
-          PAYMENT_APP: paymentApp,
-          PAYMENT_BY: paymentBy,
-          PAYMENT_TO: paymentTo,
+          PAYMENT_APP: "Admin",
+          PAYMENT_BY: "Admin",
+          PAYMENT_TO: "Admin",
           TOTAL: newTotal,
         });
 
@@ -115,9 +109,9 @@ const AdminAddPointsForm = (props: Props) => {
           AMOUNT: amount,
           DATE: date,
           NAME: userName,
-          PAYMENT_APP: paymentApp,
-          PAYMENT_BY: paymentBy,
-          PAYMENT_TO: paymentTo,
+          PAYMENT_APP: "Admin",
+          PAYMENT_BY: "Admin",
+          PAYMENT_TO: "Admin",
           TOTAL: newTotal,
         });
 
@@ -127,13 +121,7 @@ const AdminAddPointsForm = (props: Props) => {
       } catch (error) {
         console.error("Error adding points:", error);
       }
-    } else if (
-      amount === 0 &&
-      paymentApp &&
-      paymentApp &&
-      paymentBy &&
-      paymentTo
-    ) {
+    } else if (amount === 0 && phoneNumber) {
       props.setAddPointsFormVisible(false);
       return;
     } else {
@@ -183,7 +171,7 @@ const AdminAddPointsForm = (props: Props) => {
               placeholder="Amount"
             />
           </div>
-          <div className="item">
+          {/* <div className="item">
             <label htmlFor="paymentApp">Payment App</label>
             <input
               type="text"
@@ -212,7 +200,7 @@ const AdminAddPointsForm = (props: Props) => {
               onChange={handleChange}
               placeholder="Payment To"
             />
-          </div>
+          </div> */}
           <button className="add-btn" type="submit">
             Add Points
           </button>

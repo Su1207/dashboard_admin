@@ -23,7 +23,8 @@
 
   .MuiDataGrid-columnHeaderDraggableContainer {
     background-color: rgb(250, 169, 18);
-    border: 2px solid rgb(220, 212, 212);
+    height: 2.5rem !important;
+    // border: 2px solid rgb(220, 212, 212);
     text-align: center;
     .MuiDataGrid-columnHeaderTitleContainer {
       display: flex;
@@ -76,14 +77,7 @@
   }
 }
 
-.addPointsImage {
-  height: 30px;
-  width: 30px;
-  object-fit: cover;
-  object-position: center;
-  cursor: pointer;
-}
-
+.addPointsImage,
 .withdrawPointsImage {
   height: 30px;
   width: 30px;

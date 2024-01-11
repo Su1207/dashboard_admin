@@ -105,7 +105,7 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
     {
       field: "addAmount",
       headerName: "Add Points",
-      width: 100,
+      width: 120,
       renderCell: (params) => (
         <div
           className="add_points_button"
@@ -119,7 +119,7 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
     {
       field: "withdrawAmount",
       headerName: "Withdraw Points",
-      width: 140,
+      width: 150,
       renderCell: (params) => (
         <div
           className="withdraw_points_button"
