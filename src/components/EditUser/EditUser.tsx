@@ -203,7 +203,9 @@ const EditUser = (props: Props) => {
               />
             </div>
 
-            <button type="submit">Update User</button>
+            <button type="submit" className="update_btn">
+              Update User
+            </button>
           </form>
         </div>
       )}

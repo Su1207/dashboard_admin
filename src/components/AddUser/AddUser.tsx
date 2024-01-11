@@ -161,7 +161,9 @@ const AddUser = (props: Props) => {
             />
           </div>
 
-          <button type="submit">Add User</button>
+          <button type="submit" className="add_btn">
+            Add User
+          </button>
         </form>
       </div>
     </div>

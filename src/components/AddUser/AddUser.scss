@@ -82,14 +82,20 @@
           }
         }
       }
-      button {
+      .add_btn {
         width: 100%;
-        background: #4caf50;
-        color: white;
+        background: orange;
+        color: black;
+        font-weight: 600;
         padding: 10px;
         border: none;
         border-radius: 4px;
         cursor: pointer;
+
+        &:hover {
+          background: rgb(14, 9, 1);
+          color: white;
+        }
       }
     }
   }

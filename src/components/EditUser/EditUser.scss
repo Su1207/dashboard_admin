@@ -81,14 +81,21 @@
           }
         }
       }
-      button {
+      .update_btn {
         width: 100%;
-        background: #4caf50;
+        background: #259a29;
         color: white;
+        font-weight: 600;
         padding: 10px;
         border: none;
         border-radius: 4px;
         cursor: pointer;
+        transition: all 0.3s;
+
+        &:hover {
+          background: black;
+          color: white;
+        }
       }
     }
   }
