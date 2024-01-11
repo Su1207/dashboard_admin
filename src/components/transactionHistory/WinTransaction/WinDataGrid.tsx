@@ -54,17 +54,24 @@ const WinDataGrid: React.FC<WinDataGridProps> = ({ winData }) => {
       ),
     },
 
-    { field: "previousPoints", headerName: "Previous Points", width: 150 },
     {
-      field: "winPoints",
-      headerName: "Points",
-      width: 120,
+      field: "previousPoints",
+      headerName: "Previous Points",
+      width: 150,
       renderCell: (params) => (
         <div className="points">
           <div> {params.row.previousPoints} </div>
 
           <GiTwoCoins />
         </div>
+      ),
+    },
+    {
+      field: "winPoints",
+      headerName: "Points",
+      width: 120,
+      renderCell: (params) => (
+        <div className="add_points">+{params.row.winPoints}</div>
       ),
     },
     {
