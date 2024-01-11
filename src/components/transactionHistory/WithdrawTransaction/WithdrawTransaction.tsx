@@ -96,7 +96,7 @@ const WithdrawTransaction: React.FC<{ userId: number }> = ({ userId }) => {
         //     </div>
         //   ))}
         // </div>
-        <p>No withdrawal data...</p>
+        ""
       )}
     </div>
   );

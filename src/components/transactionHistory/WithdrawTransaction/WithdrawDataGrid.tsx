@@ -2,6 +2,7 @@ import * as React from "react";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { WithdrawalDetails } from "../TransactionContext";
 import "./WithdrawTransaction.scss";
+import { GiTwoCoins } from "react-icons/gi";
 
 type CustomRow = WithdrawalDetails;
 
@@ -24,9 +25,18 @@ const WithdrawDataGrid: React.FC<WithdrawDataGridProps> = ({
         </div>
       ),
     },
-    { field: "payoutTo", headerName: "Payout To", width: 120 },
-    { field: "app", headerName: "App", width: 120 },
-    { field: "type", headerName: "Type", width: 120 },
+
+    {
+      field: "particulars",
+      headerName: "Particulars",
+      width: 400,
+      renderCell: (params) => (
+        <div className="row_details">
+          Withdraw ( {params.row.app} : {params.row.payoutTo} :{" "}
+          {params.row.type} )
+        </div>
+      ),
+    },
     // { field: "uid", headerName: "UID", width: 150 },
 
     {
@@ -34,13 +44,14 @@ const WithdrawDataGrid: React.FC<WithdrawDataGridProps> = ({
       headerName: "Previous Points",
       width: 150,
       renderCell: (params) => (
-        <>
+        <div className="points">
           {params.row.isRejected === "true" ? (
             <div>{params.row.total}</div>
           ) : (
             <div>{params.row.amount + params.row.total}</div>
           )}
-        </>
+          <GiTwoCoins />
+        </div>
       ),
     },
     {
@@ -51,7 +62,17 @@ const WithdrawDataGrid: React.FC<WithdrawDataGridProps> = ({
         <div className="sub_points">-{params.row.amount}</div>
       ),
     },
-    { field: "total", headerName: "Current Points", width: 150 },
+    {
+      field: "total",
+      headerName: "Current Points",
+      width: 150,
+      renderCell: (params) => (
+        <div className="points">
+          <div>{params.row.total}</div>
+          <GiTwoCoins />
+        </div>
+      ),
+    },
 
     // { field: "isRejected", headerName: "Rejected", width: 120 },
   ];

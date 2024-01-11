@@ -2,6 +2,7 @@ import * as React from "react";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { BidDetails } from "../TransactionContext";
 import "./BidTransaction.scss";
+import { GiTwoCoins } from "react-icons/gi";
 
 type CustomRow = BidDetails;
 
@@ -22,23 +23,30 @@ const BidDataGrid: React.FC<BidDataGridProps> = ({ bidData }) => {
         </div>
       ),
     },
-    // { field: "marketId", headerName: "Market ID", width: 150 },
-    { field: "marketName", headerName: "Market Name", width: 120 },
-    // { field: "name", headerName: "Name", width: 150 },
     {
-      field: "type",
-      headerName: "Type",
-      width: 150,
+      field: "particulars",
+      headerName: "Particulars",
+      width: 400,
       renderCell: (params) => (
         <div>
-          {params.row.type}:{params.row.openClose}
+          Bid ( {params.row.marketName} : {params.row.type} :{" "}
+          {params.row.openClose} ) : {params.row.number}
         </div>
       ),
     },
 
-    { field: "number", headerName: "Number", width: 100 },
+    {
+      field: "previousPoints",
+      headerName: "Previous Points",
+      width: 160,
+      renderCell: (params) => (
+        <div className="points">
+          <div>{params.row.previousPoints}</div>
 
-    { field: "previousPoints", headerName: "Previous Points", width: 160 },
+          <GiTwoCoins />
+        </div>
+      ),
+    },
     {
       field: "points",
       headerName: "Points",
@@ -52,7 +60,10 @@ const BidDataGrid: React.FC<BidDataGridProps> = ({ bidData }) => {
       headerName: "Current Points",
       width: 150,
       renderCell: (params) => (
-        <div>{params.row.previousPoints - params.row.points}</div>
+        <div className="points">
+          <div>{params.row.previousPoints - params.row.points}</div>
+          <GiTwoCoins />
+        </div>
       ),
     },
   ];

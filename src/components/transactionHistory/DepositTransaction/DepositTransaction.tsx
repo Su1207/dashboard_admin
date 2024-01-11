@@ -64,11 +64,7 @@ const DepositTransaction: React.FC<{ userId: number }> = ({ userId }) => {
       <h2>Deposit History</h2>
       {/* <hr />
       <br /> */}
-      {depositData ? (
-        <DepositDataGrid depositData={depositData} />
-      ) : (
-        <p>No deposit data...</p>
-      )}
+      {depositData ? <DepositDataGrid depositData={depositData} /> : ""}
       {/* <div>
           {depositData.map((deposit, index) => (
             <div key={index} className="depositContainer">

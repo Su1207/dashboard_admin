@@ -32,7 +32,7 @@ const TotalTransaction: React.FC = () => {
 
   return (
     <div className="totalTransaction_detail">
-      <h2>Transaction History</h2>
+      <h2>Passbook</h2>
       <DataGridDemo totalData={totalData} />
     </div>
   );

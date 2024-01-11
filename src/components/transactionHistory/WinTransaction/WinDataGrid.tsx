@@ -2,7 +2,7 @@ import * as React from "react";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { WinDetails } from "../TransactionContext";
 import "./WinTransaction.scss";
-import { Chip } from "@mui/material";
+import { GiTwoCoins } from "react-icons/gi";
 
 type CustomRow = WinDetails;
 
@@ -41,37 +41,43 @@ const WinDataGrid: React.FC<WinDataGridProps> = ({ winData }) => {
         </div>
       ),
     },
-    // { field: "marketId", headerName: "Market ID", width: 150 },
-    { field: "marketName", headerName: "Market Name", width: 120 },
-    // { field: "name", headerName: "Name", width: 150 },
+
     {
-      field: "type",
-      headerName: "Type",
-      width: 150,
+      field: "particulars",
+      headerName: "Particulars",
+      width: 400,
       renderCell: (params) => (
-        <div>
-          {params.row.type}:{params.row.openClose}
+        <div className="row_details">
+          Win ( {params.row.marketName} : {params.row.type} :{" "}
+          {params.row.openClose} ) : {params.row.number}
         </div>
       ),
     },
-    { field: "number", headerName: "Number", width: 100 },
-    // { field: "points", headerName: "Points", width: 80 },
-    {
-      field: "status",
-      headerName: "Status",
-      width: 120,
-      renderCell: () => <Chip label="success" color="success" />,
-    },
+
     { field: "previousPoints", headerName: "Previous Points", width: 150 },
     {
       field: "winPoints",
       headerName: "Points",
       width: 120,
       renderCell: (params) => (
-        <div className="add_points">+{params.row.winPoints}</div>
+        <div className="points">
+          <div> {params.row.previousPoints} </div>
+
+          <GiTwoCoins />
+        </div>
       ),
     },
-    { field: "currentPoints", headerName: "Current Points", width: 150 },
+    {
+      field: "currentPoints",
+      headerName: "Current Points",
+      width: 150,
+      renderCell: (params) => (
+        <div className="points">
+          <div>{params.row.newPoints}</div>
+          <GiTwoCoins />
+        </div>
+      ),
+    },
   ];
 
   const getRowId = (row: CustomRow) => `${row.date}${row.number}`;

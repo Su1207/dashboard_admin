@@ -1,11 +1,16 @@
-import * as React from "react";
+import { useState } from "react";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
+import DatePicker from "react-datepicker";
+import "react-datepicker/dist/react-datepicker.css";
 import {
   DepositDetails,
   BidDetails,
   WinDetails,
   WithdrawalDetails,
 } from "../TransactionContext";
+import { GiTwoCoins } from "react-icons/gi";
+import { parse, isValid } from "date-fns";
+import { FaCalendarAlt } from "react-icons/fa";
 
 type CustomRow = DepositDetails | WinDetails | BidDetails | WithdrawalDetails;
 
@@ -37,15 +42,9 @@ const columns: GridColDef[] = [
     ),
   },
   {
-    field: "type",
-    headerName: "Type",
-    width: 80,
-    renderCell: (params) => <span>{getTransactionType(params.row)}</span>,
-  },
-  {
-    field: "details",
-    headerName: "Details",
-    width: 300,
+    field: "particulars",
+    headerName: "Particulars",
+    width: 400,
     renderCell: (params) => (
       <>
         {(() => {
@@ -54,68 +53,29 @@ const columns: GridColDef[] = [
             case "Deposit":
               return (
                 <div className="row_details">
-                  <div>
-                    <span className="details_name">Payment To -</span>{" "}
-                    {params.row.paymentTo}
-                  </div>
-                  <div>
-                    <span className="details_name">Payment App -</span>{" "}
-                    {params.row.paymentApp}
-                  </div>
-                  <div>
-                    <span className="details_name">Payment By -</span>{" "}
-                    {params.row.paymentBy}
-                  </div>
+                  Deposit ( {params.row.paymentApp} : {params.row.paymentBy} :{" "}
+                  {params.row.paymentTo} )
                 </div>
               );
             case "Win":
               return (
                 <div className="row_details">
-                  <div>
-                    <span className="details_name">Market Name -</span>{" "}
-                    {params.row.marketName}
-                  </div>
-                  <div>
-                    <span className="details_name">Number -</span>{" "}
-                    {params.row.number}
-                  </div>
-                  <div>
-                    <span className="details_name">Type-</span>{" "}
-                    {params.row.type}
-                  </div>
+                  Win ( {params.row.marketName} : {params.row.type} :{" "}
+                  {params.row.openClose} ) : {params.row.number}
                 </div>
               );
             case "Bid":
               return (
                 <div className="row_details">
-                  <div>
-                    <span className="details_name">Market Name -</span>{" "}
-                    {params.row.marketName}
-                  </div>
-                  <div>
-                    <span className="details_name">Number -</span>{" "}
-                    {params.row.number}
-                  </div>
-                  <div>
-                    <span className="details_name">Type -</span>{" "}
-                    {params.row.type}
-                  </div>
+                  Bid ( {params.row.marketName} : {params.row.type} :{" "}
+                  {params.row.openClose} ) : {params.row.number}
                 </div>
               );
             case "Withdraw":
               return (
                 <div className="row_details">
-                  <div>
-                    <span className="details_name">Payout To -</span>{" "}
-                    {params.row.payoutTo}
-                  </div>
-                  <div>
-                    <span className="details_name">App -</span> {params.row.app}
-                  </div>
-                  <div>
-                    <span className="details_name">Type -</span>{" "}
-                    {params.row.type}
-                  </div>
+                  Withdraw ( {params.row.app} : {params.row.payoutTo} :{" "}
+                  {params.row.type} )
                 </div>
               );
           }
@@ -135,19 +95,38 @@ const columns: GridColDef[] = [
           const transactionType = getTransactionType(params.row);
           switch (transactionType) {
             case "Deposit":
-              return <div>{params.row.total - params.row.amount}</div>;
+              return (
+                <div className="points">
+                  <div>{params.row.total - params.row.amount} </div>
+
+                  <GiTwoCoins />
+                </div>
+              );
             case "Win":
-              return <div>{params.row.previousPoints}</div>;
+              return (
+                <div className="points">
+                  <div> {params.row.previousPoints} </div>
+
+                  <GiTwoCoins />
+                </div>
+              );
             case "Bid":
-              return <div>{params.row.previousPoints}</div>;
+              return (
+                <div className="points">
+                  <div>{params.row.previousPoints}</div>
+
+                  <GiTwoCoins />
+                </div>
+              );
             case "Withdraw":
               return (
-                <div>
+                <div className="points">
                   {params.row.isRejected === "true" ? (
                     <div>{params.row.total}</div>
                   ) : (
                     <div>{params.row.amount + params.row.total}</div>
                   )}
+                  <GiTwoCoins />
                 </div>
               );
           }
@@ -189,13 +168,33 @@ const columns: GridColDef[] = [
           const transactionType = getTransactionType(params.row);
           switch (transactionType) {
             case "Deposit":
-              return <div>{params.row.total}</div>;
+              return (
+                <div className="points">
+                  <div>{params.row.total}</div>
+                  <GiTwoCoins />
+                </div>
+              );
             case "Win":
-              return <div>{params.row.newPoints}</div>;
+              return (
+                <div className="points">
+                  <div>{params.row.newPoints}</div>
+                  <GiTwoCoins />
+                </div>
+              );
             case "Bid":
-              return <div>{params.row.previousPoints - params.row.points}</div>;
+              return (
+                <div className="points">
+                  <div>{params.row.previousPoints - params.row.points} </div>
+                  <GiTwoCoins />
+                </div>
+              );
             case "Withdraw":
-              return <div>{params.row.total}</div>;
+              return (
+                <div className="points">
+                  <div>{params.row.total}</div>
+                  <GiTwoCoins />
+                </div>
+              );
           }
         })()}
       </>
@@ -208,6 +207,9 @@ interface DataGridDemoProps {
 }
 
 const DataGridDemo: React.FC<DataGridDemoProps> = ({ totalData }) => {
+  const [startDate, setStartDate] = useState<Date | null>();
+  const [endDate, setEndDate] = useState<Date | null>();
+
   const flatData = totalData
     .map((transaction) => {
       if ("paymentTo" in transaction) {
@@ -277,17 +279,109 @@ const DataGridDemo: React.FC<DataGridDemoProps> = ({ totalData }) => {
     // Use a combination of date and number (if it exists) as the unique identifier
     return `${row.date}${"number" in row ? row.number : ""}`;
   };
-  const getRowHeight = () => {
-    // Adjust the height as per your requirement
-    return 80;
+
+  const filterDataByDate = (data: CustomRow[]) => {
+    if (!startDate && !endDate) {
+      const currentDate = new Date();
+      currentDate.setHours(0, 0, 0, 0);
+      setStartDate(currentDate);
+      setEndDate(currentDate);
+      console.log("current date", currentDate);
+    }
+
+    if (startDate && endDate) {
+      return data.filter((row) => {
+        const rowDate = parseCustomDateString(row.date);
+
+        if (!rowDate) {
+          return false; // Skip rows with invalid dates
+        }
+
+        // Extract date part only for comparison
+        const rowDateWithoutTime = new Date(
+          rowDate.getFullYear(),
+          rowDate.getMonth(),
+          rowDate.getDate()
+        );
+
+        console.log(rowDateWithoutTime);
+
+        return rowDateWithoutTime >= startDate && rowDateWithoutTime <= endDate;
+      });
+    }
+
+    return data;
   };
+
+  function parseCustomDateString(dateString: string) {
+    const parsedDate = parse(
+      dateString,
+      "dd-MMM-yyyy | hh:mm:ss a",
+      new Date()
+    );
+    // console.log(parsedDate);
+
+    if (!isValid(parsedDate)) {
+      console.error(`Invalid Date: ${dateString}`);
+      // Handle the error gracefully, e.g., return a default date or throw an exception.
+      return null;
+    }
+
+    return parsedDate;
+  }
+
+  const handleStartDateChange = (date: Date | null) => {
+    setStartDate(date);
+  };
+
+  const handleEndDateChange = (date: Date | null) => {
+    setEndDate(date);
+  };
+
+  const filteredData = filterDataByDate(flatData);
 
   return (
     <div className="dataTable_transaction">
-      {flatData.length > 0 ? (
+      <div className="date-picker-container">
+        <div className="date-pick">
+          <div className="date-label">Start Date</div>
+          <div className="date">
+            <DatePicker
+              className="datePicker"
+              selected={startDate}
+              onChange={handleStartDateChange}
+              selectsStart
+              startDate={startDate}
+              endDate={endDate}
+              placeholderText="Start Date"
+            />
+            <div className="calendar">
+              <FaCalendarAlt />
+            </div>
+          </div>
+        </div>
+        <div className="date-pick">
+          <div className="date-label">End Date</div>
+          <div className="date">
+            <DatePicker
+              className="datePicker"
+              selected={endDate}
+              onChange={handleEndDateChange}
+              selectsEnd
+              startDate={startDate}
+              endDate={endDate}
+              placeholderText="End Date"
+            />
+            <div className="calendar">
+              <FaCalendarAlt />
+            </div>
+          </div>
+        </div>
+      </div>
+      {filteredData.length > 0 ? (
         <DataGrid
           className="dataGrid_transaction"
-          rows={flatData}
+          rows={filteredData}
           columns={columns}
           initialState={{
             pagination: {
@@ -304,13 +398,11 @@ const DataGridDemo: React.FC<DataGridDemoProps> = ({ totalData }) => {
             },
           }}
           pageSizeOptions={[7]}
-          //   checkboxSelection
           disableRowSelectionOnClick
           disableColumnFilter
           disableColumnSelector
           disableDensitySelector
           getRowId={getRowId}
-          getRowHeight={getRowHeight}
         />
       ) : (
         <p>No data available</p>

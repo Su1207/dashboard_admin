@@ -2,6 +2,7 @@ import * as React from "react";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import "./DepositTransaction.scss";
 import { DepositDetails } from "../TransactionContext";
+import { GiTwoCoins } from "react-icons/gi";
 
 type CustomRow = DepositDetails;
 
@@ -24,22 +25,28 @@ const DepositDataGrid: React.FC<DepositDataGridProps> = ({ depositData }) => {
     },
 
     {
-      field: "paymentTo",
-      headerName: "Payment To",
-      width: 130,
+      field: "particulars",
+      headerName: "Particulars",
+      width: 450,
       cellClassName: "centered-cell",
+      renderCell: (params) => (
+        <div>
+          Deposit ( {params.row.paymentApp} : {params.row.paymentBy} :{" "}
+          {params.row.paymentTo} )
+        </div>
+      ),
     },
-    { field: "paymentApp", headerName: "Payment App", width: 130 },
-
-    // { field: "name", headerName: "Name", width: 150 },
-    { field: "paymentBy", headerName: "Payment By", width: 120 },
-    // { field: "uid", headerName: "UID", width: 150 },
-
     {
       field: "previous",
       headerName: "Previous Points",
       width: 140,
-      renderCell: (params) => <div>{params.row.total - params.row.amount}</div>,
+      renderCell: (params) => (
+        <div className="points">
+          <div>{params.row.total - params.row.amount} </div>
+
+          <GiTwoCoins />
+        </div>
+      ),
     },
 
     {
@@ -50,7 +57,17 @@ const DepositDataGrid: React.FC<DepositDataGridProps> = ({ depositData }) => {
         <div className="add_points">+{params.row.amount}</div>
       ),
     },
-    { field: "total", headerName: "Current Points", width: 140 },
+    {
+      field: "total",
+      headerName: "Current Points",
+      width: 140,
+      renderCell: (params) => (
+        <div className="points">
+          <div>{params.row.total}</div>
+          <GiTwoCoins />
+        </div>
+      ),
+    },
   ];
 
   const getRowId = (row: CustomRow) => `${row.date}${row.uid}`;
