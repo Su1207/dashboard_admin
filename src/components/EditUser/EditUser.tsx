@@ -17,6 +17,7 @@ type UserData = {
   amount: number; // Assuming AMOUNT is a number, adjust if needed
   createdOn: number; // Assuming CREATED_ON is a number, adjust if needed
   LAST_SEEN: number; // Assuming LAST_SEEN is a number, adjust if needed
+  appVersion: number;
 };
 
 type Props = {
@@ -33,6 +34,7 @@ const initialState = {
   amount: 0, // Assuming AMOUNT is a number, adjust if needed
   createdOn: 0, // Assuming CREATED_ON is a number, adjust if needed
   LAST_SEEN: 0, // Assuming LAST_SEEN is a number, adjust if needed
+  appVersion: 3,
 };
 
 const EditUser = (props: Props) => {
@@ -123,6 +125,7 @@ const EditUser = (props: Props) => {
           PIN: formData.pin,
           CREATED_ON: formData.createdOn,
           AMOUNT: formData.amount,
+          APP_VERSION: formData.appVersion,
         });
         // }
 

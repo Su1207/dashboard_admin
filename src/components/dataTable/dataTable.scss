@@ -91,3 +91,18 @@
 .user_name {
   text-transform: capitalize;
 }
+
+.phone_column {
+  display: flex;
+  align-items: center;
+  gap: 1rem;
+
+  .version {
+    padding: 10px 5px;
+    background: rgb(231, 176, 186);
+    color: rgb(202, 4, 4);
+    font-size: 0.6rem;
+    font-weight: 600;
+    border-radius: 2px;
+  }
+}

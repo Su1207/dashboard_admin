@@ -22,6 +22,7 @@ export interface DepositDetails {
   paymentTo: string;
   total: number;
   uid: string;
+  appVersion: number;
 }
 
 export interface WinDetails {

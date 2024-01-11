@@ -64,9 +64,12 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
       headerName: "Phone",
       width: 160,
       renderCell: (params) => (
-        <div>
-          <div>{params.row.id}</div>
-          <div className="user_name">{params.row.name}</div>
+        <div className="phone_column">
+          <div className="version">V{params.row.appVersion}.0</div>
+          <div>
+            <div>{params.row.id}</div>
+            <div className="user_name">{params.row.name}</div>
+          </div>
         </div>
       ),
       cellClassName: "phone-column",
@@ -234,6 +237,7 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
       createdOn: createdOnDate,
       lastSeen: lastSeenDate,
       amount: user?.AMOUNT || 0,
+      appVersion: user?.APP_VERSION || 3,
     };
   });
 

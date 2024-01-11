@@ -223,6 +223,7 @@ const DataGridDemo: React.FC<DataGridDemoProps> = ({ totalData }) => {
           uid: transaction.uid,
           total: transaction.total,
           date: transaction.date || "",
+          appVersion: transaction.appVersion || 3,
         };
         return depositDetails;
       } else if ("winPoints" in transaction) {
