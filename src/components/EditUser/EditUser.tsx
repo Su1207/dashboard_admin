@@ -34,7 +34,7 @@ const initialState = {
   amount: 0, // Assuming AMOUNT is a number, adjust if needed
   createdOn: 0, // Assuming CREATED_ON is a number, adjust if needed
   LAST_SEEN: 0, // Assuming LAST_SEEN is a number, adjust if needed
-  appVersion: 3,
+  appVersion: 1,
 };
 
 const EditUser = (props: Props) => {

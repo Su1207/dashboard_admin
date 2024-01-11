@@ -237,7 +237,7 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
       createdOn: createdOnDate,
       lastSeen: lastSeenDate,
       amount: user?.AMOUNT || 0,
-      appVersion: user?.APP_VERSION || 3,
+      appVersion: user?.APP_VERSION || 1,
     };
   });
 

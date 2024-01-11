@@ -48,7 +48,7 @@ const AddUser = (props: Props) => {
         // Create a user object with the provided data
         const user = {
           AMOUNT: 0,
-          APP_VERSION: 3,
+          APP_VERSION: 1,
           CREATED_ON: Date.now(), // Set the creation timestamp
           LAST_SEEN: Date.now(), // Set the last seen timestamp initially to creation timestamp
           NAME: name,
