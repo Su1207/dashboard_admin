@@ -121,7 +121,7 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
       renderCell: (params) => (
         <div
           className="add_points_button"
-          onClick={() => handleAddPoints(params.row.id)}
+          onClick={() => handleAddPoints(params.row.id.split("-")[0])}
         >
           <img src={addPoints} alt="Add Points" className="addPointsImage" />
         </div>
@@ -135,7 +135,7 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
       renderCell: (params) => (
         <div
           className="withdraw_points_button"
-          onClick={() => handleWithdrawPoints(params.row.id)}
+          onClick={() => handleWithdrawPoints(params.row.id.split("-")[0])}
         >
           <img
             src={Withdraw}
@@ -157,13 +157,13 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
             style={{ cursor: "pointer" }}
             src="view.svg"
             alt=""
-            onClick={() => handleEdit(params.row.id)}
+            onClick={() => handleEdit(params.row.id.split("-")[0])}
           />
           <img
             style={{ cursor: "pointer" }}
             src="delete.svg"
             alt=""
-            onClick={() => handleDelete(params.row.id)}
+            onClick={() => handleDelete(params.row.id.split("-")[0])}
           />
         </div>
       ),
@@ -174,7 +174,9 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
       headerName: "Block",
       width: 90,
       sortable: false,
-      renderCell: (params) => <BlockUnblockToggle userId={params.row.id} />,
+      renderCell: (params) => (
+        <BlockUnblockToggle userId={params.row.id.split("-")[0]} />
+      ),
     },
   ];
 
