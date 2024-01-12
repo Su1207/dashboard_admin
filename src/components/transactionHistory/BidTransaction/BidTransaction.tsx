@@ -79,7 +79,7 @@ const BidTransaction: React.FC<{ userId: number }> = ({ userId }) => {
   return (
     <div className="bid_transaction">
       <h2>Bid History</h2>
-      {bidData ? <BidDataGrid bidData={bidData} /> : ""}
+      {bidData ? <BidDataGrid bidData={bidData} /> : <p>No Bidding done</p>}
     </div>
   );
 };

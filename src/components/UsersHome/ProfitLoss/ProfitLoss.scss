@@ -1,0 +1,37 @@
+.profit_loss_container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+  flex: 1;
+
+  .profit_loss_title {
+    flex: 1;
+  }
+
+  .profit,
+  .loss,
+  .neutral {
+    flex: 1;
+    font-size: 2rem;
+    font-weight: 700;
+  }
+
+  .neutral_icon,
+  .profit_icon,
+  .loss_icon {
+    flex: 1;
+    display: flex;
+    justify-content: flex-end;
+    align-items: flex-end;
+  }
+
+  .neutral_icon {
+    color: gold;
+  }
+  .profit_icon {
+    color: green;
+  }
+  .loss_icon {
+    color: red;
+  }
+}

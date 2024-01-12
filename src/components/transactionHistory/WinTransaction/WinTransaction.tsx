@@ -74,7 +74,7 @@ const WinTransaction: React.FC<{ userId: number }> = ({ userId }) => {
   return (
     <div className="win_data">
       <h2>Win History</h2>
-      {winData ? <WinDataGrid winData={winData} /> : <p>No data available</p>}
+      {winData ? <WinDataGrid winData={winData} /> : <p>No Win till now</p>}
     </div>
   );
 };

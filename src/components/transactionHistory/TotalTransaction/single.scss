@@ -51,7 +51,7 @@
 
         .datePicker {
           padding: 8px 3px;
-          width: 6rem;
+          width: 6.2rem;
           font-size: 0.75rem;
           font-weight: 600;
           color: rgb(80, 76, 76);
@@ -144,6 +144,7 @@
 .react-datepicker {
   font-family: Helvetica, Arial, sans-serif !important;
   outline: none !important;
+  z-index: 555 !important;
 }
 
 /* Example of styling the calendar header */
@@ -162,6 +163,7 @@
   // background: #f48989 !important;
   margin: 0 !important;
   color: #c7bebe !important;
+  z-index: 555 !important;
 }
 
 .react-datepicker__day-name {

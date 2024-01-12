@@ -4,7 +4,8 @@ import { DepositDetails } from "../TransactionContext";
 import { GiTwoCoins } from "react-icons/gi";
 import { useState } from "react";
 import { parse, isValid } from "date-fns";
-import DatePickers from "../../DatePicker/DatePickers";
+import DatePicker from "react-datepicker";
+import { FaCalendarAlt } from "react-icons/fa";
 
 type CustomRow = DepositDetails;
 
@@ -119,13 +120,31 @@ const DepositDataGrid: React.FC<DepositDataGridProps> = ({ depositData }) => {
     return parseDate;
   }
 
+  const handleDateChange = (date: Date | null) => {
+    setSelectDate(date);
+    // props.setSelectDate(date);
+    // console.log(props.setSelectDate);
+  };
+
   const filtereData = filterDataByDate(depositData);
   // console.log(filtereData);
 
   return (
     <div className="dataTable_deposit">
-      <DatePickers setSelectDate={setSelectDate} />
-
+      <div className="date-picker-container">
+        <div className="date-pic">
+          <DatePicker
+            className="datePicker"
+            selected={selectDate}
+            onChange={handleDateChange}
+            dateFormat="dd-MMM-yyyy"
+            //   placeholderText="Select a Date"
+          />
+          <div className="calendar">
+            <FaCalendarAlt />
+          </div>
+        </div>
+      </div>
       {filtereData && filtereData.length > 0 ? (
         <DataGrid
           className="dataGrid_deposit"
@@ -153,7 +172,7 @@ const DepositDataGrid: React.FC<DepositDataGridProps> = ({ depositData }) => {
           getRowId={getRowId}
         />
       ) : (
-        <p>No Data Available</p>
+        <p>No Data Available for the day</p>
       )}
     </div>
   );

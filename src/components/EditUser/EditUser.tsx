@@ -16,7 +16,7 @@ type UserData = {
   uid: string;
   amount: number; // Assuming AMOUNT is a number, adjust if needed
   createdOn: number; // Assuming CREATED_ON is a number, adjust if needed
-  LAST_SEEN: number; // Assuming LAST_SEEN is a number, adjust if needed
+  lastSeen: number; // Assuming LAST_SEEN is a number, adjust if needed
   appVersion: number;
 };
 
@@ -33,7 +33,7 @@ const initialState = {
   uid: "",
   amount: 0, // Assuming AMOUNT is a number, adjust if needed
   createdOn: 0, // Assuming CREATED_ON is a number, adjust if needed
-  LAST_SEEN: 0, // Assuming LAST_SEEN is a number, adjust if needed
+  lastSeen: 0, // Assuming LAST_SEEN is a number, adjust if needed
   appVersion: 1,
 };
 
@@ -61,6 +61,7 @@ const EditUser = (props: Props) => {
             pin: snapshot.val().PIN,
             amount: snapshot.val().AMOUNT,
             createdOn: snapshot.val().CREATED_ON,
+            lastSeen: snapshot.val().LAST_SEEN,
             uid: String(snapshot.val().PHONE),
           }));
         } else {
@@ -117,7 +118,7 @@ const EditUser = (props: Props) => {
         const userRef = ref(database, `USERS/${props.userId}`);
 
         await set(userRef, {
-          LAST_SEEN: Date.now(), // Update the last seen timestamp
+          LAST_SEEN: formData.lastSeen, // Update the last seen timestamp
           NAME: formData.name,
           PASSWORD: formData.password,
           PHONE: formData.phoneNumber,

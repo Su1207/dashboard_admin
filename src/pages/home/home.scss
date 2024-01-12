@@ -5,7 +5,7 @@
   display: grid;
   grid-template-columns: repeat(4, 1fr);
   gap: 20px;
-  grid-auto-rows: minmax(180px, auto);
+  grid-auto-rows: minmax(150px, auto);
   grid-auto-flow: dense;
 
   @include xl {
@@ -21,23 +21,41 @@
   }
 
   @include sm {
-    grid-auto-rows: minmax(120px, auto);
+    grid-auto-rows: minmax(140px, auto);
   }
 
   .box {
     padding: 20px;
-    border-radius: 10px;
-    border: solid 1px $soft-color;
+    border-radius: 5px;
+    border: none;
   }
 
   .box1 {
     grid-column: span 1;
-    grid-row: span 3;
+    background: linear-gradient(90deg, #1cb5e0 0%, #000851 100%);
+    grid-row: span 2;
+  }
+
+  .box2 {
+    background-image: linear-gradient(to right, #8e2de2, #4a00e0);
+  }
+
+  .box3 {
+    background-image: linear-gradient(to right, #ff512f, #f09819);
   }
 
   .box4 {
     grid-column: span 1;
-    grid-row: span 3;
+    grid-row: span 1;
+    background-image: linear-gradient(to right, #0099f7, #f11712);
+  }
+
+  .box5 {
+    background: #ffffff;
+  }
+
+  .box6 {
+    background-image: linear-gradient(to right, #9796f0, #fbc7d4);
   }
 
   .box7 {
