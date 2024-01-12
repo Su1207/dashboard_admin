@@ -11,6 +11,7 @@ import {
 import { GiTwoCoins } from "react-icons/gi";
 import { parse, isValid } from "date-fns";
 import { FaCalendarAlt } from "react-icons/fa";
+import "./single.scss";
 
 type CustomRow = DepositDetails | WinDetails | BidDetails | WithdrawalDetails;
 
@@ -41,6 +42,7 @@ const columns: GridColDef[] = [
       </div>
     ),
   },
+
   {
     field: "particulars",
     headerName: "Particulars",
@@ -287,7 +289,6 @@ const DataGridDemo: React.FC<DataGridDemoProps> = ({ totalData }) => {
       currentDate.setHours(0, 0, 0, 0);
       setStartDate(currentDate);
       setEndDate(currentDate);
-      console.log("current date", currentDate);
     }
 
     if (startDate && endDate) {
@@ -305,7 +306,9 @@ const DataGridDemo: React.FC<DataGridDemoProps> = ({ totalData }) => {
           rowDate.getDate()
         );
 
-        console.log(rowDateWithoutTime);
+        // console.log(rowDateWithoutTime);
+        // console.log("Start date", startDate);
+        // console.log("End date", endDate);
 
         return rowDateWithoutTime >= startDate && rowDateWithoutTime <= endDate;
       });
@@ -351,6 +354,7 @@ const DataGridDemo: React.FC<DataGridDemoProps> = ({ totalData }) => {
               className="datePicker"
               selected={startDate}
               onChange={handleStartDateChange}
+              dateFormat="dd-MMM-yyyy"
               selectsStart
               startDate={startDate}
               endDate={endDate}
@@ -367,6 +371,7 @@ const DataGridDemo: React.FC<DataGridDemoProps> = ({ totalData }) => {
             <DatePicker
               className="datePicker"
               selected={endDate}
+              dateFormat="dd-MMM-yyyy"
               onChange={handleEndDateChange}
               selectsEnd
               startDate={startDate}

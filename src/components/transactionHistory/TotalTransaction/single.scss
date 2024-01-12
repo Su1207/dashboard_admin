@@ -19,11 +19,17 @@
 }
 
 .dataTable_transaction {
+  // position: relative;
   .date-picker-container {
     display: flex;
     // flex-direction: column;
-    gap: 1rem;
+    // color: black;
+    gap: 2rem;
     margin: 1rem 0;
+    // position: absolute;
+    z-index: 1;
+    // top: 6px;
+    // left: 2rem;
 
     @include sm {
       justify-content: space-between;
@@ -32,10 +38,11 @@
     .date-pick {
       display: flex;
       align-items: center;
-      gap: 3px;
+      gap: 5px;
 
       .date-label {
         font-size: 0.8rem;
+        font-weight: 600;
       }
 
       .date {
@@ -43,16 +50,19 @@
         position: relative;
 
         .datePicker {
-          padding: 2px 2px;
-          width: 5.5rem;
-          font-size: 0.7rem;
+          padding: 8px 3px;
+          width: 6rem;
+          font-size: 0.75rem;
           font-weight: 600;
           color: rgb(80, 76, 76);
+          border: 1px solid rgb(169, 160, 160);
+          border-radius: 3px;
+          outline: none;
         }
         .calendar {
           position: absolute;
           color: rgb(69, 23, 23);
-          top: 0.22rem;
+          top: 0.4rem;
           right: 0.3rem;
         }
       }
@@ -119,11 +129,61 @@
   gap: 3px;
 }
 
-// .details {
-// //   .details_column {
-// //     padding: 5px 0;
-// //     display: flex;
-// //     flex-direction: column;
-// //     align-items: flex-start;
-// //   }
-// }
+/* YourCustomStyles.css */
+
+/* Example of styling the entire date picker container */
+
+.react-datepicker__navigation-icon::before {
+  // color: rgb(12, 12, 12) !important;
+  font-weight: 200 !important;
+  font-size: 12px !important;
+  border-width: 1px 1px 0 0 !important;
+  border-color: rgb(40, 39, 39) !important;
+}
+
+.react-datepicker {
+  font-family: Helvetica, Arial, sans-serif !important;
+  outline: none !important;
+}
+
+/* Example of styling the calendar header */
+.react-datepicker__header {
+  background: #f48989 !important;
+  padding: 1rem 0 0.4rem 0 !important;
+  color: #fff !important;
+}
+
+.react-datepicker__current-month {
+  // color: rgb(63, 62, 62) !important;
+  text-transform: uppercase;
+}
+
+.react-datepicker__month {
+  // background: #f48989 !important;
+  margin: 0 !important;
+  color: #c7bebe !important;
+}
+
+.react-datepicker__day-name {
+  // color: #c7bebe !important;
+  font-weight: 300 !important;
+  margin: 4px 8px 0 8px !important;
+  padding: 4px !important;
+}
+
+/* Example of styling the selected date */
+.react-datepicker__day {
+  border-radius: 10px !important;
+  font-size: 0.78rem !important;
+  font-weight: 600 !important;
+  margin: 8px !important;
+  padding: 2px 4px !important;
+  color: rgb(55, 52, 52) !important;
+}
+
+.react-datepicker__day--selected {
+  background-color: rgb(195, 118, 18) !important;
+  color: #fff !important;
+}
+
+/* Adjust styles based on your design preferences */

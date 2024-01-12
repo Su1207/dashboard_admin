@@ -67,7 +67,7 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
         <div className="phone_column">
           <div className="version">V{params.row.appVersion}.0</div>
           <div>
-            <div>{params.row.id}</div>
+            <div>{params.row.id.split("-")[0]}</div>
             <div className="user_name">{params.row.name}</div>
           </div>
         </div>
@@ -75,6 +75,15 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
       cellClassName: "phone-column",
       headerClassName: "phone-header",
     },
+
+    // {
+    //   field: "name",
+    //   headerName: "Name",
+    //   width: 0,
+    //   renderCell: (params) => (
+    //     <div style={{ display: "none" }}>{params.row.name}</div>
+    //   ),
+    // },
 
     {
       field: "createdOn",
@@ -224,6 +233,8 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
       return `${day}-${month}-${year} | ${formattedHours}:${minutes}:${seconds} ${meridiem}`;
     };
 
+    console.log(id);
+
     const createdOnDate = user?.CREATED_ON
       ? convertTimestamp(user.CREATED_ON)
       : "";
@@ -232,7 +243,8 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
       : "";
 
     return {
-      id: user?.PHONE || id,
+      id: `${user?.PHONE}-${user?.NAME}`,
+      phone: user?.PHONE,
       name: user?.NAME || "",
       createdOn: createdOnDate,
       lastSeen: lastSeenDate,
