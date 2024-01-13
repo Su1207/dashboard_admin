@@ -1,0 +1,112 @@
+import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
+import { UserWithdraw } from "./UsersWithdrawData";
+import "./UsersWithdrawData.scss";
+
+interface withdrawDataGridProps {
+  withdrawData: CustomRow[] | null;
+}
+
+type CustomRow = UserWithdraw;
+
+const UsersWithdrawGrid: React.FC<withdrawDataGridProps> = ({
+  withdrawData,
+}) => {
+  const columns: GridColDef[] = [
+    {
+      field: "DATE",
+      headerName: "Date",
+      width: 120,
+      renderCell: (params) => (
+        <div>
+          <div>{params.value.split(" | ")[0]}</div>
+          <div>{params.value.split(" | ")[1]}</div>
+        </div>
+      ),
+    },
+    {
+      field: "NAME",
+      headerName: "Name",
+      width: 120,
+      renderCell: (params) => (
+        <div>
+          <div>{params.row.NAME}</div>
+        </div>
+      ),
+    },
+    {
+      field: "AMOUNT",
+      headerName: "Amount",
+      width: 120,
+      renderCell: (params) => (
+        <div>
+          <div className="sub_points">- {params.row.AMOUNT}</div>
+        </div>
+      ),
+    },
+    {
+      field: "APP",
+      headerName: "App",
+      width: 140,
+    },
+    {
+      field: "PAYOUT_TO",
+      headerName: "Payout To",
+      width: 140,
+    },
+    {
+      field: "TYPE",
+      headerName: "Type",
+      width: 140,
+    },
+    {
+      field: "TOTAL",
+      headerName: "Total",
+      width: 120,
+      renderCell: (params) => (
+        <div>
+          <div>&#8377; {params.row.TOTAL}</div>
+        </div>
+      ),
+    },
+  ];
+
+  const getRowId = (row: CustomRow) => {
+    return `${row.DATE}${row.userPhone}`;
+  };
+
+  return (
+    <div className="dataTable_UsersWithdraw">
+      {withdrawData && withdrawData.length > 0 ? (
+        <DataGrid
+          className="dataGrid_UsersWithdraw"
+          rows={withdrawData}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 7,
+              },
+            },
+          }}
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+              quickFilterProps: { debounceMs: 500 },
+            },
+          }}
+          pageSizeOptions={[7]}
+          disableRowSelectionOnClick
+          //   disableColumnFilter
+          disableColumnSelector
+          disableDensitySelector
+          getRowId={getRowId}
+        />
+      ) : (
+        <p>No Data Available for the day</p>
+      )}
+    </div>
+  );
+};
+
+export default UsersWithdrawGrid;

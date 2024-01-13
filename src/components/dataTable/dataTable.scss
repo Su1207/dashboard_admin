@@ -4,6 +4,7 @@
   .dataGrid {
     background-color: white;
     padding: 20px;
+    width: auto;
 
     @include md {
       padding: 10px;

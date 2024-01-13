@@ -70,37 +70,6 @@ const DepositTransaction: React.FC<{ userId: number }> = ({ userId }) => {
       ) : (
         <p> No amount deposited</p>
       )}
-      {/* <div>
-          {depositData.map((deposit, index) => (
-            <div key={index} className="depositContainer">
-              <div className="pointsAdded_side">
-                <div className="pointsAdded">+{deposit.amount}</div>
-              </div>
-              <div className="divider"></div>
-              <div className="details_side">
-                <div className="details_item">
-                  Date - <span className="item_value">{deposit.date}</span>
-                </div>
-                <div className="details_item">
-                  Total - <span className="item_value">{deposit.total}</span>
-                </div>
-                <div className="details_item">
-                  Payment App -{" "}
-                  <span className="item_value">{deposit.paymentApp}</span>
-                </div>
-                <div className="details_item">
-                  Payment By -{" "}
-                  <span className="item_value">{deposit.paymentBy}</span>
-                </div>
-              </div>
-
-              {/* <p>Name: {deposit.name}</p>
-
-              <p>Payment To: {deposit.paymentTo}</p>
-
-              <p>UID: {deposit.uid}</p> 
-            </div>
-          ))} */}
     </div>
   );
 };

@@ -12,6 +12,8 @@ import Game from "./pages/game/Game";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import TemporaryDrawer from "./components/menu/TemporaryDrawer";
+import Deposit from "./pages/Deposit/Deposit";
+import Withdraw from "./pages/Withdraw/Withdraw";
 
 const Layout = () => {
   return (
@@ -61,6 +63,14 @@ const router = createBrowserRouter([
       {
         path: "/games/:id",
         element: <Game />,
+      },
+      {
+        path: "/deposit",
+        element: <Deposit />,
+      },
+      {
+        path: "/withdraw",
+        element: <Withdraw />,
       },
     ],
   },
