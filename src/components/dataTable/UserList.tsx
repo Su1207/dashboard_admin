@@ -9,6 +9,7 @@ type User = {
   NAME: string;
   PASSWORD: string;
   PHONE: string;
+  PIN: string;
   UID: string;
   isLoggedIn: boolean;
 };

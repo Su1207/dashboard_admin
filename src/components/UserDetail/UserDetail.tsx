@@ -21,6 +21,7 @@ interface UserDetails {
   PHONE: string;
   AMOUNT: number;
   PIN: string;
+  APP_VERSION: number;
 
   //   UID: string;
   // Add other user details properties as needed
