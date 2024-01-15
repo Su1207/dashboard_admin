@@ -22,10 +22,14 @@ const Navbar = () => {
           <span>1</span>
         </div>
         <div className="user">
-          {isAuthenticated && <button onClick={handleLogout}>Logout</button>}
           <span>Admin</span>
         </div>
         <img src="/setting.svg" alt="" className="icon" />
+        {isAuthenticated && (
+          <span className="logout" onClick={handleLogout}>
+            Logout
+          </span>
+        )}
       </div>
     </div>
   );

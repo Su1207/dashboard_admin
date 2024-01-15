@@ -51,4 +51,12 @@
       font-size: 12px;
     }
   }
+
+  .logout {
+    cursor: pointer;
+
+    &:hover {
+      color: #00cea8;
+    }
+  }
 }
