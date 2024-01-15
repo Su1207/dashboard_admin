@@ -7,6 +7,7 @@ import "./UsersDepositData.scss";
 import DatePicker from "react-datepicker";
 import { FaCalendarAlt } from "react-icons/fa";
 import UserDepositGrid from "./UserDepositGrid";
+import { FaFilter } from "react-icons/fa6";
 
 interface DepositData {
   AMOUNT: number;
@@ -34,6 +35,10 @@ export interface UserDeposit {
 const UsersDepositData = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [depositData, setDepositData] = useState<UserDeposit[] | null>(null);
+  const [totalDeposit, setTotalDeposit] = useState(0);
+  const [contributingUsers, setContributingUsers] = useState(0);
+  const [selectedPaymentOption, setSelectedPaymentOption] =
+    useState<string>(""); // State to track the selected payment option
 
   useEffect(() => {
     const fetchDepositData = async () => {
@@ -50,6 +55,8 @@ const UsersDepositData = () => {
         if (usersSnapshot.exists()) {
           const promises: Promise<void>[] = [];
           const depositDataArray: UserDeposit[] = [];
+          let total_deposit: number = 0;
+          const contributingUserSet: Set<string> = new Set();
 
           usersSnapshot.forEach((userSnapshot) => {
             const userPhone = userSnapshot.key;
@@ -64,10 +71,19 @@ const UsersDepositData = () => {
 
                 depositSnapshot.forEach((timeSnap) => {
                   const timeData = timeSnap.val() as DepositData;
+                  total_deposit += timeData.AMOUNT;
                   depositDataArray.push({
                     userPhone,
                     ...timeData,
                   });
+
+                  depositDataArray.sort((a, b) => {
+                    const dateA = new Date(a.DATE.replace("|", "")).getTime();
+                    const dateB = new Date(b.DATE.replace("|", "")).getTime();
+                    return dateB - dateA;
+                  });
+                  // Track unique contributing users
+                  contributingUserSet.add(userPhone);
                 });
               }
             });
@@ -76,7 +92,18 @@ const UsersDepositData = () => {
           });
 
           await Promise.all(promises); // Wait for all promises to complete before updating the state
-          setDepositData(depositDataArray);
+          setTotalDeposit(total_deposit);
+          setContributingUsers(contributingUserSet.size);
+
+          // Apply filter only if a payment option is selected
+          if (selectedPaymentOption !== "") {
+            const filteredDepositData = depositDataArray.filter(
+              (item) => item.PAYMENT_APP === selectedPaymentOption
+            );
+            setDepositData(filteredDepositData);
+          } else {
+            setDepositData(depositDataArray);
+          }
         } else {
           console.log("No users available in the database");
         }
@@ -86,7 +113,7 @@ const UsersDepositData = () => {
     };
 
     fetchDepositData();
-  }, [selectedDate]);
+  }, [selectedDate, selectedPaymentOption]);
 
   const handleDateChange = (newDate: Date) => {
     setSelectedDate(newDate);
@@ -95,32 +122,76 @@ const UsersDepositData = () => {
   if (!selectedDate) {
     const currentDate = new Date();
     setSelectedDate(currentDate);
-
-    console.log(depositData);
   }
 
   return (
     <div className="usersDeposit">
-      <div className="usersDeposit_title">
-        <h2>Deposit </h2>
+      <div className="usersdeposit_header">
+        <div className="usersDeposit_title">
+          <h2>Deposit </h2>
 
-        <MonetizationOnRoundedIcon
-          style={{ fontSize: "1.6rem" }}
-          className="transaction_icon"
-        />
-      </div>
-      <div className="date-picker-container">
-        <div className="date-pic">
-          <DatePicker
-            className="datePicker"
-            selected={selectedDate}
-            onChange={handleDateChange}
-            dateFormat="dd-MMM-yyyy"
-            //   placeholderText="Select a Date"
+          <MonetizationOnRoundedIcon
+            style={{ fontSize: "1.6rem" }}
+            className="transaction_icon"
           />
-          <div className="calendar">
-            <FaCalendarAlt />
+        </div>
+        <div className="date-picker-container">
+          <div className="date-pic">
+            <DatePicker
+              className="datePicker"
+              selected={selectedDate}
+              onChange={handleDateChange}
+              dateFormat="dd-MMM-yyyy"
+              maxDate={new Date()} // Set the maximum date to the current date
+
+              //   placeholderText="Select a Date"
+            />
+            <div className="calendar">
+              <FaCalendarAlt />
+            </div>
           </div>
+        </div>
+      </div>
+      <div className="usersTotalDeposit">
+        <h4 className="total_deposit_title">TOTAL DEPOSIT</h4>
+        <div className="total_deposit">
+          <div className="amount">&#8377; {totalDeposit}</div>
+          <div className="users_involve">({contributingUsers})</div>
+        </div>
+        <div className="money_icon">
+          <img src="/UserDeposit.png" alt="" className="deposit_image" />
+        </div>
+      </div>
+      <div className="payment-option">
+        <label>Payment Option</label>
+        <div className="payment-option_input">
+          <div className="filter_icon">
+            <FaFilter size={18} />
+          </div>
+          <select
+            value={selectedPaymentOption}
+            className="select_filter_option"
+            onChange={(e) => setSelectedPaymentOption(e.target.value)}
+          >
+            <option className="filter_option" value="">
+              All
+            </option>
+            <option className="filter_option" value="Admin">
+              Admin
+            </option>
+            <option className="filter_option" value="GPay">
+              GPay
+            </option>
+            <option className="filter_option" value="phonePay">
+              PhonePay
+            </option>
+            <option className="filter_option" value="paytm">
+              Paytm
+            </option>
+            <option className="filter_option" value="Manual">
+              Manual
+            </option>
+          </select>
         </div>
       </div>
       <div>

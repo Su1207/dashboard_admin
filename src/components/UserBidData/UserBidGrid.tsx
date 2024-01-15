@@ -1,14 +1,14 @@
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
-import { UserDeposit } from "./UsersDepositData";
-import "./UsersDepositData.scss";
+import { UserBid } from "./UserBidData";
+import { GiTwoCoins } from "react-icons/gi";
 
-interface UserDepositDataProps {
-  depositData: CustomRow[] | null;
+type Custom = UserBid;
+
+interface UserBidDataProps {
+  bidData: Custom[] | null;
 }
 
-type CustomRow = UserDeposit;
-
-const UserDepositGrid: React.FC<UserDepositDataProps> = ({ depositData }) => {
+const UserBidGrid: React.FC<UserBidDataProps> = ({ bidData }) => {
   const columns: GridColDef[] = [
     {
       field: "DATE",
@@ -23,72 +23,77 @@ const UserDepositGrid: React.FC<UserDepositDataProps> = ({ depositData }) => {
     },
     {
       field: "NAME",
-      headerName: "Name",
+      headerName: "Phone",
+      width: 120,
       cellClassName: "bidPhone_column",
-      width: 120,
       renderCell: (params) => (
         <div>
-          <div className="user_name">{params.row.NAME}</div>
           <div>{params.row.userPhone}</div>
+          <div className="user_name">{params.row.NAME}</div>
         </div>
       ),
     },
-
     {
-      field: "PAYMENT_BY",
-      headerName: "Payment By",
+      field: "MARKET_NAME",
+      headerName: "Market",
       width: 120,
     },
     {
-      field: "PAYMENT_APP",
-      headerName: "Payment App",
-      width: 130,
+      field: "TYPE/OPEN_CLOSE",
+      headerName: "Type",
+      width: 140,
+      renderCell: (params) => (
+        <div>
+          {params.row.TYPE} : {params.row.OPEN_CLOSE}
+        </div>
+      ),
     },
     {
-      field: "PAYMENT_TO",
-      headerName: "Payment To",
-      width: 120,
+      field: "NUMBER",
+      headerName: "Number",
+      width: 100,
     },
     {
-      field: "previousPoints",
+      field: "PREVIOUS_POINTS",
       headerName: "Previous Points",
-      width: 140,
+      width: 150,
       renderCell: (params) => (
-        <div>&#8377; {params.row.TOTAL - params.row.AMOUNT}</div>
-      ),
-    },
-    {
-      field: "AMOUNT",
-      headerName: "Deposit",
-      width: 120,
-      renderCell: (params) => (
-        <div>
-          <div className="add_points">+ {params.row.AMOUNT}</div>
+        <div className="points">
+          <div>{params.row.PREVIOUS_POINTS}</div>
+          <GiTwoCoins />
         </div>
       ),
     },
     {
-      field: "TOTAL",
-      headerName: "Current Points",
-      width: 140,
+      field: "POINTS",
+      headerName: "Bid",
+      width: 100,
       renderCell: (params) => (
-        <div>
-          <div>&#8377; {params.row.TOTAL}</div>
+        <div className="sub_points">- {params.row.POINTS}</div>
+      ),
+    },
+    {
+      field: "currentPoints",
+      headerName: "Current Points",
+      width: 150,
+      renderCell: (params) => (
+        <div className="points">
+          <div>{params.row.PREVIOUS_POINTS - params.row.POINTS}</div>
+          <GiTwoCoins />
         </div>
       ),
     },
   ];
 
-  const getRowId = (row: CustomRow) => {
-    return `${row.DATE}${row.userPhone}`;
+  const getRowId = (row: Custom) => {
+    return `${row.DATE}${row.NUMBER}${row.NAME}${row.userPhone}`;
   };
-
   return (
     <div className="dataTable_Usersdeposit">
-      {depositData && depositData.length > 0 ? (
+      {bidData && bidData.length > 0 ? (
         <DataGrid
           className="dataGrid_Usersdeposit"
-          rows={depositData}
+          rows={bidData}
           columns={columns}
           initialState={{
             pagination: {
@@ -101,15 +106,12 @@ const UserDepositGrid: React.FC<UserDepositDataProps> = ({ depositData }) => {
           slotProps={{
             toolbar: {
               showQuickFilter: true,
-              quickFilterProps: {
-                debounceMs: 500,
-                placeholder: "Search by Name", // Set your custom placeholder here
-              },
+              quickFilterProps: { debounceMs: 500 },
             },
           }}
           pageSizeOptions={[7]}
           disableRowSelectionOnClick
-          disableColumnFilter
+          //   disableColumnFilter
           disableColumnSelector
           disableDensitySelector
           getRowId={getRowId}
@@ -121,4 +123,4 @@ const UserDepositGrid: React.FC<UserDepositDataProps> = ({ depositData }) => {
   );
 };
 
-export default UserDepositGrid;
+export default UserBidGrid;

@@ -27,15 +27,43 @@ const UsersWithdrawGrid: React.FC<withdrawDataGridProps> = ({
       field: "NAME",
       headerName: "Name",
       width: 120,
+      cellClassName: "bidPhone_column",
       renderCell: (params) => (
         <div>
-          <div>{params.row.NAME}</div>
+          <div className="user_name">{params.row.NAME}</div>
+          <div>{params.row.userPhone}</div>
+        </div>
+      ),
+    },
+
+    {
+      field: "APP",
+      headerName: "App",
+      width: 120,
+    },
+    {
+      field: "PAYOUT_TO",
+      headerName: "Payout To",
+      width: 120,
+    },
+    {
+      field: "TYPE",
+      headerName: "Type",
+      width: 120,
+    },
+    {
+      field: "previousPoints",
+      headerName: "Previous Points",
+      width: 140,
+      renderCell: (params) => (
+        <div>
+          <div>&#8377; {params.row.AMOUNT + params.row.TOTAL}</div>
         </div>
       ),
     },
     {
       field: "AMOUNT",
-      headerName: "Amount",
+      headerName: "Wihthdraw",
       width: 120,
       renderCell: (params) => (
         <div>
@@ -44,24 +72,9 @@ const UsersWithdrawGrid: React.FC<withdrawDataGridProps> = ({
       ),
     },
     {
-      field: "APP",
-      headerName: "App",
-      width: 140,
-    },
-    {
-      field: "PAYOUT_TO",
-      headerName: "Payout To",
-      width: 140,
-    },
-    {
-      field: "TYPE",
-      headerName: "Type",
-      width: 140,
-    },
-    {
       field: "TOTAL",
-      headerName: "Total",
-      width: 120,
+      headerName: "Current Points",
+      width: 140,
       renderCell: (params) => (
         <div>
           <div>&#8377; {params.row.TOTAL}</div>
@@ -92,12 +105,15 @@ const UsersWithdrawGrid: React.FC<withdrawDataGridProps> = ({
           slotProps={{
             toolbar: {
               showQuickFilter: true,
-              quickFilterProps: { debounceMs: 500 },
+              quickFilterProps: {
+                debounceMs: 500,
+                placeholder: "Search by Name", // Set your custom placeholder here
+              },
             },
           }}
           pageSizeOptions={[7]}
           disableRowSelectionOnClick
-          //   disableColumnFilter
+          disableColumnFilter
           disableColumnSelector
           disableDensitySelector
           getRowId={getRowId}

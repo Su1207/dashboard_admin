@@ -133,13 +133,15 @@ const BidDataGrid: React.FC<BidDataGridProps> = ({ bidData }) => {
             selected={selectDate}
             onChange={handleDateChange}
             dateFormat="dd-MMM-yyyy"
+            maxDate={new Date()} // Set the maximum date to the current date
+
             //   placeholderText="Select a Date"
           />
           <div className="calendar">
             <FaCalendarAlt />
           </div>
         </div>
-      </div>{" "}
+      </div>
       {filtereData && filtereData.length > 0 ? (
         <DataGrid
           className="dataGrid_bid"

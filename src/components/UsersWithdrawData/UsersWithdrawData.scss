@@ -52,10 +52,11 @@
 
   .MuiDataGrid-toolbarContainer {
     flex-direction: row-reverse;
-  }
 
-  .MuiFormControl-root {
-    display: none;
+    @include sm {
+      flex-direction: column;
+      align-items: flex-start;
+    }
   }
 }
 
@@ -95,42 +96,150 @@
 }
 
 .usersWithdraw {
-  .usersWithdraw_title {
+  margin-top: 1rem;
+  .usersWithdraw_header {
     display: flex;
     align-items: center;
     gap: 0.5rem;
+    margin-bottom: 1rem;
+    .usersWithdraw_title {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
 
-    .transaction_icon {
-      color: gold;
+      .transaction_icon {
+        color: gold;
+      }
+    }
+
+    .date-picker-container {
+      position: relative;
+
+      .date-pic {
+        display: flex;
+
+        .datePicker {
+          padding: 8px 3px;
+          width: 6.2rem;
+          font-size: 0.75rem;
+          font-weight: 600;
+          color: rgb(80, 76, 76);
+          border: 1px solid rgb(169, 160, 160);
+          border-radius: 3px;
+          outline: none;
+        }
+
+        .calendar {
+          position: absolute;
+          left: 5rem;
+          top: 0.4rem;
+          z-index: 1;
+          color: black;
+          cursor: pointer;
+        }
+      }
     }
   }
 
-  .date-picker-container {
-    position: relative;
-    margin-bottom: 0.5rem;
-    margin-top: 0.5rem;
+  .usersTotalWithdraw {
+    padding: 20px;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    border: none;
+    width: 20rem;
+    min-height: 150px;
+    background-image: linear-gradient(to right, #ff512f, #f09819);
+    display: flex;
+    flex-direction: column;
 
-    .date-pic {
+    @include sm {
+      width: 85vw;
+    }
+
+    .total_withdraw_title {
+      flex: 1;
+    }
+
+    .total_withdraw {
+      flex: 1;
       display: flex;
+      align-items: flex-end;
+      gap: 0.5rem;
+      // justify-content: flex-start;
 
-      .datePicker {
-        padding: 8px 3px;
-        width: 6.2rem;
-        font-size: 0.75rem;
-        font-weight: 600;
-        color: rgb(80, 76, 76);
-        border: 1px solid rgb(169, 160, 160);
-        border-radius: 3px;
-        outline: none;
+      .amount {
+        font-size: 1.8rem;
+        font-weight: 700;
       }
 
-      .calendar {
+      .users_involve {
+        font-size: 0.8rem;
+        font-weight: 300;
+      }
+    }
+
+    .money_icon {
+      display: flex;
+      flex: 1;
+      justify-content: flex-end;
+      align-items: flex-end;
+
+      .withdraw_image {
+        height: 40px;
+        width: 40px;
+      }
+    }
+  }
+
+  .payment-option {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    justify-content: end;
+    margin-bottom: 1rem;
+    label {
+      font-size: 0.875rem;
+    }
+    .payment-option_input {
+      position: relative;
+
+      .filter_icon {
+        color: $dark-color;
         position: absolute;
-        left: 5rem;
-        top: 0.4rem;
-        z-index: 1;
-        color: black;
+        top: 2px;
+        left: 4.2rem;
+      }
+      .select_filter_option {
+        appearance: none;
+        -webkit-appearance: none;
+        -moz-appearance: none;
+        padding: 4px 0 4px 4px;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        background-color: #fff;
         cursor: pointer;
+        width: 5.5rem;
+        font-size: 13px;
+        font-weight: 500;
+
+        &:focus {
+          outline: none;
+        }
+      }
+
+      .filter_option {
+        // text-align: center;
+        background-color: #fff;
+        color: $dark-color;
+        font-size: 13px;
+        font-weight: 500;
+        border-radius: 15px;
+        // height: fit-content;
+
+        @include md {
+          font-size: 8px;
+          font-weight: 500;
+        }
       }
     }
   }

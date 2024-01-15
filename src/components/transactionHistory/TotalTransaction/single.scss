@@ -141,10 +141,13 @@
   border-color: rgb(40, 39, 39) !important;
 }
 
+.react-datepicker-popper {
+  z-index: 2 !important;
+}
+
 .react-datepicker {
   font-family: Helvetica, Arial, sans-serif !important;
   outline: none !important;
-  z-index: 555 !important;
 }
 
 /* Example of styling the calendar header */

@@ -36,7 +36,6 @@ const DepositTransaction: React.FC<{ userId: number }> = ({ userId }) => {
           paymentTo: depositNode.PAYMENT_TO,
           total: depositNode.TOTAL,
           uid: depositNode.UID,
-          appVersion: depositNode.APP_VERSION,
         };
 
         depositDetailsArray.push(depositDetails);

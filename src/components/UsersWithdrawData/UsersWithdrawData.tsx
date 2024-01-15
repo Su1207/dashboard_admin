@@ -7,6 +7,7 @@ import "./UsersWithdrawData.scss";
 import DatePicker from "react-datepicker";
 import { FaCalendarAlt } from "react-icons/fa";
 import UsersWithdrawGrid from "./UsersWithdrawGrid";
+import { FaFilter } from "react-icons/fa6";
 
 interface WithdrawData {
   AMOUNT: number;
@@ -24,6 +25,7 @@ interface WithdrawData {
 export interface UserWithdraw {
   userPhone: string;
   AMOUNT: number;
+  APP: string;
   DATE: string;
   NAME: string;
   PAYOUT_TO: string;
@@ -36,6 +38,10 @@ export interface UserWithdraw {
 const UsersWithdrawData = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [withdrawData, setwithdrawData] = useState<UserWithdraw[] | null>(null);
+  const [totalWithdraw, setTotalWithdraw] = useState(0);
+  const [contributingUsers, setContributingUsers] = useState(0);
+  const [selectedPaymentOption, setSelectedPaymentOption] =
+    useState<string>("");
 
   useEffect(() => {
     const fetchWithdrawData = async () => {
@@ -52,6 +58,8 @@ const UsersWithdrawData = () => {
         if (usersSnapshot.exists()) {
           const promises: Promise<void>[] = [];
           const withdrawDataArray: UserWithdraw[] = [];
+          let total_withdraw: number = 0;
+          const contributingUserSet: Set<string> = new Set();
 
           usersSnapshot.forEach((userSnapshot) => {
             const userPhone = userSnapshot.key;
@@ -66,10 +74,18 @@ const UsersWithdrawData = () => {
 
                 withdrawSnapshot.forEach((timeSnap) => {
                   const timeData = timeSnap.val() as WithdrawData;
+                  total_withdraw += timeData.AMOUNT;
                   withdrawDataArray.push({
                     userPhone,
                     ...timeData,
                   });
+
+                  withdrawDataArray.sort((a, b) => {
+                    const dateA = new Date(a.DATE.replace("|", "")).getTime();
+                    const dateB = new Date(b.DATE.replace("|", "")).getTime();
+                    return dateB - dateA;
+                  });
+                  contributingUserSet.add(userPhone);
                 });
               }
             });
@@ -78,7 +94,17 @@ const UsersWithdrawData = () => {
           });
 
           await Promise.all(promises); // Wait for all promises to complete before updating the state
-          setwithdrawData(withdrawDataArray);
+          setTotalWithdraw(total_withdraw);
+          setContributingUsers(contributingUserSet.size);
+
+          if (selectedPaymentOption !== "") {
+            const filterWithdrawData = withdrawDataArray.filter(
+              (item) => item.APP === selectedPaymentOption
+            );
+            setwithdrawData(filterWithdrawData);
+          } else {
+            setwithdrawData(withdrawDataArray);
+          }
         } else {
           console.log("No users available in the database");
         }
@@ -88,7 +114,7 @@ const UsersWithdrawData = () => {
     };
 
     fetchWithdrawData();
-  }, [selectedDate]);
+  }, [selectedDate, selectedPaymentOption]);
 
   const handleDateChange = (newDate: Date) => {
     setSelectedDate(newDate);
@@ -101,27 +127,74 @@ const UsersWithdrawData = () => {
 
   return (
     <div className="usersWithdraw">
-      <div className="usersWithdraw_title">
-        <h2>Withdraw </h2>
-        <MonetizationOnRoundedIcon
-          style={{ fontSize: "1.6rem" }}
-          className="transaction_icon"
-        />
-      </div>
-      <div className="date-picker-container">
-        <div className="date-pic">
-          <DatePicker
-            className="datePicker"
-            selected={selectedDate}
-            onChange={handleDateChange}
-            dateFormat="dd-MMM-yyyy"
-            //   placeholderText="Select a Date"
+      <div className="usersWithdraw_header">
+        <div className="usersWithdraw_title">
+          <h2>Withdraw </h2>
+          <MonetizationOnRoundedIcon
+            style={{ fontSize: "1.6rem" }}
+            className="transaction_icon"
           />
-          <div className="calendar">
-            <FaCalendarAlt />
+        </div>
+        <div className="date-picker-container">
+          <div className="date-pic">
+            <DatePicker
+              className="datePicker"
+              selected={selectedDate}
+              onChange={handleDateChange}
+              dateFormat="dd-MMM-yyyy"
+              maxDate={new Date()} // Set the maximum date to the current date
+
+              //   placeholderText="Select a Date"
+            />
+            <div className="calendar">
+              <FaCalendarAlt />
+            </div>
           </div>
         </div>
       </div>
+      <div className="usersTotalWithdraw">
+        <h4 className="total_withdraw_title">TOTAL DEPOSIT</h4>
+        <div className="total_withdraw">
+          <div className="amount">&#8377; {totalWithdraw}</div>
+          <div className="users_involve">({contributingUsers})</div>
+        </div>
+        <div className="money_icon">
+          <img src="/UserWithdraw.png" alt="" className="withdraw_image" />
+        </div>
+      </div>
+      <div className="payment-option">
+        <label>Payment Option</label>
+        <div className="payment-option_input">
+          <div className="filter_icon">
+            <FaFilter size={18} />
+          </div>
+          <select
+            value={selectedPaymentOption}
+            className="select_filter_option"
+            onChange={(e) => setSelectedPaymentOption(e.target.value)}
+          >
+            <option className="filter_option" value="">
+              All
+            </option>
+            <option className="filter_option" value="Admin">
+              Admin
+            </option>
+            <option className="filter_option" value="GPay">
+              GPay
+            </option>
+            <option className="filter_option" value="phonePay">
+              PhonePay
+            </option>
+            <option className="filter_option" value="paytm">
+              Paytm
+            </option>
+            <option className="filter_option" value="Manual">
+              Manual
+            </option>
+          </select>
+        </div>
+      </div>
+      <div></div>
       <div>
         <UsersWithdrawGrid withdrawData={withdrawData} />
       </div>

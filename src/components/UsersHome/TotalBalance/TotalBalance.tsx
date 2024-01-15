@@ -15,7 +15,7 @@ const TotalBalance = () => {
     <div className="total_balance_container">
       <h4 className="total_balance_title">TOTAL BALANCE</h4>
       <div className="total_balance ">
-        <div className="amount">&#8377;{totalAmount}</div>
+        <div className="amount">&#8377; {totalAmount}</div>
         <div className="users_involve">({contributingUsers?.length})</div>
       </div>
       <div className="money_icon">

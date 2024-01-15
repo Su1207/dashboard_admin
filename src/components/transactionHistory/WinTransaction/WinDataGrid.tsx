@@ -151,6 +151,8 @@ const WinDataGrid: React.FC<WinDataGridProps> = ({ winData }) => {
             selected={selectDate}
             onChange={handleDateChange}
             dateFormat="dd-MMM-yyyy"
+            maxDate={new Date()} // Set the maximum date to the current date
+
             //   placeholderText="Select a Date"
           />
           <div className="calendar">

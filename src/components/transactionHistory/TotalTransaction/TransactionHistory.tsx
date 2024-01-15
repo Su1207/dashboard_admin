@@ -357,6 +357,7 @@ const DataGridDemo: React.FC<DataGridDemoProps> = ({ totalData }) => {
               selectsStart
               startDate={startDate}
               endDate={endDate}
+              maxDate={new Date()} // Set the maximum date to the current date
               placeholderText="Start Date"
             />
             <div className="calendar">
@@ -375,6 +376,7 @@ const DataGridDemo: React.FC<DataGridDemoProps> = ({ totalData }) => {
               selectsEnd
               startDate={startDate}
               endDate={endDate}
+              maxDate={new Date()} // Set the maximum date to the current date
               placeholderText="End Date"
             />
             <div className="calendar">
