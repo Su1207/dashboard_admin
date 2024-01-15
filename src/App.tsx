@@ -14,27 +14,36 @@ import "react-toastify/dist/ReactToastify.css";
 import TemporaryDrawer from "./components/menu/TemporaryDrawer";
 import Deposit from "./pages/Deposit/Deposit";
 import Withdraw from "./pages/Withdraw/Withdraw";
+import { AuthProvider, useAuth } from "./components/auth-context";
 
 const Layout = () => {
+  const { isAuthenticated } = useAuth();
   return (
-    <div className="main">
-      <div className="main_navbar">
-        <div className="menu_drawer">
-          <TemporaryDrawer />
+    <div>
+      {isAuthenticated ? (
+        <div className="main">
+          <div className="main_navbar">
+            <div className="menu_drawer">
+              <TemporaryDrawer />
+            </div>
+            <Navbar />
+          </div>
+          <div className="container">
+            <div className="menuContainer">
+              <Menu />
+            </div>
+            <div className="contentContainer">
+              <Outlet />
+            </div>
+          </div>
+          <div className="footer">
+            <Footer />
+          </div>
         </div>
-        <Navbar />
-      </div>
-      <div className="container">
-        <div className="menuContainer">
-          <Menu />
-        </div>
-        <div className="contentContainer">
-          <Outlet />
-        </div>
-      </div>
-      <div className="footer">
-        <Footer />
-      </div>
+      ) : (
+        // Render only the login page when not authenticated
+        <Login />
+      )}
     </div>
   );
 };
@@ -47,6 +56,10 @@ const router = createBrowserRouter([
       {
         path: "/",
         element: <Home />,
+      },
+      {
+        path: "/login",
+        element: <Login />,
       },
       {
         path: "/users",
@@ -74,18 +87,16 @@ const router = createBrowserRouter([
       },
     ],
   },
-  {
-    path: "login",
-    element: <Login />,
-  },
 ]);
 
 function App() {
   return (
-    <>
-      <ToastContainer />
-      <RouterProvider router={router} />
-    </>
+    <AuthProvider>
+      <>
+        <ToastContainer />
+        <RouterProvider router={router} />
+      </>
+    </AuthProvider>
   );
 }
 

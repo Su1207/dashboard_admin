@@ -1,0 +1,113 @@
+@import "../../styles/responsive.scss";
+
+.auth {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  height: 100vh;
+  width: 100vw;
+  background-color: #f0f0f0; /* Set your desired background color */
+
+  .auth_container {
+    display: flex;
+    height: 60vh;
+    background-color: #fff; /* Set your desired background color */
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Set your desired shadow */
+
+    @include lg {
+      width: 80vw;
+    }
+
+    @include md {
+      flex-direction: column;
+      height: 70vh;
+    }
+
+    @include sm {
+      height: 100vh;
+      width: 100vw;
+    }
+
+    .login_img_container {
+      width: 60%;
+
+      @include md {
+        width: 100%;
+      }
+      //   padding: 20px;
+      @include sm {
+        height: 60%;
+      }
+
+      .login_img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        object-position: center;
+      }
+    }
+
+    .login_container {
+      width: 40%;
+      padding: 20px;
+      margin: auto 0;
+
+      @include md {
+        width: 100%;
+      }
+
+      .login_title {
+        text-align: center;
+        margin-bottom: 20px;
+        font-size: 2rem;
+        font-weight: 800;
+        font-family: Arial, Helvetica, sans-serif;
+      }
+
+      form {
+        display: flex;
+        flex-direction: column;
+
+        .input_space {
+          margin-bottom: 15px;
+          position: relative;
+          display: flex;
+          align-items: center;
+
+          .user_icon,
+          .password_icon {
+            position: absolute;
+          }
+
+          input {
+            width: 100%;
+            padding: 10px;
+            outline: none;
+            border: none;
+            border-bottom: 1px solid #ccc;
+            outline: none;
+            padding-left: 2rem;
+          }
+        }
+
+        button {
+          width: 100%;
+          padding: 10px;
+          margin-top: 1rem;
+          background-color: #00cea8;
+          color: #fff;
+          font-weight: 600;
+          font-size: 0.875rem;
+          border: none;
+          border-radius: 5px;
+          cursor: pointer;
+          transition: all 0.3s;
+
+          &:hover {
+            background-color: #000;
+          }
+        }
+      }
+    }
+  }
+}

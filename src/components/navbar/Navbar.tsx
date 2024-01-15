@@ -1,6 +1,13 @@
+import { useAuth } from "../auth-context";
 import "./navbar.scss";
 
 const Navbar = () => {
+  const { logout, isAuthenticated } = useAuth();
+
+  const handleLogout = () => {
+    logout();
+  };
+
   return (
     <div className="navbar">
       <div className="logo">
@@ -15,6 +22,7 @@ const Navbar = () => {
           <span>1</span>
         </div>
         <div className="user">
+          {isAuthenticated && <button onClick={handleLogout}>Logout</button>}
           <span>Admin</span>
         </div>
         <img src="/setting.svg" alt="" className="icon" />

@@ -9,6 +9,8 @@ import UserFilterDropDown from "../../components/filterOptions/UseFilterDropDown
 import "./users.scss";
 import { FaUserPlus } from "react-icons/fa6";
 import AddUser from "../../components/AddUser/AddUser";
+import { useAuth } from "../../components/auth-context";
+import { Navigate } from "react-router-dom";
 
 type User = {
   AMOUNT: number;
@@ -161,7 +163,12 @@ const Users: React.FC = () => {
     );
   };
 
-  // Render your component UI with the fetched and filtered data
+  const { isAuthenticated } = useAuth();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
+
   return (
     <div className="users">
       <div className="users_heading">

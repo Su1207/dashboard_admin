@@ -4,8 +4,15 @@ import { UsersDataProvider } from "../../components/UsersHome/UserContext";
 import "./home.scss";
 import TotalBalance from "../../components/UsersHome/TotalBalance/TotalBalance";
 import TransactionTotal from "../../components/UsersHome/TransactionTotal/TransactionTotal";
+import { useAuth } from "../../components/auth-context";
+import { Navigate } from "react-router-dom";
 
 const Home = () => {
+  const { isAuthenticated } = useAuth();
+
+  if (!isAuthenticated) {
+    return <Navigate to="/login" />;
+  }
   return (
     <UsersDataProvider>
       <div className="home">

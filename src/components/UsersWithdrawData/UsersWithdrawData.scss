@@ -153,7 +153,7 @@
     flex-direction: column;
 
     @include sm {
-      width: 85vw;
+      width: 100%;
     }
 
     .total_withdraw_title {
