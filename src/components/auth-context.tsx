@@ -9,6 +9,7 @@ import React, {
 // import { useNavigate } from "react-router-dom";
 import { get, ref } from "firebase/database";
 import { database } from "../firebase";
+import { toast } from "react-toastify";
 
 interface User {
   ID: string;
@@ -66,7 +67,7 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
           //   navigate("/"); // Redirect to home after successful login
         } else {
-          console.log("Invalid username or password");
+          toast.error("Invalid username or password");
         }
       } else {
         console.log("User not found");
