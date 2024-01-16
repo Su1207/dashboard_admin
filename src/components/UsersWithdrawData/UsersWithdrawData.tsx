@@ -153,7 +153,7 @@ const UsersWithdrawData = () => {
         </div>
       </div>
       <div className="usersTotalWithdraw">
-        <h4 className="total_withdraw_title">TOTAL DEPOSIT</h4>
+        <h4 className="total_withdraw_title">TOTAL WITHDRAW</h4>
         <div className="total_withdraw">
           <div className="amount">&#8377; {totalWithdraw}</div>
           <div className="users_involve">({contributingUsers})</div>
