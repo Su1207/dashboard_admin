@@ -49,9 +49,7 @@ export const UsersDataProvider: React.FC<{ children: ReactNode }> = ({
         setUsersData,
         totalDeposit,
         setTotalDeposit,
-
         totalWithdraw,
-
         setTotalWithdraw,
       }}
     >
