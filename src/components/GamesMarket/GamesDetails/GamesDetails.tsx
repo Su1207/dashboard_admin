@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { get, ref, onValue } from "firebase/database";
-import { database } from "../../firebase";
+import { database } from "../../../firebase";
 import GamesDataGrid from "./GamesDataGrid";
 
 export interface daysData {
@@ -18,7 +18,7 @@ export interface GameData {
   CLOSE: number;
   DAYS: daysData;
   HIDDEN: string;
-  DISABLE: string;
+  DISABLED: string;
   NAME: string;
   OPEN: number;
   RESULT: string;

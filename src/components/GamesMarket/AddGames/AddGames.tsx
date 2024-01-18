@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { ref, push, set } from "firebase/database";
-import { database } from "../../firebase";
+import { database } from "../../../firebase";
 import { FormControlLabel, Switch } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import "./AddGames.scss";
@@ -10,7 +10,7 @@ export interface GameForm {
   NAME: string;
   OPEN: string;
   CLOSE: string;
-  DISABLE: boolean;
+  DISABLED: boolean;
   HIDDEN: boolean;
   DAYS: {
     MON: boolean;
@@ -40,7 +40,7 @@ const AddGames = (props: Props) => {
     NAME: "",
     OPEN: getDefaultDateTime(),
     CLOSE: getDefaultDateTime(),
-    DISABLE: false,
+    DISABLED: false,
     HIDDEN: false,
     DAYS: {
       MON: true,
@@ -91,28 +91,28 @@ const AddGames = (props: Props) => {
           NAME: gameData.NAME,
           OPEN: openDateTime.getTime(),
           CLOSE: closeDateTime.getTime(),
-          DISABLE: gameData.DISABLE.toString(),
+          DISABLED: gameData.DISABLED.toString(),
           HIDDEN: gameData.HIDDEN.toString(),
           DAYS: daysAsString,
         });
 
-        // Reset form fields after successful submission
-        setGameData({
-          NAME: "",
-          OPEN: getDefaultDateTime(),
-          CLOSE: getDefaultDateTime(),
-          DISABLE: false,
-          HIDDEN: false,
-          DAYS: {
-            MON: true,
-            TUE: true,
-            WED: true,
-            THU: true,
-            FRI: true,
-            SAT: true,
-            SUN: true,
-          },
-        });
+        // // Reset form fields after successful submission
+        // setGameData({
+        //   NAME: "",
+        //   OPEN: getDefaultDateTime(),
+        //   CLOSE: getDefaultDateTime(),
+        //   DISABLED: false,
+        //   HIDDEN: false,
+        //   DAYS: {
+        //     MON: true,
+        //     TUE: true,
+        //     WED: true,
+        //     THU: true,
+        //     FRI: true,
+        //     SAT: true,
+        //     SUN: true,
+        //   },
+        // });
 
         toast.success("Game added successfully!");
         props.setAddGame(false);
@@ -129,7 +129,7 @@ const AddGames = (props: Props) => {
     props.setAddGame(false);
   };
 
-  console.log(gameData.HIDDEN, gameData.DISABLE);
+  console.log(gameData.HIDDEN, gameData.DISABLED);
 
   return (
     <div className={`add1 ${modalOpen ? "" : "closed"}`}>
@@ -180,13 +180,13 @@ const AddGames = (props: Props) => {
               control={
                 <Switch
                   size="small"
-                  checked={gameData.DISABLE}
+                  checked={gameData.DISABLED}
                   onChange={() =>
-                    handleInputChange("DISABLE", !gameData.DISABLE)
+                    handleInputChange("DISABLED", !gameData.DISABLED)
                   }
                 />
               }
-              label="Disable"
+              label="DISABLED"
             />
             <FormControlLabel
               className="formControl_switch"

@@ -1,5 +1,5 @@
-import AddGames from "../../components/AddGames/AddGames";
-import GamesDetails from "../../components/GamesDetails/GamesDetails";
+import AddGames from "../../components/GamesMarket/AddGames/AddGames";
+import GamesDetails from "../../components/GamesMarket/GamesDetails/GamesDetails";
 import "./games.scss";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { useState } from "react";

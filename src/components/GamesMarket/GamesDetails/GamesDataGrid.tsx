@@ -2,8 +2,11 @@ import { GridColDef, DataGrid, GridToolbar } from "@mui/x-data-grid";
 import { GameData } from "./GamesDetails";
 import "./gamesDetails.scss";
 import { ref, remove } from "firebase/database";
-import { database } from "../../firebase";
+import { database } from "../../../firebase";
 import { toast } from "react-toastify";
+import { useState } from "react";
+import EditGame from "../EditGames/EditGame";
+import UpdateResult from "../UpdateResult/UpdateResult";
 
 type ColumnRow = GameData;
 
@@ -12,6 +15,8 @@ interface gameDataGridProps {
 }
 
 const GamesDataGrid: React.FC<gameDataGridProps> = ({ gameData }) => {
+  const [editGame, setEditGame] = useState(false);
+  const [gameId, setGameId] = useState("");
   const getTime = (time: number) => {
     const date = new Date(time);
 
@@ -24,6 +29,11 @@ const GamesDataGrid: React.FC<gameDataGridProps> = ({ gameData }) => {
     const formattedTime = `${hours}:${minutes} ${ampm}`;
 
     return formattedTime;
+  };
+
+  const handleEdit = (gameid: string) => {
+    setEditGame(!editGame);
+    setGameId(gameid);
   };
 
   const columns: GridColDef[] = [
@@ -71,7 +81,12 @@ const GamesDataGrid: React.FC<gameDataGridProps> = ({ gameData }) => {
       sortable: false,
       renderCell: (params) => (
         <div className="actions_icons">
-          <img style={{ cursor: "pointer" }} src="view.svg" alt="" />
+          <img
+            style={{ cursor: "pointer" }}
+            src="view.svg"
+            alt=""
+            onClick={() => handleEdit(params.row.id)}
+          />
           <img
             style={{ cursor: "pointer" }}
             src="delete.svg"
@@ -80,6 +95,12 @@ const GamesDataGrid: React.FC<gameDataGridProps> = ({ gameData }) => {
           />
         </div>
       ),
+    },
+    {
+      field: "updateResult",
+      headerName: "Update Result",
+      width: 140,
+      renderCell: (params) => <UpdateResult gameId={params.row.id} />,
     },
   ];
 
@@ -117,12 +138,13 @@ const GamesDataGrid: React.FC<gameDataGridProps> = ({ gameData }) => {
       close: timestampClose,
       open: timestampOpen,
       hidden: game.HIDDEN,
-      disable: game.DISABLE,
+      disable: game.DISABLED,
       result: game.RESULT,
     };
   });
   return (
     <div className="dataTable">
+      {editGame && <EditGame gameId={gameId} setEditGame={setEditGame} />}
       {rows.length > 0 ? (
         <DataGrid
           className="dataGrid"
