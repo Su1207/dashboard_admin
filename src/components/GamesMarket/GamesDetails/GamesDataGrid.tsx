@@ -6,7 +6,7 @@ import { database } from "../../../firebase";
 import { toast } from "react-toastify";
 import { useState } from "react";
 import EditGame from "../EditGames/EditGame";
-import UpdateResult from "../UpdateResult/UpdateResult";
+import OpenCloseOption from "../OpenCloseOption/OpenCloseOption";
 
 type ColumnRow = GameData;
 
@@ -17,6 +17,9 @@ interface gameDataGridProps {
 const GamesDataGrid: React.FC<gameDataGridProps> = ({ gameData }) => {
   const [editGame, setEditGame] = useState(false);
   const [gameId, setGameId] = useState("");
+  const [gameName, setGameName] = useState("");
+  const [openClose, setOpenClose] = useState(false);
+
   const getTime = (time: number) => {
     const date = new Date(time);
 
@@ -34,6 +37,12 @@ const GamesDataGrid: React.FC<gameDataGridProps> = ({ gameData }) => {
   const handleEdit = (gameid: string) => {
     setEditGame(!editGame);
     setGameId(gameid);
+  };
+
+  const handleUpdate = (gameid: string, gamename: string) => {
+    setGameId(gameid);
+    setOpenClose(!openClose);
+    setGameName(gamename);
   };
 
   const columns: GridColDef[] = [
@@ -100,7 +109,16 @@ const GamesDataGrid: React.FC<gameDataGridProps> = ({ gameData }) => {
       field: "updateResult",
       headerName: "Update Result",
       width: 140,
-      renderCell: (params) => <UpdateResult gameId={params.row.id} />,
+      renderCell: (params) => (
+        <div>
+          <img
+            src="./update.png"
+            alt="update"
+            className="update_img"
+            onClick={() => handleUpdate(params.row.id, params.row.name)}
+          />
+        </div>
+      ),
     },
   ];
 
@@ -145,6 +163,13 @@ const GamesDataGrid: React.FC<gameDataGridProps> = ({ gameData }) => {
   return (
     <div className="dataTable">
       {editGame && <EditGame gameId={gameId} setEditGame={setEditGame} />}
+      {openClose && (
+        <OpenCloseOption
+          gameId={gameId}
+          gameName={gameName}
+          setOpenClose={setOpenClose}
+        />
+      )}
       {rows.length > 0 ? (
         <DataGrid
           className="dataGrid"

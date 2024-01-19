@@ -1,12 +1,16 @@
 import "./UpdateResult.scss";
 import { ref, get, set } from "firebase/database";
 import { database } from "../../../firebase";
+import { useState } from "react";
+import OpenCloseOption from "../OpenCloseOption/OpenCloseOption";
 
 type Props = {
   gameId: string;
+  gameName: string;
 };
 
 const UpdateResult = (props: Props) => {
+  const [openClose, setOpenClose] = useState(false);
   const handleUpdateSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
 
@@ -86,7 +90,16 @@ const UpdateResult = (props: Props) => {
           }
         } else {
           // Update the database with open result and '6*' for mid
-          await set(resultRef, { OPEN: openResult, CLOSE: "***", MID: "6*" });
+          await set(resultRef, {
+            OPEN: openResult,
+            CLOSE: "***",
+            MID: `${
+              (parseInt(openResult[0]) +
+                parseInt(openResult[1]) +
+                parseInt(openResult[2])) %
+              10
+            }*`,
+          });
         }
       }
     } else {
@@ -161,14 +174,26 @@ const UpdateResult = (props: Props) => {
     }
   };
 
+  const handleUpdate = () => {
+    setOpenClose(!openClose);
+  };
+
   return (
     <div>
       <img
         src="./update.png"
         alt="update"
         className="update_img"
-        onClick={handleUpdateSubmit}
+        onClick={handleUpdate}
       />
+
+      {openClose && (
+        <OpenCloseOption
+          gameId={props.gameId}
+          gameName={props.gameName}
+          setOpenClose={setOpenClose}
+        />
+      )}
     </div>
   );
 };
