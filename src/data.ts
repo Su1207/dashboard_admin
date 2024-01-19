@@ -45,18 +45,6 @@ export const menu = [
         url: "/withdraw",
         icon: "/withdraw.svg",
       },
-      // {
-      //   id: 5,
-      //   title: "Bid",
-      //   url: "/bid",
-      //   icon: "/withdraw.svg",
-      // },
-      // {
-      //   id: 6,
-      //   title: "Win",
-      //   url: "/win",
-      //   icon: "/withdraw.svg",
-      // },
     ],
   },
   {
@@ -65,8 +53,8 @@ export const menu = [
     listItems: [
       {
         id: 1,
-        title: "Elements",
-        url: "/",
+        title: "Game Rate",
+        url: "/gameRate",
         icon: "/element.svg",
       },
       {

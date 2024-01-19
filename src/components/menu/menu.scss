@@ -46,6 +46,7 @@
       }
 
       .listItemTitle {
+        font-size: 0.9rem;
         @include lg {
           display: none;
         }

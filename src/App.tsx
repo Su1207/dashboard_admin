@@ -15,6 +15,7 @@ import TemporaryDrawer from "./components/menu/TemporaryDrawer";
 import Deposit from "./pages/Deposit/Deposit";
 import Withdraw from "./pages/Withdraw/Withdraw";
 import { AuthProvider, useAuth } from "./components/auth-context";
+import GameRate from "./pages/GameRate/GameRate";
 
 const Layout = () => {
   const { isAuthenticated } = useAuth();
@@ -84,6 +85,10 @@ const router = createBrowserRouter([
       {
         path: "/withdraw",
         element: <Withdraw />,
+      },
+      {
+        path: "/gameRate",
+        element: <GameRate />,
       },
     ],
   },
