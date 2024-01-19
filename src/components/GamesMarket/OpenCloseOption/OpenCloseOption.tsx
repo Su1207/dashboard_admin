@@ -152,6 +152,7 @@ const OpenCloseOption = (props: Props) => {
               pattern="[0-9]{3}" // Restrict to only numeric entries with exactly 3 digits
               title="Please enter exactly 3 numeric digits"
               maxLength={3}
+              inputMode="numeric"
               onChange={handleOpenInputChnage}
             />
             <button type="submit">Submit</button>
@@ -172,6 +173,7 @@ const OpenCloseOption = (props: Props) => {
               pattern="[0-9]{3}" // Restrict to only numeric entries with exactly 3 digits
               title="Please enter exactly 3 numeric digits"
               maxLength={3}
+              inputMode="numeric"
               onChange={handleCloseInputChnage}
             />
             <button type="submit">Submit</button>
