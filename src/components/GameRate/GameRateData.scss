@@ -2,6 +2,7 @@
 
 .gameRateGrid {
   width: 42vw !important;
+
   @include lg {
     width: 60vw !important;
   }

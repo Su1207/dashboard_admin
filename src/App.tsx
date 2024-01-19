@@ -16,6 +16,7 @@ import Deposit from "./pages/Deposit/Deposit";
 import Withdraw from "./pages/Withdraw/Withdraw";
 import { AuthProvider, useAuth } from "./components/auth-context";
 import GameRate from "./pages/GameRate/GameRate";
+import GameSettings from "./pages/GameSettings/GameSettings";
 
 const Layout = () => {
   const { isAuthenticated } = useAuth();
@@ -89,6 +90,10 @@ const router = createBrowserRouter([
       {
         path: "/gameRate",
         element: <GameRate />,
+      },
+      {
+        path: "/gameSettings",
+        element: <GameSettings />,
       },
     ],
   },

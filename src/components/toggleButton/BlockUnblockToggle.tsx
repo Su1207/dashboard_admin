@@ -17,7 +17,7 @@ const GreenSwitch = styled(Switch)(({ theme }) => ({
   },
 }));
 
-const label = { inputProps: { "aria-label": "Color switch demo" } };
+const label = { inputProps: { "aria-label": "Color switch" } };
 
 interface DataTableProps {
   userId: string;

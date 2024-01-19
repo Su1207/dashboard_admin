@@ -4,9 +4,7 @@ import { get, onValue, ref } from "firebase/database";
 import { database } from "../../firebase";
 import GameRateGrid from "./GameRateGrid";
 
-export interface GameRateType {
-  [key: string]: number;
-}
+export type GameRateType = Record<string, number>;
 
 const GameRateData = () => {
   const [gameRate, setGameRate] = useState<GameRateType>({});

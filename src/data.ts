@@ -89,9 +89,9 @@ export const menu = [
       },
       {
         id: 2,
-        title: "Backups",
-        url: "/",
-        icon: "/backup.svg",
+        title: "Game Settings",
+        url: "/gameSettings",
+        icon: "/setting.svg",
       },
     ],
   },

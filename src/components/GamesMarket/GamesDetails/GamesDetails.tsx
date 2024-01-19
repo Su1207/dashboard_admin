@@ -31,6 +31,11 @@ const formatResult = (open: string, mid: string, close: string): string => {
 const GamesDetails = () => {
   const [gameData, setGameData] = useState<GameData[] | null>(null);
 
+  const currentDate = new Date();
+  const year = currentDate.getFullYear().toString();
+  const month = (currentDate.getMonth() + 1).toString().padStart(2, "0");
+  const day = currentDate.getDate().toString().padStart(2, "0");
+
   useEffect(() => {
     const gamesRef = ref(database, "GAMES");
     const resultsRef = ref(database, "RESULTS");
@@ -42,13 +47,6 @@ const GamesDetails = () => {
         const snapshot = await get(resultsRef);
 
         if (gamesSnapshot.exists()) {
-          const currentDate = new Date();
-          const year = currentDate.getFullYear().toString();
-          const month = (currentDate.getMonth() + 1)
-            .toString()
-            .padStart(2, "0");
-          const day = currentDate.getDate().toString().padStart(2, "0");
-
           const gamesData: GameData[] = Object.keys(gamesSnapshot.val()).map(
             (gameKey) => {
               const gameInfo = gamesSnapshot.val()[gameKey];
@@ -94,7 +92,7 @@ const GamesDetails = () => {
       unsubscribeGames();
       unsubscribeResults();
     };
-  }, []);
+  }, [day]);
 
   console.log(gameData);
 
