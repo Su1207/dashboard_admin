@@ -21,14 +21,20 @@ type User = {
 
 type UsersListData = Record<string, boolean>;
 
+type UsersTransactionData = Set<string>;
+
 const UsersHome: React.FC = () => {
   const { usersData, setUsersData } = useUsersDataContext();
   const [usersListData, setUsersListData] = useState<UsersListData | null>(
     null
   );
 
+  const [usersTransactionData, setUsersTransactionData] =
+    useState<UsersTransactionData | null>(null);
+
   useEffect(() => {
     const usersListRef = ref(database, "USERS LIST");
+    const transactionRef = ref(database, "USERS TRANSACTION");
 
     get(usersListRef).then((snapshot) => {
       if (snapshot.exists()) {
@@ -36,6 +42,16 @@ const UsersHome: React.FC = () => {
         console.log(snapshot.val());
       } else {
         console.log("No data available for USERS LIST");
+      }
+    });
+
+    get(transactionRef).then((snapshot) => {
+      if (snapshot.exists()) {
+        const phoneNumbers = Object.keys(snapshot.val());
+        const transactionData = new Set(phoneNumbers);
+        setUsersTransactionData(transactionData);
+      } else {
+        console.log("No data available for USERS");
       }
     });
 
@@ -85,6 +101,10 @@ const UsersHome: React.FC = () => {
     return usersListData?.[userId] === false;
   };
 
+  const isDead = (userId: string) => {
+    return !usersTransactionData?.has(userId) ?? true;
+  };
+
   const blockedUsers = usersData?.filter((user) => isBlocked(user.PHONE));
 
   const today = new Date().setHours(0, 0, 0, 0);
@@ -102,6 +122,8 @@ const UsersHome: React.FC = () => {
   );
 
   const zeroBalanceUsers = usersData?.filter((user) => user.AMOUNT === 0);
+
+  const deadUsers = usersData?.filter((user) => isDead(user.PHONE));
 
   return (
     <div className="users">
@@ -130,6 +152,10 @@ const UsersHome: React.FC = () => {
         <div className="users_number">
           <div className="users_number_type">0 Balance Users</div>
           <div> {zeroBalanceUsers?.length}</div>
+        </div>
+        <div className="users_number">
+          <div className="users_number_type">Dead Users</div>
+          <div> {deadUsers?.length}</div>
         </div>
       </div>
       <div className="users_list">

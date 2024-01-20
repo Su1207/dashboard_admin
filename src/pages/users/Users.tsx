@@ -25,6 +25,8 @@ type User = {
   isLoggedIn: boolean;
 };
 
+type UsersTransactionData = Set<string>;
+
 type UsersListData = Record<string, boolean>;
 
 const Users: React.FC = () => {
@@ -40,14 +42,28 @@ const Users: React.FC = () => {
     null
   );
 
+  const [usersTransactionData, setUsersTransactionData] =
+    useState<UsersTransactionData | null>(null);
+
   useEffect(() => {
     const usersListRef = ref(database, "USERS LIST");
+    const transactionRef = ref(database, "USERS TRANSACTION");
 
     get(usersListRef).then((snapshot) => {
       if (snapshot.exists()) {
         setUsersListData(snapshot.val());
       } else {
         console.log("No data available for USERS LIST");
+      }
+    });
+
+    get(transactionRef).then((snapshot) => {
+      if (snapshot.exists()) {
+        const phoneNumbers = Object.keys(snapshot.val());
+        const transactionData = new Set(phoneNumbers);
+        setUsersTransactionData(transactionData);
+      } else {
+        console.log("No data available for USERS");
       }
     });
 
@@ -66,6 +82,10 @@ const Users: React.FC = () => {
   const isBlocked = (userId: string) => {
     // Check the blocked status from the 'USERS LIST' node
     return usersListData?.[userId] === false;
+  };
+
+  const isDead = (userId: string) => {
+    return !usersTransactionData?.has(userId) ?? true;
   };
 
   useEffect(() => {
@@ -142,7 +162,10 @@ const Users: React.FC = () => {
         );
 
       case "dead":
-        return;
+        console.log(
+          Object.values(usersData).filter((user) => isDead(user.PHONE))
+        );
+        return Object.values(usersData).filter((user) => isDead(user.PHONE));
 
       // Add cases for other options
       default:
