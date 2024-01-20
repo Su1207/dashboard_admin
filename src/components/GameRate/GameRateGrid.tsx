@@ -20,7 +20,8 @@ const GameRateGrid: React.FC<Props> = ({ gameRate }) => {
     {
       field: "game",
       headerName: "Game",
-      width: 120,
+      width: 140,
+      cellClassName: "gameName",
     },
     {
       field: "invest",
@@ -70,14 +71,18 @@ const GameRateGrid: React.FC<Props> = ({ gameRate }) => {
     }
   };
 
-  const rows = Object.entries(gameRate).map(([game, rate]) => {
-    return {
-      id: game,
-      game: getFullName(game),
-      rate: rate,
-      invest: 10,
-    };
-  });
+  const customGameOrder = ["SD", "JD", "SP", "DP", "TP", "HS", "FS"];
+
+  const rows = customGameOrder
+    .filter((game) => gameRate.hasOwnProperty(game))
+    .map((game) => {
+      return {
+        id: game,
+        game: getFullName(game),
+        rate: gameRate[game],
+        invest: 10,
+      };
+    });
 
   return (
     <div className="dataTable">

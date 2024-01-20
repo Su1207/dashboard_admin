@@ -1,7 +1,7 @@
 @import "../../styles/responsive.scss";
 
 .gameRateGrid {
-  width: 42vw !important;
+  width: 43vw !important;
 
   @include lg {
     width: 60vw !important;
@@ -15,4 +15,9 @@
   h1 {
     margin-bottom: 1rem;
   }
+}
+
+.gameName {
+  font-weight: 600;
+  font-size: 0.875rem;
 }
