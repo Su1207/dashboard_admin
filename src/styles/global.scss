@@ -13,7 +13,7 @@ a {
 }
 
 .main {
-  font-family: "Inter", sans-serif;
+  font-family: "Inter", sans-serif !important;
   background-color: $dark-bg;
   color: $main-color;
   overflow-x: hidden;
@@ -28,8 +28,8 @@ a {
 }
 
 .menuContainer {
-  width: 250px;
-  padding: 5px 20px;
+  width: 14rem;
+  padding: 5px 10px 5px 20px;
   border-right: 2px solid $soft-bg;
 
   @include lg {

@@ -17,6 +17,7 @@ import Withdraw from "./pages/Withdraw/Withdraw";
 import { AuthProvider, useAuth } from "./components/auth-context";
 import GameRate from "./pages/GameRate/GameRate";
 import GameSettings from "./pages/GameSettings/GameSettings";
+import Notification from "./pages/Notification/Notification";
 
 const Layout = () => {
   const { isAuthenticated } = useAuth();
@@ -94,6 +95,10 @@ const router = createBrowserRouter([
       {
         path: "/gameSettings",
         element: <GameSettings />,
+      },
+      {
+        path: "/notifications",
+        element: <Notification />,
       },
     ],
   },

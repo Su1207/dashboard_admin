@@ -59,9 +59,9 @@ export const menu = [
       },
       {
         id: 2,
-        title: "Notes",
-        url: "/",
-        icon: "/note.svg",
+        title: "Notification",
+        url: "/notifications",
+        icon: "/notifications.svg",
       },
       {
         id: 3,
