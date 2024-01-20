@@ -54,7 +54,7 @@ const OpenCloseOption = (props: Props) => {
   const month = (currentDate.getMonth() + 1).toString().padStart(2, "0");
   const date = currentDate.getDate().toString().padStart(2, "0");
 
-  const handleOpenSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
+  const handleOpenSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (openFormResult) {
@@ -64,17 +64,30 @@ const OpenCloseOption = (props: Props) => {
           `RESULTS/${props.gameId}/${year}/${month}/${date}`
         );
 
+        const timestamp = Date.now();
+
+        const totalRef = ref(
+          database,
+          `GAME CHART/${props.gameId}/${timestamp}`
+        );
+
         const midResult = `${
           (parseInt(openFormResult[0]) +
             parseInt(openFormResult[1]) +
             parseInt(openFormResult[2])) %
           10
-        }*`;
+        }♦`;
 
-        set(resultRef, {
+        await set(resultRef, {
           OPEN: openFormResult,
           MID: midResult,
-          CLOSE: "***",
+          CLOSE: "♦♦♦",
+        });
+
+        await set(totalRef, {
+          OPEN: openFormResult,
+          MID: midResult,
+          CLOSE: "♦♦♦",
         });
 
         props.setOpenClose(false);
@@ -87,7 +100,7 @@ const OpenCloseOption = (props: Props) => {
     }
   };
 
-  const handleCloseSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
+  const handleCloseSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     if (closeFormResult) {
@@ -97,7 +110,14 @@ const OpenCloseOption = (props: Props) => {
           `RESULTS/${props.gameId}/${year}/${month}/${date}`
         );
 
-        get(resultRef).then((snapshot) => {
+        const timestamp = Date.now();
+
+        const totalRef = ref(
+          database,
+          `GAME CHART/${props.gameId}/${timestamp}`
+        );
+
+        get(resultRef).then(async (snapshot) => {
           if (snapshot.exists()) {
             const open = snapshot.val().OPEN;
 
@@ -109,7 +129,12 @@ const OpenCloseOption = (props: Props) => {
                 parseInt(closeFormResult[2])) %
               10
             }`;
-            update(resultRef, {
+            await update(resultRef, {
+              MID: midResult,
+              CLOSE: closeFormResult,
+            });
+
+            await update(totalRef, {
               MID: midResult,
               CLOSE: closeFormResult,
             });

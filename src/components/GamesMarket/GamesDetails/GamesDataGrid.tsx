@@ -133,12 +133,14 @@ const GamesDataGrid: React.FC<gameDataGridProps> = ({ gameData }) => {
 
     const gameRef = ref(database, `GAMES/${gameId}`);
     const resultRef = ref(database, `RESULTS/${gameId}`);
+    const chartRef = ref(database, `GAME CHART/${gameId}`);
 
     remove(gameRef)
       .then(() => {
         toast.success(`Game ${gameId} deleted successfully`);
 
         remove(resultRef);
+        remove(chartRef);
       })
       .catch((error) => {
         console.error("Error deleting user", error);

@@ -63,7 +63,7 @@ const GamesDetails = () => {
                     resultData.MID,
                     resultData.CLOSE
                   )
-                : "***-**-***";
+                : "♦♦♦-♦♦-♦♦♦";
 
               return {
                 key: gameKey,
