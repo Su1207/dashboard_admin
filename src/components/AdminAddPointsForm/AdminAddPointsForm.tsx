@@ -95,6 +95,16 @@ const AdminAddPointsForm = (props: Props) => {
           `USERS TRANSACTION/${phoneNumber}/DEPOSIT/TOTAL/${timestamp}`
         );
 
+        const totalTransactionDateWiseRef = ref(
+          database,
+          `TOTAL TRANSACTION/DEPOSIT/DATE WISE/${year}/${month}/${day}/${timestamp}`
+        );
+
+        const totalTransactionTotalRef = ref(
+          database,
+          `TOTAL TRANSACTION/DEPOSIT/TOTAL/${timestamp}`
+        );
+
         await set(depositRef, {
           AMOUNT: amount,
           DATE: date,
@@ -103,6 +113,7 @@ const AdminAddPointsForm = (props: Props) => {
           PAYMENT_BY: "Admin",
           PAYMENT_TO: "Admin",
           TOTAL: newTotal,
+          UID: phoneNumber,
         });
 
         await set(totalRef, {
@@ -113,6 +124,29 @@ const AdminAddPointsForm = (props: Props) => {
           PAYMENT_BY: "Admin",
           PAYMENT_TO: "Admin",
           TOTAL: newTotal,
+          UID: phoneNumber,
+        });
+
+        await set(totalTransactionDateWiseRef, {
+          AMOUNT: amount,
+          DATE: date,
+          NAME: userName,
+          PAYMENT_APP: "Admin",
+          PAYMENT_BY: "Admin",
+          PAYMENT_TO: "Admin",
+          TOTAL: newTotal,
+          UID: phoneNumber,
+        });
+
+        await set(totalTransactionTotalRef, {
+          AMOUNT: amount,
+          DATE: date,
+          NAME: userName,
+          PAYMENT_APP: "Admin",
+          PAYMENT_BY: "Admin",
+          PAYMENT_TO: "Admin",
+          TOTAL: newTotal,
+          UID: phoneNumber,
         });
 
         props.setAddPointsFormVisible(false);

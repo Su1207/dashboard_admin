@@ -96,6 +96,16 @@ const AdminWithdrawPointsForm = (props: Props) => {
           `USERS TRANSACTION/${phoneNumber}/WITHDRAW/TOTAL/${timestamp}`
         );
 
+        const totalTransactionDateWiseRef = ref(
+          database,
+          `TOTAL TRANSACTION/WITHDRAW/DATE WISE/${year}/${month}/${day}/${timestamp}`
+        );
+
+        const totalTransactionTotalRef = ref(
+          database,
+          `TOTAL TRANSACTION/WITHDRAW//TOTAL/${timestamp}`
+        );
+
         await set(withdrawRef, {
           AMOUNT: amount,
           APP: "Admin",
@@ -109,6 +119,30 @@ const AdminWithdrawPointsForm = (props: Props) => {
         });
 
         await set(totalRef, {
+          AMOUNT: amount,
+          APP: "Admin",
+          DATE: date,
+          NAME: username,
+          PAYOUT_TO: "Admin",
+          PENDING: "false",
+          TOTAL: newTotal,
+          TYPE: "Admin",
+          UID: phoneNumber,
+        });
+
+        await set(totalTransactionDateWiseRef, {
+          AMOUNT: amount,
+          APP: "Admin",
+          DATE: date,
+          NAME: username,
+          PAYOUT_TO: "Admin",
+          PENDING: "false",
+          TOTAL: newTotal,
+          TYPE: "Admin",
+          UID: phoneNumber,
+        });
+
+        await set(totalTransactionTotalRef, {
           AMOUNT: amount,
           APP: "Admin",
           DATE: date,

@@ -1,0 +1,52 @@
+.bidData {
+  h2 {
+    margin-bottom: 1rem;
+  }
+
+  .bidDataList {
+    background: #fff;
+    ul {
+      padding: 0;
+      list-style: none;
+
+      .header_li {
+        background: #000;
+      }
+
+      li {
+        text-decoration: none;
+        border-bottom: 1px solid black;
+        text-align: center;
+
+        .header,
+        .bidDataDetails {
+          display: flex;
+          align-items: center;
+          justify-content: space-around;
+          color: black;
+
+          p {
+            flex: 1;
+            padding: 1rem 0;
+          }
+        }
+
+        .header {
+          font-size: 1rem;
+          font-weight: 600;
+          color: white;
+        }
+
+        .bidDataDetails {
+          .openTotal {
+            background: rgb(242, 203, 209);
+          }
+
+          .gameName {
+            cursor: pointer;
+          }
+        }
+      }
+    }
+  }
+}

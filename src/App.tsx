@@ -18,6 +18,8 @@ import { AuthProvider, useAuth } from "./components/auth-context";
 import GameRate from "./pages/GameRate/GameRate";
 import GameSettings from "./pages/GameSettings/GameSettings";
 import Notification from "./pages/Notification/Notification";
+import Bid from "./pages/Bid/Bid";
+import BidDetails from "./pages/Bid/BidDetails";
 
 const Layout = () => {
   const { isAuthenticated } = useAuth();
@@ -89,6 +91,10 @@ const router = createBrowserRouter([
         element: <Withdraw />,
       },
       {
+        path: "/bid",
+        element: <Bid />,
+      },
+      {
         path: "/gameRate",
         element: <GameRate />,
       },
@@ -99,6 +105,10 @@ const router = createBrowserRouter([
       {
         path: "/notifications",
         element: <Notification />,
+      },
+      {
+        path: "/bid/:id",
+        element: <BidDetails />,
       },
     ],
   },

@@ -1,9 +1,9 @@
-import UserBidData from "../../components/UserBidData/UserBidData";
+import MarketBidData from "../../components/BidComponent/MarketBidData/MarketBidData";
 
 const Bid = () => {
   return (
     <div>
-      <UserBidData />
+      <MarketBidData />
     </div>
   );
 };

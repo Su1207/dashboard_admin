@@ -94,7 +94,7 @@ const GamesDetails = () => {
     };
   }, [day]);
 
-  console.log(gameData);
+  // console.log(gameData);
 
   return <div>{gameData && <GamesDataGrid gameData={gameData} />}</div>;
 };
