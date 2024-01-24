@@ -20,6 +20,7 @@ import GameSettings from "./pages/GameSettings/GameSettings";
 import Notification from "./pages/Notification/Notification";
 import Bid from "./pages/Bid/Bid";
 import BidDetails from "./pages/Bid/BidDetails";
+import Win from "./pages/Win/Win";
 
 const Layout = () => {
   const { isAuthenticated } = useAuth();
@@ -93,6 +94,10 @@ const router = createBrowserRouter([
       {
         path: "/bid",
         element: <Bid />,
+      },
+      {
+        path: "/win",
+        element: <Win />,
       },
       {
         path: "/gameRate",

@@ -1,7 +1,9 @@
+import WinData from "../../components/WinComponent/WinData/WinData";
+
 const Win = () => {
   return (
     <div>
-      <div>Win</div>
+      <WinData />
     </div>
   );
 };
