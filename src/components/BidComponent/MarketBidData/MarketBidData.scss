@@ -1,4 +1,5 @@
 @import "../../../styles/responsive.scss";
+@import "../../../styles/variables.scss";
 
 .bidData {
   .bidData_header {
@@ -41,6 +42,10 @@
       padding: 0;
       list-style: none;
 
+      .noData {
+        background: $dark-bg;
+      }
+
       .header_li {
         background: #000;
       }
@@ -60,6 +65,14 @@
           p {
             flex: 1;
             padding: 1rem 0;
+
+            @include sm {
+              &:first-child {
+                flex: 2;
+              }
+
+              font-size: 0.8rem;
+            }
           }
         }
 
@@ -75,7 +88,8 @@
               font-size: 0.875rem;
             }
           }
-          .openTotal {
+          .openTotal,
+          .marketTotal {
             background: rgb(242, 203, 209);
             cursor: pointer;
           }

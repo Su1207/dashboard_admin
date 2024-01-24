@@ -1,0 +1,43 @@
+@import "../../../styles/responsive.scss";
+
+.win_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+
+  h2 {
+    @include sm {
+      font-size: 1.2rem;
+    }
+    @include xsm {
+      font-size: 1rem;
+    }
+  }
+  h4 {
+    @include sm {
+      font-size: 1rem;
+      font-weight: 500;
+    }
+    @include xsm {
+      font-size: 0.875rem;
+    }
+  }
+}
+
+.userName {
+  text-transform: capitalize;
+}
+
+.winDetails {
+  button {
+    background: transparent;
+    color: white;
+    border: none;
+    outline: none;
+    font-size: 0.875rem;
+    font-weight: 500;
+    cursor: pointer;
+    margin-bottom: 1rem;
+  }
+}

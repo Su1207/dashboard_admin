@@ -21,6 +21,7 @@ import Notification from "./pages/Notification/Notification";
 import Bid from "./pages/Bid/Bid";
 import BidDetails from "./pages/Bid/BidDetails";
 import Win from "./pages/Win/Win";
+import WinDetail from "./pages/Win/WinDetail";
 
 const Layout = () => {
   const { isAuthenticated } = useAuth();
@@ -114,6 +115,10 @@ const router = createBrowserRouter([
       {
         path: "/bid/:id",
         element: <BidDetails />,
+      },
+      {
+        path: "/win/:id",
+        element: <WinDetail />,
       },
     ],
   },

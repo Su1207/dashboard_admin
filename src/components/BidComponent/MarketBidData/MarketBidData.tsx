@@ -5,7 +5,6 @@ import { database } from "../../../firebase";
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import { FaCalendarAlt } from "react-icons/fa";
-import { toast } from "react-toastify";
 
 type BidDataType = {
   gameKey: string;
@@ -93,7 +92,6 @@ const MarketBidData = () => {
           });
         } else {
           setBidDataType(null);
-          toast.error("No data available for the date");
         }
       } catch (err) {
         console.log(err);
@@ -146,15 +144,18 @@ const MarketBidData = () => {
         </div>
       </div>
       <div className="bidDataList">
-        <ul style={{ listStyle: "none" }}>
-          {bidDataType && (
+        <ul>
+          {bidDataType ? (
             <li className="header_li">
               <div className="header">
                 <p>MARKETS</p>
                 <p>OPEN</p>
                 <p>CLOSE</p>
+                <p>TOTAL</p>
               </div>
             </li>
+          ) : (
+            <div className="noData">No data available for the day</div>
           )}
 
           {bidDataType &&
@@ -177,6 +178,9 @@ const MarketBidData = () => {
                     }
                   >
                     {bidData.closeTotal}
+                  </p>
+                  <p className="marketTotal">
+                    {bidData.openTotal + bidData.closeTotal}
                   </p>
                 </div>
               </li>

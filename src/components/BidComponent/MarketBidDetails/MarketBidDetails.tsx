@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import "./MarketBidDetails.scss";
 import { get, ref } from "firebase/database";
 import { database } from "../../../firebase";
-import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
+import { DataGrid, GridColDef } from "@mui/x-data-grid";
 
 interface MarketDetailsType {
   marketName: string;
@@ -110,21 +110,21 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
           rows={rows}
           columns={columns}
           // checkboxSelection
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 15,
-              },
-            },
-          }}
-          slots={{ toolbar: GridToolbar }}
-          slotProps={{
-            toolbar: {
-              showQuickFilter: true,
-              quickFilterProps: { debounceMs: 500 },
-            },
-          }}
-          pageSizeOptions={[15]}
+          //   initialState={{
+          //     pagination: {
+          //       paginationModel: {
+          //         pageSize: 15,
+          //       },
+          //     },
+          //   }}
+          //   slots={{ toolbar: GridToolbar }}
+          //   slotProps={{
+          //     toolbar: {
+          //       showQuickFilter: true,
+          //       quickFilterProps: { debounceMs: 500 },
+          //     },
+          //   }}
+          //   pageSizeOptions={[15]}
           // checkboxSelection
           disableRowSelectionOnClick
           disableColumnFilter

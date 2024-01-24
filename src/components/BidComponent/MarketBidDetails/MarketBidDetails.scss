@@ -1,11 +1,33 @@
+@import "../../../styles/responsive.scss";
+
 .bid_header {
   display: flex;
   align-items: center;
   justify-content: space-between;
   margin-bottom: 1rem;
 
-  span {
-    font-size: 0.9rem;
-    font-weight: 500;
+  h2 {
+    @include sm {
+      font-size: 1.2rem;
+    }
+    @include xsm {
+      font-size: 1rem;
+    }
+    span {
+      font-size: 0.8rem;
+      font-weight: 500;
+
+      @include xsm {
+        font-size: 0.7rem;
+      }
+    }
+  }
+  h4 {
+    @include sm {
+      font-size: 1rem;
+    }
+    @include xsm {
+      font-size: 0.8rem;
+    }
   }
 }

@@ -62,7 +62,7 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
     {
       field: "id",
       headerName: "Phone",
-      width: 160,
+      width: 170,
       renderCell: (params) => (
         <div className="phone_column">
           <div className="version">V{params.row.appVersion}.0</div>
@@ -88,7 +88,7 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
     {
       field: "createdOn",
       headerName: "Created On",
-      width: 120,
+      width: 130,
       renderCell: (params) => (
         <div>
           <div>{params.value.split(" | ")[0]}</div>
@@ -99,7 +99,7 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
     {
       field: "lastSeen",
       headerName: "Last Seen",
-      width: 120,
+      width: 130,
       renderCell: (params) => (
         <div>
           <div>{params.value.split(" | ")[0]}</div>
@@ -110,7 +110,7 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
     {
       field: "amount",
       headerName: "Amount",
-      width: 100,
+      width: 110,
       renderCell: (params) => <div>&#8377;{params.value}</div>,
     },
 
