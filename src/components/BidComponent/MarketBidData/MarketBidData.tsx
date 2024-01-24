@@ -5,6 +5,7 @@ import { database } from "../../../firebase";
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import { FaCalendarAlt } from "react-icons/fa";
+import { toast } from "react-toastify";
 
 type BidDataType = {
   gameKey: string;
@@ -14,7 +15,7 @@ type BidDataType = {
 };
 
 const MarketBidData = () => {
-  const [bidDataType, setBidDataType] = useState<BidDataType[]>([]);
+  const [bidDataType, setBidDataType] = useState<BidDataType[] | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [date, setDate] = useState("");
 
@@ -42,50 +43,58 @@ const MarketBidData = () => {
         );
 
         const gameSnapshot = await get(gameRef);
-        const bidData: BidDataType[] = [];
 
-        gameSnapshot.forEach((gamesnapshot) => {
-          const marketKey = gamesnapshot.key;
-          const marketName: string[] = [];
+        if (gameSnapshot.exists()) {
+          const bidData: BidDataType[] = [];
 
-          marketSnapshot.forEach((marketsnapshot) => {
-            if (marketKey === marketsnapshot.key) {
-              marketName.push(marketsnapshot.val().NAME);
-            }
-          });
+          gameSnapshot.forEach((gamesnapshot) => {
+            const marketKey = gamesnapshot.key;
+            const marketName: string[] = [];
 
-          const calculateTotalPoints = (snapshot: any) => {
-            let totalPoints: number = 0;
+            marketSnapshot.forEach((marketsnapshot) => {
+              if (marketKey === marketsnapshot.key) {
+                marketName.push(marketsnapshot.val().NAME);
+              }
+            });
 
-            if (snapshot.exists()) {
-              snapshot.forEach((gameTypeSnapshot: any) => {
-                gameTypeSnapshot.forEach((numberSnapshot: any) => {
-                  numberSnapshot.child("USERS").forEach((userSnapshot: any) => {
-                    totalPoints += userSnapshot.val() || 0;
+            const calculateTotalPoints = (snapshot: any) => {
+              let totalPoints: number = 0;
+
+              if (snapshot.exists()) {
+                snapshot.forEach((gameTypeSnapshot: any) => {
+                  gameTypeSnapshot.forEach((numberSnapshot: any) => {
+                    numberSnapshot
+                      .child("USERS")
+                      .forEach((userSnapshot: any) => {
+                        totalPoints += userSnapshot.val() || 0;
+                      });
                   });
                 });
-              });
-            }
+              }
 
-            return totalPoints;
-          };
+              return totalPoints;
+            };
 
-          const totalPointsOpen = calculateTotalPoints(
-            gamesnapshot.child("OPEN")
-          );
-          const totalPointsClose = calculateTotalPoints(
-            gamesnapshot.child("CLOSE")
-          );
+            const totalPointsOpen = calculateTotalPoints(
+              gamesnapshot.child("OPEN")
+            );
+            const totalPointsClose = calculateTotalPoints(
+              gamesnapshot.child("CLOSE")
+            );
 
-          bidData.push({
-            gameKey: marketKey,
-            gameName: marketName.join(", "), // Concatenate game names into a string
-            openTotal: totalPointsOpen,
-            closeTotal: totalPointsClose,
+            bidData.push({
+              gameKey: marketKey,
+              gameName: marketName.join(", "), // Concatenate game names into a string
+              openTotal: totalPointsOpen,
+              closeTotal: totalPointsClose,
+            });
+
+            setBidDataType(bidData);
           });
-
-          setBidDataType(bidData);
-        });
+        } else {
+          setBidDataType(null);
+          toast.error("No data available");
+        }
       } catch (err) {
         console.log(err);
       }

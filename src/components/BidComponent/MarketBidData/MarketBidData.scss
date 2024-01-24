@@ -1,3 +1,5 @@
+@import "../../../styles/responsive.scss";
+
 .bidData {
   .bidData_header {
     margin-bottom: 1rem;
@@ -68,6 +70,11 @@
         }
 
         .bidDataDetails {
+          .gameName {
+            @include sm {
+              font-size: 0.875rem;
+            }
+          }
           .openTotal {
             background: rgb(242, 203, 209);
             cursor: pointer;
