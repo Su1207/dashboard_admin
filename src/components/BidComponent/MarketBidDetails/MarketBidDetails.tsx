@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import "./MarketbidDetails.scss";
+import "./MarketBidDetails.scss";
 import { get, ref } from "firebase/database";
 import { database } from "../../../firebase";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
