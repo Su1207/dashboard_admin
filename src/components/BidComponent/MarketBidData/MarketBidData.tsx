@@ -93,7 +93,7 @@ const MarketBidData = () => {
           });
         } else {
           setBidDataType(null);
-          toast.error("No data available");
+          toast.error("No data available for the date");
         }
       } catch (err) {
         console.log(err);
@@ -127,7 +127,7 @@ const MarketBidData = () => {
   return (
     <div className="bidData">
       <div className="bidData_header">
-        <h2>Market Bid Data</h2>
+        <h2>Bid Data</h2>
         <div className="date-picker-container">
           <div className="date-pic">
             <DatePicker

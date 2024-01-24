@@ -28,6 +28,12 @@
   align-items: center;
   gap: 20px;
 
+  .user {
+    @include sm {
+      display: none;
+    }
+  }
+
   .icon {
     @include sm {
       display: none;
