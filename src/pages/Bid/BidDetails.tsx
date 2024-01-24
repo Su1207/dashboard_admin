@@ -5,7 +5,7 @@ const BidDetails = () => {
   const { id } = useParams();
 
   const gameKey = id ?? "";
-  //   console.log(gameKey);
+  console.log(gameKey);
   return (
     <div>
       <MarketBidDetails gameKey={gameKey} />

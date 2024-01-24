@@ -1,0 +1,11 @@
+.bid_header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+
+  span {
+    font-size: 0.9rem;
+    font-weight: 500;
+  }
+}

@@ -3,6 +3,8 @@ import "./MarketBidData.scss";
 import { get, ref } from "firebase/database";
 import { database } from "../../../firebase";
 import { useNavigate } from "react-router-dom";
+import DatePicker from "react-datepicker";
+import { FaCalendarAlt } from "react-icons/fa";
 
 type BidDataType = {
   gameKey: string;
@@ -13,26 +15,31 @@ type BidDataType = {
 
 const MarketBidData = () => {
   const [bidDataType, setBidDataType] = useState<BidDataType[]>([]);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+  const [date, setDate] = useState("");
 
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchMarketData = async () => {
-      //   const currentDate = new Date();
-      //   const currentYear = currentDate.getFullYear();
-      //   const currentMonth = (currentDate.getMonth() + 1)
-      //     .toString()
-      //     .padStart(2, "0"); // Ensure two digits
-      //   const currentDay = currentDate.getDate().toString().padStart(2, "0");
+      const currentYear = selectedDate.getFullYear();
+      const currentMonth = (selectedDate.getMonth() + 1)
+        .toString()
+        .padStart(2, "0"); // Ensure two digits
+      const currentDay = selectedDate.getDate().toString().padStart(2, "0");
 
-      //   const gamesRef = ref(database, "GAMES");
+      const currentDate = `${currentDay}-${currentMonth}-${currentYear}`;
+      setDate(currentDate);
 
       try {
         const gamesRef = ref(database, "GAMES");
 
         const marketSnapshot = await get(gamesRef);
 
-        const gameRef = ref(database, `TOTAL TRANSACTION/BIDS/${2024}/01/11`);
+        const gameRef = ref(
+          database,
+          `TOTAL TRANSACTION/BIDS/${currentYear}/${currentMonth}/${currentDay}`
+        );
 
         const gameSnapshot = await get(gameRef);
         const bidData: BidDataType[] = [];
@@ -85,39 +92,83 @@ const MarketBidData = () => {
     };
 
     fetchMarketData();
-  }, []);
+  }, [selectedDate]);
 
-  console.log(bidDataType);
+  const handleDateChange = (newDate: Date) => {
+    setSelectedDate(newDate);
+  };
 
-  const handleClick = (gamekey: string) => {
-    navigate(`/bid/${gamekey}`);
+  if (!selectedDate) {
+    const currentDate = new Date();
+    setSelectedDate(currentDate);
+  }
+
+  const handleOpenClick = (gamekey: string, gamename: string, date: string) => {
+    navigate(`/bid/OPEN___${gamekey}___${gamename}___${date}`);
+  };
+
+  const handleCloseClick = (
+    gamekey: string,
+    gamename: string,
+    date: string
+  ) => {
+    navigate(`/bid/CLOSE___${gamekey}___${gamename}___${date}`);
   };
 
   return (
     <div className="bidData">
-      <h2>Market Bid Data</h2>
+      <div className="bidData_header">
+        <h2>Market Bid Data</h2>
+        <div className="date-picker-container">
+          <div className="date-pic">
+            <DatePicker
+              className="datePicker"
+              selected={selectedDate}
+              onChange={handleDateChange}
+              dateFormat="dd-MMM-yyyy"
+              maxDate={new Date()} // Set the maximum date to the current date
+
+              //   placeholderText="Select a Date"
+            />
+            <div className="calendar">
+              <FaCalendarAlt />
+            </div>
+          </div>
+        </div>
+      </div>
       <div className="bidDataList">
         <ul style={{ listStyle: "none" }}>
-          <li className="header_li">
-            <div className="header">
-              <p>MARKETS</p>
-              <p>OPEN</p>
-              <p>CLOSE</p>
-            </div>
-          </li>
+          {bidDataType && (
+            <li className="header_li">
+              <div className="header">
+                <p>MARKETS</p>
+                <p>OPEN</p>
+                <p>CLOSE</p>
+              </div>
+            </li>
+          )}
 
           {bidDataType &&
             bidDataType.map((bidData) => (
               <li key={bidData.gameKey}>
                 <div className="bidDataDetails">
+                  <p className="gameName">{bidData.gameName}</p>
                   <p
-                    className="gameName"
-                    onClick={() => handleClick(bidData.gameKey)}
+                    className="openTotal"
+                    onClick={() =>
+                      handleOpenClick(bidData.gameKey, bidData.gameName, date)
+                    }
                   >
-                    {bidData.gameName}
+                    {bidData.openTotal}
                   </p>
-                  <p className="openTotal">{bidData.openTotal}</p>
-                  <p>{bidData.closeTotal}</p>
+                  <p
+                    className="closeTotal"
+                    onClick={() =>
+                      handleCloseClick(bidData.gameKey, bidData.gameName, date)
+                    }
+                  >
+                    {bidData.closeTotal}
+                  </p>
                 </div>
               </li>
             ))}
