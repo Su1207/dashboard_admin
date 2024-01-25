@@ -113,7 +113,7 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
         (acc, market) => ({
           ...acc,
           [market.marketName]:
-            Object.entries(market.numbers)[index]?.join(" = ₹ ") || "",
+            Object.entries(market.numbers)[index]?.join(" = ") + " ₹" || "",
         }),
         {}
       ),
@@ -136,7 +136,7 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
         <h2>
           {gameName} <span>({gameKey.split("___")[0]})</span>
         </h2>
-        <h4>Total - &#8377; {totalPoints}</h4>
+        <h4>Total - {totalPoints} &#8377;</h4>
       </div>
       {bidDetails ? (
         <DataGrid
