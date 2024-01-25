@@ -14,13 +14,12 @@ const WinDEtailsGrid: React.FC<WinDetailsGridType> = ({ winDetails }) => {
       field: "userName",
       headerName: "User Name",
       width: 120,
-      cellClassName: "userName",
-    },
-    {
-      field: "phoneNumber",
-      headerName: "Phone",
-      width: 120,
-      renderCell: (params) => <div>+91{params.row.phoneNumber}</div>,
+      renderCell: (params) => (
+        <div>
+          <div className="user_name">{params.row.userName}</div>
+          <div>{params.row.phoneNumber}</div>
+        </div>
+      ),
     },
     {
       field: "gameName",
@@ -61,16 +60,27 @@ const WinDEtailsGrid: React.FC<WinDetailsGridType> = ({ winDetails }) => {
       width: 120,
       renderCell: (params) => <div>&#8377; {params.row.newPoints}</div>,
     },
+    {
+      field: "date",
+      headerName: "Date",
+      width: 120,
+      renderCell: (params) => (
+        <div>
+          <div>{params.row.date.split(" | ")[0]}</div>
+          <div>{params.row.date.split(" | ")[1]}</div>
+        </div>
+      ),
+    },
   ];
 
   const getRowId = (row: CustomRow) => {
     return `${row.phoneNumber}-${row.number}`;
   };
   return (
-    <div className="dataTable">
+    <div className="dataTable_UsersWithdraw">
       {winDetails ? (
         <DataGrid
-          className="dataGrid"
+          className="dataGrid_UsersWithdraw"
           rows={winDetails}
           columns={columns}
           getRowId={getRowId}

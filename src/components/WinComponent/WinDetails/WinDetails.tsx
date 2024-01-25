@@ -7,6 +7,7 @@ import { useNavigate } from "react-router-dom";
 import { useBidComponentContext } from "../../BidComponent/BidComponentContext";
 
 export interface WinDetailsType {
+  date: string;
   phoneNumber: string;
   userName: string;
   gameName: string;
@@ -52,6 +53,7 @@ const WinDetails: React.FC<{ gameId: string }> = ({ gameId }) => {
         winSnapshot.forEach((timestamp) => {
           totaloint += timestamp.val().WIN_POINTS || 0;
           winData.push({
+            date: timestamp.val().DATE,
             phoneNumber: timestamp.val().PHONE,
             userName: timestamp.val().NAME,
             gameName: timestamp.val().TYPE,

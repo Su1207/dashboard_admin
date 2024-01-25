@@ -40,8 +40,10 @@
   .dataGrid_deposit {
     background-color: white;
     padding: 15px;
+    width: 83vw;
 
     @include md {
+      width: auto;
       padding: 10px;
     }
 

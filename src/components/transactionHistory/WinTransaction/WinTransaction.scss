@@ -33,8 +33,10 @@
   .dataGrid_win {
     background-color: white;
     padding: 20px;
+    width: 83vw;
 
     @include md {
+      width: auto;
       padding: 10px;
     }
 
