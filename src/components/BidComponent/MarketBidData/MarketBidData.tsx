@@ -149,6 +149,7 @@ const MarketBidData = () => {
           <img src="/UserDeposit.png" alt="" className="deposit_image" />
         </div>
       </div>
+
       <div className="bidDataList">
         <ul>
           {bidDataType ? (

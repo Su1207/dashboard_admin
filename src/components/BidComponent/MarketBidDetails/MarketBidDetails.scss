@@ -50,3 +50,44 @@
     color: black !important;
   }
 }
+
+.particular_game_data {
+  background-image: linear-gradient(to right, #0099f7, #f11712);
+  padding: 20px;
+  margin-bottom: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border-radius: 5px;
+  border: none;
+  width: 25rem;
+  @include sm {
+    width: 100%;
+  }
+
+  .game_data_title {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+
+    .transaction_icon {
+      color: gold;
+      font-size: 1.5rem;
+    }
+  }
+
+  .particular_game_data_list {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    .particular_game_data_name {
+      font-size: 1rem;
+      font-weight: 500;
+    }
+
+    .particular_game_data_amount {
+      margin-left: auto;
+    }
+  }
+}

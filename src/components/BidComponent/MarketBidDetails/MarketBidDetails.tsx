@@ -5,14 +5,16 @@ import { database } from "../../../firebase";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { useBidComponentContext } from "../BidComponentContext";
 import { useNavigate } from "react-router-dom";
+import MonetizationOnRoundedIcon from "@mui/icons-material/MonetizationOnRounded";
 
-interface MarketDetailsType {
+export interface MarketDetailsType {
   marketName: string;
   numbers: { [number: string]: number };
+  marketTotalPoints: number;
 }
 
 const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
-  const [bidDetails, setbidDetails] = useState<MarketDetailsType[]>([]);
+  const { bidDetails, setbidDetails } = useBidComponentContext();
   const [totalPoints, setTotalPoints] = useState(0);
   const [gameName, setGameName] = useState("");
 
@@ -33,8 +35,6 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
         .padStart(2, "0"); // Ensure two digits
       const currentDay = selectedBidDate.getDate().toString().padStart(2, "0");
 
-      console.log(`${currentYear}/${currentMonth}/${currentDay}`);
-
       try {
         const bidRef = ref(
           database,
@@ -49,18 +49,22 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
         bidSnapshot.forEach((bidsnapshot) => {
           const marketName = bidsnapshot.key || "";
           const numbers: { [number: string]: number } = {};
+          let marketTotalPoints = 0;
 
           bidsnapshot.forEach((numberSnapshot) => {
             const number = numberSnapshot.key;
             const points = numberSnapshot.val().POINTS || 0;
 
             totalPoint += points;
+            marketTotalPoints += points;
+
             numbers[number] = points;
           });
 
           marketDetails.push({
             marketName,
             numbers,
+            marketTotalPoints,
           });
         });
 
@@ -92,6 +96,8 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
     fetchbidDetails();
   }, [gameKey]);
 
+  console.log(bidDetails);
+
   const columns: GridColDef[] = [
     { field: "id", headerName: "S.No", width: 70 },
     ...bidDetails.map((market) => ({
@@ -112,8 +118,11 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
       ...bidDetails.reduce(
         (acc, market) => ({
           ...acc,
-          [market.marketName]:
-            Object.entries(market.numbers)[index]?.join(" = ") + " ₹" || "",
+          [market.marketName]: Object.entries(market.numbers)[index]
+            ? `${Object.entries(market.numbers)[index][0]} = ${
+                Object.entries(market.numbers)[index][1]
+              } ₹`
+            : "", // Display "number = points ₹" only if both number and points exist
         }),
         {}
       ),
@@ -137,6 +146,23 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
           {gameName} <span>({gameKey.split("___")[0]})</span>
         </h2>
         <h4>Total - {totalPoints} &#8377;</h4>
+      </div>
+
+      <div className="particular_game_data">
+        <div className="game_data_title">
+          <h3>Game Amount</h3>
+          <MonetizationOnRoundedIcon className="transaction_icon" />
+        </div>
+
+        {bidDetails &&
+          bidDetails.map((bid) => (
+            <div key={bid.marketName} className="particular_game_data_list">
+              <div className="particular_game_data_name">{bid.marketName}</div>
+              <div className="particular_game_data_amount">
+                {bid.marketTotalPoints} &#8377;
+              </div>
+            </div>
+          ))}
       </div>
       {bidDetails ? (
         <DataGrid
