@@ -4,6 +4,7 @@ import { get, ref } from "firebase/database";
 import { database } from "../../../firebase";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { useBidComponentContext } from "../BidComponentContext";
+import { useNavigate } from "react-router-dom";
 
 interface MarketDetailsType {
   marketName: string;
@@ -16,25 +17,6 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
   const [gameName, setGameName] = useState("");
 
   const { selectedBidDate } = useBidComponentContext();
-
-  const sortMarketDetails = (
-    details: MarketDetailsType[]
-  ): MarketDetailsType[] => {
-    const sortOrder = [
-      "Single digit",
-      "Jodi digit",
-      "Single panel",
-      "Double panel",
-      "Triple panel",
-      "Half sangam",
-      "Full sangam",
-    ];
-
-    return details.sort(
-      (a, b) =>
-        sortOrder.indexOf(a.marketName) - sortOrder.indexOf(b.marketName)
-    );
-  };
 
   useEffect(() => {
     const fetchbidDetails = async () => {
@@ -82,11 +64,24 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
           });
         });
 
-        const sortedMarketDetails = sortMarketDetails(marketDetails);
+        // Define the order for sorting
+        const sortOrder = [
+          "Single Digit",
+          "Jodi Digit",
+          "Single Panel",
+          "Double Panel",
+          "Triple Panel",
+          "Half Sangam",
+          "Full Sangam",
+        ];
 
-        console.log(sortedMarketDetails);
+        // Sort the marketDetails array based on the sortOrder
+        marketDetails.sort(
+          (a, b) =>
+            sortOrder.indexOf(a.marketName) - sortOrder.indexOf(b.marketName)
+        );
 
-        setbidDetails(sortedMarketDetails);
+        setbidDetails(marketDetails);
         setTotalPoints(totalPoint);
 
         // const marketsnapshot =
@@ -125,8 +120,18 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
     })
   );
 
+  const navigate = useNavigate();
+
+  const handleBackClick = () => {
+    // Navigate back to the main page with the selected date
+    navigate(`/bid`);
+  };
+
   return (
     <div className="dataTable_deposit">
+      <button className="back_button" onClick={handleBackClick}>
+        &lt; Back
+      </button>
       <div className="bid_header">
         <h2>
           {gameName} <span>({gameKey.split("___")[0]})</span>
