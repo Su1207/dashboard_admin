@@ -75,13 +75,13 @@ const WinDEtailsGrid: React.FC<WinDetailsGridType> = ({ winDetails }) => {
           columns={columns}
           getRowId={getRowId}
           // checkboxSelection
-          //   initialState={{
-          //     pagination: {
-          //       paginationModel: {
-          //         pageSize: 15,
-          //       },
-          //     },
-          //   }}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 15,
+              },
+            },
+          }}
           slots={{ toolbar: GridToolbar }}
           slotProps={{
             toolbar: {
@@ -89,8 +89,7 @@ const WinDEtailsGrid: React.FC<WinDetailsGridType> = ({ winDetails }) => {
               quickFilterProps: { debounceMs: 500 },
             },
           }}
-          //   pageSizeOptions={[15]}
-          // checkboxSelection
+          pageSizeOptions={[15]}
           disableRowSelectionOnClick
           disableColumnFilter
           disableColumnSelector

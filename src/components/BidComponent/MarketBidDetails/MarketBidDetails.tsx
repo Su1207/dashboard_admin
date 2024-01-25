@@ -2,7 +2,8 @@ import { useEffect, useState } from "react";
 import "./MarketBidDetails.scss";
 import { get, ref } from "firebase/database";
 import { database } from "../../../firebase";
-import { DataGrid, GridColDef } from "@mui/x-data-grid";
+import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
+import { useBidComponentContext } from "../BidComponentContext";
 
 interface MarketDetailsType {
   marketName: string;
@@ -14,6 +15,27 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
   const [totalPoints, setTotalPoints] = useState(0);
   const [gameName, setGameName] = useState("");
 
+  const { selectedBidDate } = useBidComponentContext();
+
+  const sortMarketDetails = (
+    details: MarketDetailsType[]
+  ): MarketDetailsType[] => {
+    const sortOrder = [
+      "Single digit",
+      "Jodi digit",
+      "Single panel",
+      "Double panel",
+      "Triple panel",
+      "Half sangam",
+      "Full sangam",
+    ];
+
+    return details.sort(
+      (a, b) =>
+        sortOrder.indexOf(a.marketName) - sortOrder.indexOf(b.marketName)
+    );
+  };
+
   useEffect(() => {
     const fetchbidDetails = async () => {
       const gameActualKey = gameKey.split("___")[1];
@@ -21,17 +43,20 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
 
       setGameName(gameKey.split("___")[2]);
 
-      const date = gameKey.split("___")[3];
-      console.log(date);
+      //   const date = gameKey.split("___")[3];
 
-      console.log(openClose);
+      const currentYear = selectedBidDate.getFullYear();
+      const currentMonth = (selectedBidDate.getMonth() + 1)
+        .toString()
+        .padStart(2, "0"); // Ensure two digits
+      const currentDay = selectedBidDate.getDate().toString().padStart(2, "0");
+
+      console.log(`${currentYear}/${currentMonth}/${currentDay}`);
 
       try {
         const bidRef = ref(
           database,
-          `TOTAL TRANSACTION/BIDS/${date.split("-")[2]}/${date.split("-")[1]}/${
-            date.split("-")[0]
-          }/${gameActualKey}/${openClose}`
+          `TOTAL TRANSACTION/BIDS/${currentYear}/${currentMonth}/${currentDay}/${gameActualKey}/${openClose}`
         );
 
         const marketDetails: MarketDetailsType[] = [];
@@ -57,7 +82,11 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
           });
         });
 
-        setbidDetails(marketDetails);
+        const sortedMarketDetails = sortMarketDetails(marketDetails);
+
+        console.log(sortedMarketDetails);
+
+        setbidDetails(sortedMarketDetails);
         setTotalPoints(totalPoint);
 
         // const marketsnapshot =
@@ -117,13 +146,13 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
           //       },
           //     },
           //   }}
-          //   slots={{ toolbar: GridToolbar }}
-          //   slotProps={{
-          //     toolbar: {
-          //       showQuickFilter: true,
-          //       quickFilterProps: { debounceMs: 500 },
-          //     },
-          //   }}
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+              quickFilterProps: { debounceMs: 500 },
+            },
+          }}
           //   pageSizeOptions={[15]}
           // checkboxSelection
           disableRowSelectionOnClick

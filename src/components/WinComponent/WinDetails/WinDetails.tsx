@@ -4,6 +4,7 @@ import { get, ref } from "firebase/database";
 import { database } from "../../../firebase";
 import WinDEtailsGrid from "./WinDEtailsGrid";
 import { useNavigate } from "react-router-dom";
+import { useBidComponentContext } from "../../BidComponent/BidComponentContext";
 
 export interface WinDetailsType {
   phoneNumber: string;
@@ -22,20 +23,25 @@ const WinDetails: React.FC<{ gameId: string }> = ({ gameId }) => {
   const [marketName, setMarketName] = useState("");
   const [totalPoints, setTotalPoints] = useState(0);
 
+  const { selectedWinDate } = useBidComponentContext();
+
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchWinDetails = async () => {
       const gameActualKey = gameId.split("___")[0];
-      const date = gameId.split("___")[1];
-      setMarketName(gameId.split("___")[2]);
+      setMarketName(gameId.split("___")[1]);
+
+      const currentYear = selectedWinDate.getFullYear();
+      const currentMonth = (selectedWinDate.getMonth() + 1)
+        .toString()
+        .padStart(2, "0");
+      const currentDay = selectedWinDate.getDate().toString().padStart(2, "0");
 
       try {
         const winRef = ref(
           database,
-          `TOTAL TRANSACTION/WIN/DATE WISE/${date.split("-")[2]}/${
-            date.split("-")[1]
-          }/${date.split("-")[0]}/${gameActualKey}`
+          `TOTAL TRANSACTION/WIN/DATE WISE/${currentYear}/${currentMonth}/${currentDay}/${gameActualKey}`
         );
 
         const winData: WinDetailsType[] = [];
@@ -70,12 +76,14 @@ const WinDetails: React.FC<{ gameId: string }> = ({ gameId }) => {
 
   const handleBackClick = () => {
     // Navigate back to the main page with the selected date
-    navigate(`/win?date=${gameId.split("___")[1]}`);
+    navigate(`/win`);
   };
 
   return (
-    <div className="winDetails">
-      <button onClick={handleBackClick}>&lt; Back</button>
+    <div>
+      <button className="back_button" onClick={handleBackClick}>
+        &lt; Back
+      </button>
       <div className="win_header">
         <h2>{marketName}</h2>
         <h4>Total - &#8377; {totalPoints}</h4>

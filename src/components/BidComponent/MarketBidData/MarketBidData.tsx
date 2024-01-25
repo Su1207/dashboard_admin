@@ -5,6 +5,7 @@ import { database } from "../../../firebase";
 import { useNavigate } from "react-router-dom";
 import DatePicker from "react-datepicker";
 import { FaCalendarAlt } from "react-icons/fa";
+import { useBidComponentContext } from "../BidComponentContext";
 
 type BidDataType = {
   gameKey: string;
@@ -15,21 +16,18 @@ type BidDataType = {
 
 const MarketBidData = () => {
   const [bidDataType, setBidDataType] = useState<BidDataType[] | null>(null);
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [date, setDate] = useState("");
+  const { selectedBidDate, setSelectedBidDate } = useBidComponentContext();
+  const [totalBidPoints, setTotalBidPoints] = useState(0);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchMarketData = async () => {
-      const currentYear = selectedDate.getFullYear();
-      const currentMonth = (selectedDate.getMonth() + 1)
+      const currentYear = selectedBidDate.getFullYear();
+      const currentMonth = (selectedBidDate.getMonth() + 1)
         .toString()
         .padStart(2, "0"); // Ensure two digits
-      const currentDay = selectedDate.getDate().toString().padStart(2, "0");
-
-      const currentDate = `${currentDay}-${currentMonth}-${currentYear}`;
-      setDate(currentDate);
+      const currentDay = selectedBidDate.getDate().toString().padStart(2, "0");
 
       try {
         const gamesRef = ref(database, "GAMES");
@@ -45,6 +43,7 @@ const MarketBidData = () => {
 
         if (gameSnapshot.exists()) {
           const bidData: BidDataType[] = [];
+          let totalBidPoint = 0;
 
           gameSnapshot.forEach((gamesnapshot) => {
             const marketKey = gamesnapshot.key;
@@ -81,13 +80,15 @@ const MarketBidData = () => {
               gamesnapshot.child("CLOSE")
             );
 
+            totalBidPoint += totalPointsClose + totalPointsOpen;
+
             bidData.push({
               gameKey: marketKey,
               gameName: marketName.join(", "), // Concatenate game names into a string
               openTotal: totalPointsOpen,
               closeTotal: totalPointsClose,
             });
-
+            setTotalBidPoints(totalBidPoint);
             setBidDataType(bidData);
           });
         } else {
@@ -99,27 +100,23 @@ const MarketBidData = () => {
     };
 
     fetchMarketData();
-  }, [selectedDate]);
+  }, [selectedBidDate]);
 
   const handleDateChange = (newDate: Date) => {
-    setSelectedDate(newDate);
+    setSelectedBidDate(newDate);
   };
 
-  if (!selectedDate) {
+  if (!selectedBidDate) {
     const currentDate = new Date();
-    setSelectedDate(currentDate);
+    setSelectedBidDate(currentDate);
   }
 
-  const handleOpenClick = (gamekey: string, gamename: string, date: string) => {
-    navigate(`/bid/OPEN___${gamekey}___${gamename}___${date}`);
+  const handleOpenClick = (gamekey: string, gamename: string) => {
+    navigate(`/bid/OPEN___${gamekey}___${gamename}`);
   };
 
-  const handleCloseClick = (
-    gamekey: string,
-    gamename: string,
-    date: string
-  ) => {
-    navigate(`/bid/CLOSE___${gamekey}___${gamename}___${date}`);
+  const handleCloseClick = (gamekey: string, gamename: string) => {
+    navigate(`/bid/CLOSE___${gamekey}___${gamename}`);
   };
 
   return (
@@ -130,7 +127,7 @@ const MarketBidData = () => {
           <div className="date-pic">
             <DatePicker
               className="datePicker"
-              selected={selectedDate}
+              selected={selectedBidDate}
               onChange={handleDateChange}
               dateFormat="dd-MMM-yyyy"
               maxDate={new Date()} // Set the maximum date to the current date
@@ -141,6 +138,15 @@ const MarketBidData = () => {
               <FaCalendarAlt />
             </div>
           </div>
+        </div>
+      </div>
+      <div className="usersTotalBid">
+        <h4 className="total_bid_title">TOTAL BID AMOUNT</h4>
+        <div className="total_bid">
+          <div className="amount">&#8377; {totalBidPoints}</div>
+        </div>
+        <div className="money_icon">
+          <img src="/UserDeposit.png" alt="" className="deposit_image" />
         </div>
       </div>
       <div className="bidDataList">
@@ -166,7 +172,7 @@ const MarketBidData = () => {
                   <p
                     className="openTotal"
                     onClick={() =>
-                      handleOpenClick(bidData.gameKey, bidData.gameName, date)
+                      handleOpenClick(bidData.gameKey, bidData.gameName)
                     }
                   >
                     {bidData.openTotal}
@@ -174,7 +180,7 @@ const MarketBidData = () => {
                   <p
                     className="closeTotal"
                     onClick={() =>
-                      handleCloseClick(bidData.gameKey, bidData.gameName, date)
+                      handleCloseClick(bidData.gameKey, bidData.gameName)
                     }
                   >
                     {bidData.closeTotal}

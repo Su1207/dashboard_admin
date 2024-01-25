@@ -5,6 +5,7 @@ import { FaCalendarAlt } from "react-icons/fa";
 import { get, ref } from "firebase/database";
 import { database } from "../../../firebase";
 import { useNavigate } from "react-router-dom";
+import { useBidComponentContext } from "../../BidComponent/BidComponentContext";
 
 interface WinDataType {
   marketkey: string;
@@ -13,38 +14,20 @@ interface WinDataType {
   closeTotal: number;
 }
 
-const WinData: React.FC<{ dateString: string | null }> = ({ dateString }) => {
-  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
+const WinData: React.FC = () => {
+  const { selectedWinDate, setSelectedWinDate } = useBidComponentContext();
   const [winDataType, setWinDataType] = useState<WinDataType[] | null>([]);
-  const [date, setDate] = useState("");
+  const [totalWinPoints, settotalWinPoints] = useState(0);
 
   const navigate = useNavigate();
 
   useEffect(() => {
     const fetchWinData = async () => {
-      let currentDay: string = "";
-      let currentMonth: string = "";
-      let currentYear: string = "";
-
-      if (dateString) {
-        [currentDay, currentMonth, currentYear] = dateString.split("-");
-        const dateObject = new Date(
-          `${currentYear}-${currentMonth}-${currentDay}`
-        );
-        // Check if selectedDate has changed before updating
-        if (dateObject.getTime() !== selectedDate.getTime()) {
-          setSelectedDate(dateObject);
-        }
-      } else {
-        currentYear = selectedDate.getFullYear().toString();
-        currentMonth = (selectedDate.getMonth() + 1)
-          .toString()
-          .padStart(2, "0");
-        currentDay = selectedDate.getDate().toString().padStart(2, "0");
-      }
-
-      const currentDate = `${currentDay}-${currentMonth}-${currentYear}`;
-      setDate(currentDate);
+      const currentYear = selectedWinDate.getFullYear();
+      const currentMonth = (selectedWinDate.getMonth() + 1)
+        .toString()
+        .padStart(2, "0");
+      const currentDay = selectedWinDate.getDate().toString().padStart(2, "0");
 
       try {
         const marketRef = ref(
@@ -56,11 +39,13 @@ const WinData: React.FC<{ dateString: string | null }> = ({ dateString }) => {
 
         if (marketSnapshot.exists()) {
           const winData: WinDataType[] = [];
+          let totalWinPoint = 0;
           marketSnapshot.forEach((marketsnapshot) => {
             const marketKey = marketsnapshot.key;
             let marketName: string = "";
             let totalOpen: number = 0;
             let totalClose: number = 0;
+
             marketsnapshot.forEach((timestamp) => {
               marketName = timestamp.val().MARKET_NAME;
               if (timestamp.val().OPEN_CLOSE === "OPEN") {
@@ -75,8 +60,10 @@ const WinData: React.FC<{ dateString: string | null }> = ({ dateString }) => {
               openTotal: totalOpen,
               closeTotal: totalClose,
             });
-          });
 
+            totalWinPoint += totalOpen + totalClose;
+          });
+          settotalWinPoints(totalWinPoint);
           setWinDataType(winData);
         } else {
           setWinDataType(null);
@@ -87,25 +74,27 @@ const WinData: React.FC<{ dateString: string | null }> = ({ dateString }) => {
     };
 
     fetchWinData();
-  }, [selectedDate, dateString]);
+  }, [selectedWinDate]);
+
+  console.log(totalWinPoints);
 
   const handleDateChange = (date: Date) => {
-    setSelectedDate(date);
+    setSelectedWinDate(date);
   };
 
   //   if (dateString) {
   //     const [day, month, year] = dateString.split("-");
   //     const dateObject = new Date(`${year}-${month}-${day}`);
-  //     setSelectedDate(dateObject);
+  //     S(dateObject);
   //   }
 
-  if (!selectedDate) {
+  if (!selectedWinDate) {
     const currentDate = new Date();
-    setSelectedDate(currentDate);
+    setSelectedWinDate(currentDate);
   }
 
-  const handleClick = (gamekey: string, date: string, gameName: string) => {
-    navigate(`/win/${gamekey}___${date}___${gameName}`);
+  const handleClick = (gamekey: string, gameName: string) => {
+    navigate(`/win/${gamekey}___${gameName}`);
   };
 
   return (
@@ -116,7 +105,7 @@ const WinData: React.FC<{ dateString: string | null }> = ({ dateString }) => {
           <div className="date-pic">
             <DatePicker
               className="datePicker"
-              selected={selectedDate}
+              selected={selectedWinDate}
               onChange={handleDateChange}
               dateFormat="dd-MMM-yyyy"
               maxDate={new Date()} // Set the maximum date to the current date
@@ -127,6 +116,15 @@ const WinData: React.FC<{ dateString: string | null }> = ({ dateString }) => {
               <FaCalendarAlt />
             </div>
           </div>
+        </div>
+      </div>
+      <div className="usersTotalWin">
+        <h4 className="total_win_title">TOTAL WIN AMOUNT</h4>
+        <div className="total_win">
+          <div className="amount">&#8377; {totalWinPoints}</div>
+        </div>
+        <div className="money_icon">
+          <img src="/UserWithdraw.png" alt="" className="withdraw_image" />
         </div>
       </div>
       <div className="winDataList">
@@ -151,7 +149,7 @@ const WinData: React.FC<{ dateString: string | null }> = ({ dateString }) => {
                   <p
                     className="gameName"
                     onClick={() =>
-                      handleClick(winData.marketkey, date, winData.marketName)
+                      handleClick(winData.marketkey, winData.marketName)
                     }
                   >
                     {winData.marketName}

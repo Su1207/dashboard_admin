@@ -34,6 +34,47 @@
     }
   }
 
+  .usersTotalWin {
+    padding: 20px;
+    margin-bottom: 1rem;
+    border-radius: 5px;
+    border: none;
+    width: 20rem;
+    min-height: 150px;
+    background-image: linear-gradient(to right, #ff512f, #f09819);
+    display: flex;
+    flex-direction: column;
+
+    @include sm {
+      width: 100%;
+    }
+
+    .total_win_title {
+      flex: 1;
+    }
+
+    .total_win {
+      flex: 1;
+
+      .amount {
+        font-size: 1.8rem;
+        font-weight: 700;
+      }
+    }
+
+    .money_icon {
+      display: flex;
+      flex: 1;
+      justify-content: flex-end;
+      align-items: flex-end;
+
+      .withdraw_image {
+        height: 40px;
+        width: 40px;
+      }
+    }
+  }
+
   .winDataList {
     background: #fff;
     ul {

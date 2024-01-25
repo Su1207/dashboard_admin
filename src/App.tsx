@@ -22,6 +22,7 @@ import Bid from "./pages/Bid/Bid";
 import BidDetails from "./pages/Bid/BidDetails";
 import Win from "./pages/Win/Win";
 import WinDetail from "./pages/Win/WinDetail";
+import { BidComponentProvider } from "./components/BidComponent/BidComponentContext";
 
 const Layout = () => {
   const { isAuthenticated } = useAuth();
@@ -40,7 +41,9 @@ const Layout = () => {
               <Menu />
             </div>
             <div className="contentContainer">
-              <Outlet />
+              <BidComponentProvider>
+                <Outlet />
+              </BidComponentProvider>
             </div>
           </div>
           <div className="footer">
