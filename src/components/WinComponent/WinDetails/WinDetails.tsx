@@ -82,7 +82,7 @@ const WinDetails: React.FC<{ gameId: string }> = ({ gameId }) => {
   return (
     <div>
       <button className="back_button" onClick={handleBackClick}>
-        &lt; Back
+        &lt; back
       </button>
       <div className="win_header">
         <h2>{marketName}</h2>

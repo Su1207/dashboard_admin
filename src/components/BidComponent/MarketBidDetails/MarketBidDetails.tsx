@@ -130,7 +130,7 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
   return (
     <div className="dataTable_deposit">
       <button className="back_button" onClick={handleBackClick}>
-        &lt; Back
+        &lt; back
       </button>
       <div className="bid_header">
         <h2>
