@@ -5,6 +5,7 @@ import { database } from "../../../firebase";
 import WinDEtailsGrid from "./WinDEtailsGrid";
 import { useNavigate } from "react-router-dom";
 import { useBidComponentContext } from "../../BidComponent/BidComponentContext";
+import { FaFilter } from "react-icons/fa6";
 
 export interface WinDetailsType {
   date: string;
@@ -20,9 +21,10 @@ export interface WinDetailsType {
 }
 
 const WinDetails: React.FC<{ gameId: string }> = ({ gameId }) => {
-  const [winDetails, setWinDetails] = useState<WinDetailsType[]>([]);
+  const [winDetails, setWinDetails] = useState<WinDetailsType[] | null>(null);
   const [marketName, setMarketName] = useState("");
   const [totalPoints, setTotalPoints] = useState(0);
+  const [selectedOption, setSelectedOption] = useState("");
 
   const { selectedWinDate } = useBidComponentContext();
 
@@ -66,15 +68,23 @@ const WinDetails: React.FC<{ gameId: string }> = ({ gameId }) => {
           });
         });
 
-        setWinDetails(winData);
         setTotalPoints(totaloint);
+
+        if (selectedOption !== "") {
+          const filterWinDetails = winData.filter(
+            (item) => item.openClose === selectedOption
+          );
+          setWinDetails(filterWinDetails);
+        } else {
+          setWinDetails(winData);
+        }
       } catch (err) {
         console.log(err);
       }
     };
 
     fetchWinDetails();
-  }, [gameId]);
+  }, [gameId, selectedOption]);
 
   const handleBackClick = () => {
     // Navigate back to the main page with the selected date
@@ -89,6 +99,26 @@ const WinDetails: React.FC<{ gameId: string }> = ({ gameId }) => {
       <div className="win_header">
         <h2>{marketName}</h2>
         <h4>Total - &#8377; {totalPoints}</h4>
+      </div>
+      <div className="filter_option_input">
+        <div className="filter_icon">
+          <FaFilter size={18} />
+        </div>
+        <select
+          value={selectedOption}
+          className="select_filter_option"
+          onChange={(e) => setSelectedOption(e.target.value)}
+        >
+          <option value="" className="filter_option">
+            ALL
+          </option>
+          <option value="OPEN" className="filter_option">
+            OPEN
+          </option>
+          <option value="CLOSE" className="filter_option">
+            CLOSE
+          </option>
+        </select>
       </div>
       {winDetails && <WinDEtailsGrid winDetails={winDetails} />}
     </div>
