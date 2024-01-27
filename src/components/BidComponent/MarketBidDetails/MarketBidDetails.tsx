@@ -25,12 +25,26 @@ export type UserDetailsType = {
   userName: string;
 };
 
+const currentFormattedDate = () => {
+  const currentDate = new Date();
+  const year = currentDate.getFullYear();
+  const month = (currentDate.getMonth() + 1).toString().padStart(2, "0");
+  const date = currentDate.getDate().toString().padStart(2, "0");
+  const hours = (currentDate.getHours() % 12 || 12).toString().padStart(2, "0");
+  const min = currentDate.getMinutes().toString().padStart(2, "0");
+  const sec = currentDate.getSeconds().toString().padStart(2, "0");
+  const meridiem = currentDate.getHours() >= 12 ? "PM" : "AM";
+
+  return `${date}-${month}-${year} | ${hours}:${min}:${sec} ${meridiem}`;
+};
+
 const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
   const { bidDetails, setbidDetails } = useBidComponentContext();
   const [userDetails, setUserDetails] = useState<UserDetailsType[]>([]);
   const [totalPoints, setTotalPoints] = useState(0);
   const [gameName, setGameName] = useState("");
   const [clickedNumber, setClickedNumber] = useState(false);
+  const [formattedText, setFormattedText] = useState<any>(""); // Declare formattedText as state
 
   const { selectedBidDate } = useBidComponentContext();
 
@@ -160,6 +174,60 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
     }
   };
 
+  const handleCopyToClipboard = async () => {
+    // Construct the formatted text
+    let newFormattedText = `✦ ${gameName} (${
+      gameKey.split("___")[0]
+    }) : ${totalPoints} ₹ ✦\n\nDate : ${currentFormattedDate()}\n\n`;
+
+    const gameTypes = [
+      "Single Digit",
+      "Jodi Digit",
+      "Single Panel",
+      "Double Panel",
+      "Triple Panel",
+      "Half Sangam",
+      "Full Sangam",
+    ];
+
+    gameTypes.forEach((type) => {
+      const gameDetails = bidDetails.find(
+        (detail) => detail.marketName === type
+      );
+
+      if (gameDetails) {
+        newFormattedText += `${type} : ${gameDetails.marketTotalPoints} ₹\n`;
+      }
+    });
+
+    gameTypes.forEach((type) => {
+      const gameDetails = bidDetails.find(
+        (detail) => detail.marketName === type
+      );
+
+      if (gameDetails) {
+        newFormattedText += `\n✦ ${type} ✦\n\n`;
+        Object.entries(gameDetails.numbers).forEach(([number, points]) => {
+          newFormattedText += `${number}=${points} ₹\n`;
+        });
+        newFormattedText += `--------------------\nTotal = ${gameDetails.marketTotalPoints}\n--------------------\n\n`;
+      }
+    });
+
+    // Update the state
+    setFormattedText(newFormattedText);
+
+    try {
+      // Use the updated state value directly inside the writeText callback
+      await navigator.clipboard.writeText(newFormattedText);
+      // Provide feedback to the user, e.g., toast message
+      alert("Copied to clipboard!");
+      console.log(formattedText);
+    } catch (error) {
+      console.error("Error copying to clipboard:", error);
+    }
+  };
+
   const columns: GridColDef[] = [
     { field: "id", headerName: "S.No", width: 70 },
     ...bidDetails.map((market) => ({
@@ -240,6 +308,11 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
             </div>
           ))}
       </div>
+
+      <button className="copy_button" onClick={handleCopyToClipboard}>
+        Copy to Clipboard
+      </button>
+
       {bidDetails ? (
         <DataGrid
           className="dataGrid_deposit"

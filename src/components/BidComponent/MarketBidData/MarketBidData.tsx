@@ -93,6 +93,7 @@ const MarketBidData = () => {
           });
         } else {
           setBidDataType(null);
+          setTotalBidPoints(0);
         }
       } catch (err) {
         console.log(err);
