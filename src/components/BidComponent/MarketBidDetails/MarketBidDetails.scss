@@ -91,3 +91,24 @@
     }
   }
 }
+
+.copy_button_div {
+  display: flex;
+  justify-content: flex-end;
+
+  .copy_button {
+    padding: 10px 20px;
+    cursor: pointer;
+    border: none;
+    outline: none;
+    margin-bottom: 1rem;
+    border-radius: 3px;
+    font-weight: 500;
+    background: rgb(18, 18, 63);
+    color: #fff;
+    transition: all 0.3s;
+    &:hover {
+      background: #000;
+    }
+  }
+}

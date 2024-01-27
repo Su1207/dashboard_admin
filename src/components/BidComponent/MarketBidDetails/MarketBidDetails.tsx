@@ -309,9 +309,11 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
           ))}
       </div>
 
-      <button className="copy_button" onClick={handleCopyToClipboard}>
-        Copy to Clipboard
-      </button>
+      <div className="copy_button_div">
+        <button className="copy_button" onClick={handleCopyToClipboard}>
+          Copy
+        </button>
+      </div>
 
       {bidDetails ? (
         <DataGrid
