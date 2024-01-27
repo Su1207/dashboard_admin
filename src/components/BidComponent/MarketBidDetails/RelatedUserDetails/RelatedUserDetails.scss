@@ -1,0 +1,57 @@
+@import "../../../../styles/variables.scss";
+@import "../../../../styles/responsive.scss";
+
+.details_container {
+  width: 98.7vw;
+  min-height: 100vh;
+  position: absolute;
+  top: 0;
+  left: 0;
+  background-color: rgba(0, 0, 0, 0.724);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 1;
+  overflow-x: hidden;
+
+  .modal {
+    width: 30%;
+    padding: 30px;
+    border-radius: 15px;
+    background-color: aliceblue;
+    color: black;
+    position: relative;
+    opacity: 1;
+    transition: opacity 0.3s ease-in-out;
+
+    @include md {
+      width: 80%;
+    }
+
+    .close {
+      position: absolute;
+      top: 10px;
+      right: 10px;
+      cursor: pointer;
+    }
+
+    .details_main_container {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+
+      .user_details {
+        margin-top: 1rem;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        font-size: 0.875rem;
+
+        .username {
+          text-transform: capitalize;
+          font-weight: 600;
+        }
+      }
+    }
+  }
+}

@@ -2,10 +2,16 @@ import { useEffect, useState } from "react";
 import "./MarketBidDetails.scss";
 import { get, ref } from "firebase/database";
 import { database } from "../../../firebase";
-import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
+import {
+  DataGrid,
+  GridCellParams,
+  GridColDef,
+  GridToolbar,
+} from "@mui/x-data-grid";
 import { useBidComponentContext } from "../BidComponentContext";
 import { useNavigate } from "react-router-dom";
 import MonetizationOnRoundedIcon from "@mui/icons-material/MonetizationOnRounded";
+import RelatedUserDetails from "./RelatedUserDetails/RelatedUserDetails";
 
 export interface MarketDetailsType {
   marketName: string;
@@ -13,10 +19,18 @@ export interface MarketDetailsType {
   marketTotalPoints: number;
 }
 
+export type UserDetailsType = {
+  phoneNumber: string;
+  points: number;
+  userName: string;
+};
+
 const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
   const { bidDetails, setbidDetails } = useBidComponentContext();
+  const [userDetails, setUserDetails] = useState<UserDetailsType[]>([]);
   const [totalPoints, setTotalPoints] = useState(0);
   const [gameName, setGameName] = useState("");
+  const [clickedNumber, setClickedNumber] = useState(false);
 
   const { selectedBidDate } = useBidComponentContext();
 
@@ -96,7 +110,55 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
     fetchbidDetails();
   }, [gameKey]);
 
-  console.log(bidDetails);
+  //   console.log(bidDetails);
+
+  const handleColumnClick = async (row: any, columnName: string) => {
+    try {
+      const gameActualKey = gameKey.split("___")[1];
+      const openClose = gameKey.split("___")[0];
+      const currentYear = selectedBidDate.getFullYear();
+      const currentMonth = (selectedBidDate.getMonth() + 1)
+        .toString()
+        .padStart(2, "0");
+      const currentDay = selectedBidDate.getDate().toString().padStart(2, "0");
+
+      const bidRef = ref(
+        database,
+        `TOTAL TRANSACTION/BIDS/${currentYear}/${currentMonth}/${currentDay}/${gameActualKey}/${openClose}/${columnName}/${
+          row[columnName].split(" = ")[0]
+        }/USERS`
+      );
+
+      const usersSnapshot = await get(bidRef);
+
+      const usersList: UserDetailsType[] = [];
+      const promises: Promise<void>[] = [];
+
+      usersSnapshot.forEach((userSnapshot) => {
+        let userName = "";
+
+        const phoneNumber = userSnapshot.key;
+        const points = userSnapshot.val();
+
+        const userRef = ref(database, `USERS/${phoneNumber}`);
+
+        const promise = get(userRef).then((snapshot) => {
+          if (snapshot.exists()) {
+            userName = snapshot.val().NAME;
+          }
+          usersList.push({ phoneNumber, points, userName });
+        });
+        promises.push(promise);
+      });
+
+      await Promise.all(promises);
+      setClickedNumber(!clickedNumber);
+      setUserDetails(usersList);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    } catch (err) {
+      console.error("Error fetching users:", err);
+    }
+  };
 
   const columns: GridColDef[] = [
     { field: "id", headerName: "S.No", width: 70 },
@@ -104,6 +166,14 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
       field: market.marketName,
       headerName: market.marketName,
       width: 150,
+      renderCell: (params: GridCellParams) => (
+        <div
+          onClick={() => handleColumnClick(params.row, market.marketName)}
+          style={{ cursor: "pointer" }}
+        >
+          {params.row[market.marketName]}
+        </div>
+      ),
     })),
   ];
 
@@ -138,6 +208,12 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
 
   return (
     <div className="dataTable_deposit">
+      {clickedNumber && (
+        <RelatedUserDetails
+          userDetails={userDetails}
+          setClickedNumber={setClickedNumber}
+        />
+      )}
       <button className="back_button" onClick={handleBackClick}>
         &lt; back
       </button>
