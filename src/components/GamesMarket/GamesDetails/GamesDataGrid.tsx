@@ -37,12 +37,14 @@ const GamesDataGrid: React.FC<gameDataGridProps> = ({ gameData }) => {
   const handleEdit = (gameid: string) => {
     setEditGame(!editGame);
     setGameId(gameid);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleUpdate = (gameid: string, gamename: string) => {
     setGameId(gameid);
     setOpenClose(!openClose);
     setGameName(gamename);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const columns: GridColDef[] = [

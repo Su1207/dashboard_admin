@@ -51,11 +51,13 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
   const handleAddPoints = (userId: string) => {
     setSelectedUserId(userId);
     setIsAddPointsFormVisible(!isAddPointsFormVisible);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleWithdrawPoints = (userId: string) => {
     setSelectedUserId(userId);
     setIsWithdrawPointsFormVisible(!isWithdrawPointsFormVisible);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const columns: GridColDef[] = [

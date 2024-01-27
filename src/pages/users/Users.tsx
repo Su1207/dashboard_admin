@@ -115,6 +115,7 @@ const Users: React.FC = () => {
 
   const handleClick = () => {
     setAddUser(!addUser);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const handleOptionChange = (value: string) => {

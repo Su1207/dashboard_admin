@@ -6,11 +6,16 @@ import { useState } from "react";
 
 const Games = () => {
   const [addGame, setAddGame] = useState(false);
+
+  const handleAddClick = () => {
+    setAddGame(!addGame);
+    // window.scrollTo({ top: 0, behavior: "smooth" });
+  };
   return (
     <div className="games">
       <div className="games_title">
         <h1 className="market">Market</h1>
-        <div className="add_games" onClick={() => setAddGame(!addGame)}>
+        <div className="add_games" onClick={handleAddClick}>
           Add New <AddCircleIcon />
         </div>
       </div>
