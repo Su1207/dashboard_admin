@@ -1,9 +1,9 @@
 import PayoutComponent from "../../components/PayoutComponent/PayoutComponent";
-
+import "./Payout.scss";
 const Payout = () => {
   return (
-    <div>
-      <h2>Payout</h2>
+    <div className="payout">
+      <h2>Payout Details</h2>
       <PayoutComponent />
     </div>
   );
