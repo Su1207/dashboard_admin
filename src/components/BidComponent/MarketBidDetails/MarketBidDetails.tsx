@@ -12,6 +12,7 @@ import { useBidComponentContext } from "../BidComponentContext";
 import { useNavigate } from "react-router-dom";
 import MonetizationOnRoundedIcon from "@mui/icons-material/MonetizationOnRounded";
 import RelatedUserDetails from "./RelatedUserDetails/RelatedUserDetails";
+// import EditorModal from "./EditorModal";
 
 export interface MarketDetailsType {
   marketName: string;
@@ -45,6 +46,7 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
   const [gameName, setGameName] = useState("");
   const [clickedNumber, setClickedNumber] = useState(false);
   const [formattedText, setFormattedText] = useState<any>(""); // Declare formattedText as state
+  const [isEditorVisible, setIsEditorVisible] = useState(false);
 
   const { selectedBidDate } = useBidComponentContext();
 
@@ -222,11 +224,14 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
       await navigator.clipboard.writeText(newFormattedText);
       // Provide feedback to the user, e.g., toast message
       alert("Copied to clipboard!");
-      console.log(formattedText);
+      //   console.log(formattedText);
+      toggleEditor();
     } catch (error) {
       console.error("Error copying to clipboard:", error);
     }
   };
+
+  console.log(formattedText);
 
   const columns: GridColDef[] = [
     { field: "id", headerName: "S.No", width: 70 },
@@ -274,6 +279,10 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
     navigate(`/bid`);
   };
 
+  const toggleEditor = () => {
+    setIsEditorVisible(!isEditorVisible);
+  };
+
   return (
     <div className="dataTable_deposit">
       {clickedNumber && (
@@ -289,7 +298,6 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
         <h2>
           {gameName} <span>({gameKey.split("___")[0]})</span>
         </h2>
-        <h4>Total - {totalPoints} &#8377;</h4>
       </div>
 
       <div className="particular_game_data">
@@ -307,9 +315,14 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
               </div>
             </div>
           ))}
-      </div>
 
-      <div className="copy_button_div">
+        <div className="particular_game_data_list total_points">
+          <div className="particular_game_data_name total">Total</div>
+          <div className="particular_game_data_amount">
+            {totalPoints} &#8377;
+          </div>
+        </div>
+
         <button className="copy_button" onClick={handleCopyToClipboard}>
           Copy
         </button>

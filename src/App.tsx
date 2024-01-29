@@ -23,6 +23,7 @@ import BidDetails from "./pages/Bid/BidDetails";
 import Win from "./pages/Win/Win";
 import WinDetail from "./pages/Win/WinDetail";
 import { BidComponentProvider } from "./components/BidComponent/BidComponentContext";
+import Payout from "./pages/Payout/Payout";
 
 const Layout = () => {
   const { isAuthenticated } = useAuth();
@@ -70,6 +71,10 @@ const router = createBrowserRouter([
       {
         path: "/login",
         element: <Login />,
+      },
+      {
+        path: "/payout",
+        element: <Payout />,
       },
       {
         path: "/users",
