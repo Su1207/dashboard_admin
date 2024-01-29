@@ -4,6 +4,7 @@ import { useEffect, useState } from "react";
 import { get, ref, set } from "firebase/database";
 import { database } from "../../../firebase";
 import { toast } from "react-toastify";
+import "./EditorPayout.scss";
 
 type PayoutEditDataType = {
   ACC_IFSC: string;
@@ -100,7 +101,7 @@ const EditPayout = (props: Props) => {
   };
 
   return (
-    <div className="add">
+    <div className="add add_payout">
       <div className="modal">
         <span className="close" onClick={() => props.setEditPayout(false)}>
           <ClearIcon />

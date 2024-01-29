@@ -1,0 +1,13 @@
+@import "../../../styles/responsive.scss";
+
+.add_payout {
+  .modal {
+    h1 {
+      font-size: 1.2rem;
+    }
+    @include md {
+      overflow-y: auto;
+      max-height: 90vh; /* Set a maximum height */
+    }
+  }
+}
