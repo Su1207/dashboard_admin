@@ -16,7 +16,7 @@ interface WinDataType {
 
 const WinData: React.FC = () => {
   const { selectedWinDate, setSelectedWinDate } = useBidComponentContext();
-  const [winDataType, setWinDataType] = useState<WinDataType[] | null>([]);
+  const [winDataType, setWinDataType] = useState<WinDataType[] | null>(null);
   const [totalWinPoints, settotalWinPoints] = useState(0);
 
   const navigate = useNavigate();
@@ -67,6 +67,7 @@ const WinData: React.FC = () => {
           setWinDataType(winData);
         } else {
           setWinDataType(null);
+          settotalWinPoints(0);
         }
       } catch (err) {
         console.log(err);

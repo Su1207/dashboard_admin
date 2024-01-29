@@ -12,7 +12,13 @@ const PayoutGrid: React.FC<PyoutGridProps> = ({ payoutData }) => {
       field: "id",
       headerName: "Phone",
       width: 120,
-      renderCell: (params) => <div>+91{params.value}</div>,
+      cellClassName: "bidPhone_column",
+      renderCell: (params) => (
+        <div>
+          <div>{params.row.id.split("-")[0]}</div>
+          <div className="user_name">{params.row.name}</div>
+        </div>
+      ),
     },
     {
       field: "acc_name",
@@ -51,9 +57,10 @@ const PayoutGrid: React.FC<PyoutGridProps> = ({ payoutData }) => {
     },
   ];
 
-  const rows = Object.entries(payoutData || {}).map(([key, data]) => {
+  const rows = Object.values(payoutData || {}).map((data) => {
     return {
-      id: key,
+      id: `${data.key}-${data.name}`,
+      name: data.name,
       acc_ifsc: data.ACC_IFSC,
       acc_name: data.ACC_NAME,
       acc_num: data.ACC_NUM,
@@ -63,6 +70,7 @@ const PayoutGrid: React.FC<PyoutGridProps> = ({ payoutData }) => {
       upi: data.UPI,
     };
   });
+
   return (
     <div className="dataTable payout_dataTable">
       <DataGrid
