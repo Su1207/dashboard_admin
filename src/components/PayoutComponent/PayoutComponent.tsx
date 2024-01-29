@@ -1,4 +1,4 @@
-import { get, ref } from "firebase/database";
+import { get, onValue, ref } from "firebase/database";
 import { useEffect, useState } from "react";
 import { database } from "../../firebase";
 import PayoutGrid from "./PayoutGrid";
@@ -19,33 +19,36 @@ const PayoutComponent = () => {
   const [payoutData, setPayoutData] = useState<PayoutDataType[] | null>(null);
 
   useEffect(() => {
-    const fetchPayoutData = async () => {
+    const fetchPayoutData = () => {
       const payoutRef = ref(database, "WITHDRAW METHODS");
 
-      const snapshot = await get(payoutRef);
-      const payoutArray: PayoutDataType[] = [];
-      const promises: Promise<void>[] = [];
+      const unsubscribe = onValue(payoutRef, (snapshot) => {
+        const payoutArray: PayoutDataType[] = [];
+        const promises: Promise<void>[] = [];
 
-      snapshot.forEach((snapShot) => {
-        const key = snapShot.key;
+        snapshot.forEach((snapShot) => {
+          const key = snapShot.key;
 
-        if (snapShot.exists()) {
-          const userRef = ref(database, `USERS/${snapShot.key}`);
-          const promise = get(userRef).then((userSnapshot) => {
-            if (userSnapshot.exists()) {
-              const name = userSnapshot.val().NAME;
-              payoutArray.push({
-                key,
-                name,
-                ...snapShot.val(),
-              });
-            }
-          });
-          promises.push(promise);
-        }
+          if (snapShot.exists()) {
+            const userRef = ref(database, `USERS/${snapShot.key}`);
+            const promise = get(userRef).then((userSnapshot) => {
+              if (userSnapshot.exists()) {
+                const name = userSnapshot.val().NAME;
+                payoutArray.push({
+                  key,
+                  name,
+                  ...snapShot.val(),
+                });
+              }
+            });
+            promises.push(promise);
+          }
+        });
+        Promise.all(promises).then(() => {
+          setPayoutData(payoutArray);
+        });
       });
-      await Promise.all(promises);
-      setPayoutData(payoutArray);
+      return () => unsubscribe();
     };
 
     fetchPayoutData();

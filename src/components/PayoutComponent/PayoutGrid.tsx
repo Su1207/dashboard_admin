@@ -1,18 +1,22 @@
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { PayoutDataType } from "./PayoutComponent";
 import "./PayoutComponent.scss";
+import { useState } from "react";
+import EditPayout from "./EditPayout/EditPayout";
 
 interface PyoutGridProps {
   payoutData: PayoutDataType[] | null;
 }
 
 const PayoutGrid: React.FC<PyoutGridProps> = ({ payoutData }) => {
+  const [userId, setUserId] = useState("");
+  const [editPayout, setEditPayout] = useState(false);
+
   const columns: GridColDef[] = [
     {
       field: "id",
       headerName: "Phone",
-      width: 120,
-      cellClassName: "bidPhone_column",
+      width: 110,
       renderCell: (params) => (
         <div>
           <div>{params.row.id.split("-")[0]}</div>
@@ -23,7 +27,7 @@ const PayoutGrid: React.FC<PyoutGridProps> = ({ payoutData }) => {
     {
       field: "acc_name",
       headerName: "Account Name",
-      width: 130,
+      width: 125,
     },
     {
       field: "acc_num",
@@ -33,7 +37,7 @@ const PayoutGrid: React.FC<PyoutGridProps> = ({ payoutData }) => {
     {
       field: "acc_ifsc",
       headerName: "IFSC Code",
-      width: 140,
+      width: 110,
     },
     {
       field: "gpay",
@@ -43,19 +47,38 @@ const PayoutGrid: React.FC<PyoutGridProps> = ({ payoutData }) => {
     {
       field: "paytm",
       headerName: "Paytm",
-      width: 110,
+      width: 100,
     },
     {
       field: "phonepe",
       headerName: "PhonePe",
-      width: 110,
+      width: 100,
     },
     {
       field: "upi",
       headerName: "UPI",
-      width: 150,
+      width: 140,
+    },
+    {
+      field: "edit",
+      headerName: "Action",
+      width: 80,
+      renderCell: (params) => (
+        <img
+          src="view.svg"
+          alt=""
+          style={{ cursor: "pointer" }}
+          onClick={() => handleEdit(params.row.id.split("-")[0])}
+        />
+      ),
     },
   ];
+
+  const handleEdit = (userid: string) => {
+    setUserId(userid);
+    setEditPayout(!editPayout);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const rows = Object.values(payoutData || {}).map((data) => {
     return {
@@ -73,6 +96,9 @@ const PayoutGrid: React.FC<PyoutGridProps> = ({ payoutData }) => {
 
   return (
     <div className="dataTable payout_dataTable">
+      {editPayout && (
+        <EditPayout userId={userId} setEditPayout={setEditPayout} />
+      )}
       <DataGrid
         className="dataGrid payout_dataGrid"
         rows={rows}
