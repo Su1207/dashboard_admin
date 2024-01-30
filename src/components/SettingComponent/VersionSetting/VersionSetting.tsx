@@ -154,40 +154,52 @@ const VersionSetting = () => {
         <div className="update_container">
           <h4>UPDATE VERSION</h4>
           <form onSubmit={handleSubmit}>
-            <input
-              type="number"
-              placeholder="Enter Latest Version"
-              name="LATEST_VERSION"
-              onChange={handleInputChange}
-              value={formVersionData.LATEST_VERSION}
-            />
-            <input
-              type="text"
-              placeholder="Enter Download URL"
-              name="UPDATE_URL"
-              onChange={handleInputChange}
-              value={formVersionData.UPDATE_URL}
-            />
+            <div className="input_form">
+              <label>Latest version</label>
+              <input
+                type="number"
+                placeholder="Enter Latest Version"
+                name="LATEST_VERSION"
+                onChange={handleInputChange}
+                value={formVersionData.LATEST_VERSION}
+              />
+            </div>
+            <div className="input_form">
+              <label>Download URL</label>
+              <input
+                type="text"
+                placeholder="Enter Download URL"
+                name="UPDATE_URL"
+                onChange={handleInputChange}
+                value={formVersionData.UPDATE_URL}
+              />
+            </div>
             <button type="submit">Update Version</button>
           </form>
         </div>
         <div className="admin_container">
           <h4>ADMIN AUTH</h4>
           <form onSubmit={handleAuthSubmit}>
-            <input
-              type="text"
-              placeholder="Username"
-              name="ID"
-              value={authFormData.ID}
-              onChange={handleAuthInputchange}
-            />
-            <input
-              type="text"
-              placeholder="Password"
-              name="PASSWORD"
-              value={authFormData.PASSWORD}
-              onChange={handleAuthInputchange}
-            />
+            <div className="input_form">
+              <label>Username</label>
+              <input
+                type="text"
+                placeholder="Username"
+                name="ID"
+                value={authFormData.ID}
+                onChange={handleAuthInputchange}
+              />
+            </div>
+            <div className="input_form">
+              <label>Password</label>
+              <input
+                type="text"
+                placeholder="Password"
+                name="PASSWORD"
+                value={authFormData.PASSWORD}
+                onChange={handleAuthInputchange}
+              />
+            </div>
             <button type="submit">Update Credential</button>
           </form>
         </div>
