@@ -24,6 +24,7 @@ import Win from "./pages/Win/Win";
 import WinDetail from "./pages/Win/WinDetail";
 import { BidComponentProvider } from "./components/BidComponent/BidComponentContext";
 import Payout from "./pages/Payout/Payout";
+import Settings from "./pages/Settings/Settings";
 
 const Layout = () => {
   const { isAuthenticated } = useAuth();
@@ -111,6 +112,10 @@ const router = createBrowserRouter([
       {
         path: "/gameRate",
         element: <GameRate />,
+      },
+      {
+        path: "/settings",
+        element: <Settings />,
       },
       {
         path: "/gameSettings",
