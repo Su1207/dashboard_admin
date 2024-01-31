@@ -318,7 +318,7 @@ const GeneralSetting = () => {
           <div className="input_form">
             <label>Enter Refer Message</label>
             <textarea
-              rows={25}
+              rows={15}
               cols={40}
               value={generalData?.REFER_MSG}
               onChange={(e) => handleGeneralChange("REFER_MSG", e.target.value)}
