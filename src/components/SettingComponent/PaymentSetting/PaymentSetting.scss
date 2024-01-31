@@ -274,7 +274,7 @@
 
   .modal {
     width: 40%;
-    padding: 50px;
+    padding: 40px;
     border-radius: 15px;
     background-color: aliceblue;
     color: black;
@@ -284,6 +284,7 @@
 
     @include md {
       width: 80%;
+      padding: 30px;
     }
 
     .close {
@@ -295,6 +296,15 @@
 
     h2 {
       margin-bottom: 2rem;
+
+      @include sm {
+        font-size: 1.2rem;
+        margin-bottom: 1rem;
+      }
+
+      @include xsm {
+        font-size: 0.875rem;
+      }
     }
 
     form {
@@ -307,12 +317,20 @@
         gap: 10px;
         margin-bottom: 1.2rem;
 
+        @include sm {
+          margin-bottom: 0.5rem;
+        }
+
         label {
           font-size: 16px;
           font-weight: 500;
           display: flex;
           align-items: center;
           gap: 5px;
+
+          @include sm {
+            font-size: 14px;
+          }
         }
 
         input {

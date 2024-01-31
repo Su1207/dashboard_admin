@@ -1,7 +1,6 @@
 import { get, ref, update } from "firebase/database";
 import { useEffect, useState } from "react";
 import { database } from "../../../firebase";
-import { GeneralSettingDataType } from "./PaymentSetting";
 import ClearIcon from "@mui/icons-material/Clear";
 import WhatsAppIcon from "@mui/icons-material/WhatsApp";
 import YouTubeIcon from "@mui/icons-material/YouTube";
@@ -10,6 +9,11 @@ import { toast } from "react-toastify";
 const initialState = {
   WHATSAPP: 0,
   YOUTUBE: "",
+};
+
+type GeneralSettingDataType = {
+  WHATSAPP: number;
+  YOUTUBE: string;
 };
 
 type Props = {
@@ -40,12 +44,13 @@ const EditGeneralSetting = (props: Props) => {
     fetchData();
   }, []);
 
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const { name, value } = e.target;
-
+  const handleChange = (
+    field: keyof GeneralSettingDataType,
+    value: string | number
+  ) => {
     setFormData((prevData) => ({
       ...prevData,
-      [name]: name === "WHATSAPP" ? parseFloat(value) : value,
+      [field]: value,
     }));
   };
 
@@ -55,11 +60,9 @@ const EditGeneralSetting = (props: Props) => {
     try {
       const generalRef = ref(database, "ADMIN/GENERAL SETTINGS");
 
-      const snapshot = await get(generalRef);
-
       await update(generalRef, {
-        WHATSAPP: formData?.WHATSAPP || snapshot.val().WHATSAPP,
-        YOUTUBE: formData?.YOUTUBE || snapshot.val().YOUTUBE,
+        WHATSAPP: formData?.WHATSAPP,
+        YOUTUBE: formData?.YOUTUBE,
       });
 
       toast.success("Updated Successfully");
@@ -86,9 +89,8 @@ const EditGeneralSetting = (props: Props) => {
               type="tel"
               pattern="\d{10}"
               title="Please enter exactly 10 digits"
-              name="WHATSAPP"
               value={formData?.WHATSAPP}
-              onChange={handleChange}
+              onChange={(e) => handleChange("WHATSAPP", e.target.value)}
             />
           </div>
           <div className="item">
@@ -98,8 +100,7 @@ const EditGeneralSetting = (props: Props) => {
             </label>
             <input
               type="text"
-              name="YOUTUBE"
-              onChange={handleChange}
+              onChange={(e) => handleChange("YOUTUBE", e.target.value)}
               value={formData?.YOUTUBE}
             />
           </div>
