@@ -64,12 +64,12 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
     {
       field: "id",
       headerName: "Phone",
-      width: 180,
+      width: 160,
       renderCell: (params) => (
         <div className="phone_column">
           <div className="version">V{params.row.appVersion}.0</div>
           <div>
-            <div>+91{params.row.id.split("-")[0]}</div>
+            <div>{params.row.id.split("-")[0]}</div>
             <div className="user_name">{params.row.name}</div>
           </div>
         </div>

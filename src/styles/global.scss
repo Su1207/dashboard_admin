@@ -28,9 +28,11 @@ a {
 }
 
 .menuContainer {
-  width: 14rem;
-  padding: 5px 10px 5px 20px;
+  width: 11rem;
+  padding: 5px 5px 5px 15px;
   border-right: 2px solid $soft-bg;
+  // align-self: stretch; // Ensure it takes full height
+  flex-shrink: 0; // Prevent shrinking
 
   @include lg {
     width: max-content;

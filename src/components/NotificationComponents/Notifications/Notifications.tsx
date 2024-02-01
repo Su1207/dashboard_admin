@@ -88,15 +88,17 @@ const Notifications: React.FC = () => {
         </div>
       </div>
       {notificationsData &&
-        Object.entries(notificationsData).map(([timestamp, notification]) => (
-          <div key={timestamp} className="notifications_container">
-            <div className="notifications_title">
-              <h3>{notification.TITLE}</h3>
-              <p>{getTime(timestamp)}</p>
+        Object.entries(notificationsData)
+          .sort((a, b) => parseInt(b[0]) - parseInt(a[0]))
+          .map(([timestamp, notification]) => (
+            <div key={timestamp} className="notifications_container">
+              <div className="notifications_title">
+                <h3>{notification.TITLE}</h3>
+                <p>{getTime(timestamp)}</p>
+              </div>
+              <p className="notifications_content">{notification.MSG}</p>
             </div>
-            <p className="notifications_content">{notification.MSG}</p>
-          </div>
-        ))}
+          ))}
     </div>
   );
 };

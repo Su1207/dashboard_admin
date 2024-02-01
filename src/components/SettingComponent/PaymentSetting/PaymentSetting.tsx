@@ -2,11 +2,12 @@ import { Switch } from "@mui/material";
 import "./PaymentSetting.scss";
 import EditIcon from "@mui/icons-material/Edit";
 import { useEffect, useState } from "react";
-import { get, off, onValue, ref, set } from "firebase/database";
+import { get, off, onValue, ref, remove, set } from "firebase/database";
 import { database } from "../../../firebase";
 import EditGeneralSetting from "./EditGeneralSetting";
 import EditPayment from "./EditPayment";
 import AddUpi from "./AddUpi";
+import { toast } from "react-toastify";
 
 export type GeneralSettingDataType = {
   WHATSAPP: number;
@@ -143,7 +144,29 @@ const PaymentSetting = () => {
     await set(defaultRef, key);
   };
 
-  console.log(upiData);
+  const handleDelete = async (key: string) => {
+    const userConfirmed = window.confirm(
+      `Are you sure you want to delete UPI: ${key}?`
+    );
+
+    if (!userConfirmed) {
+      // User canceled the deletion
+      return;
+    }
+    const upiRef = ref(database, `ADMIN/UPI/IDS/${key}`);
+
+    const snapshot = await get(upiRef);
+
+    if (snapshot.val()) {
+      toast.error("Please firstly set the default UPI");
+    } else {
+      remove(upiRef).then(() => {
+        toast.success("UPI deleted successfully");
+      });
+    }
+  };
+
+  // console.log(upiData);
 
   return (
     <div className="paymentSetting">
@@ -206,18 +229,26 @@ const PaymentSetting = () => {
           Object.entries(upiData.IDS)
             .sort(([, data1], [, data2]) => (data1 ? -1 : data2 ? 1 : 0))
             .map(([key, data]) => (
-              <div className="upi_id" key={key}>
-                {key}
-                {data ? (
-                  <button className="default">DEFAULT</button>
-                ) : (
-                  <button
-                    className="set_as_default"
-                    onClick={() => handleClick(key)}
-                  >
-                    Set as Default
-                  </button>
-                )}
+              <div key={key} className="upi_id_container">
+                <div className="upi_id">
+                  {key}
+                  {data ? (
+                    <button className="default">DEFAULT</button>
+                  ) : (
+                    <button
+                      className="set_as_default"
+                      onClick={() => handleClick(key)}
+                    >
+                      Set as Default
+                    </button>
+                  )}
+                </div>
+                <img
+                  className="delete_icon"
+                  src="delete.svg"
+                  alt=""
+                  onClick={() => handleDelete(key)}
+                />
               </div>
             ))}
       </div>
