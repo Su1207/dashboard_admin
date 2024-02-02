@@ -194,7 +194,7 @@ const ManualRequestGrid: React.FC<ManualDataGridProps> = ({ manualData }) => {
           accept={status}
         />
       )}
-      {rows && (
+      {rows && rows.length > 0 ? (
         <DataGrid
           className="dataGrid_UsersWithdraw"
           rows={rows}
@@ -220,6 +220,8 @@ const ManualRequestGrid: React.FC<ManualDataGridProps> = ({ manualData }) => {
           disableColumnSelector
           disableDensitySelector
         />
+      ) : (
+        <p>No data available for the day</p>
       )}
     </div>
   );

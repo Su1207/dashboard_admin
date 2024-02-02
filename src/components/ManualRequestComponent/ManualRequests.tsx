@@ -119,7 +119,11 @@ const ManualRequests = () => {
           </select>
         </div>
       </div>
-      {manualData && <ManualRequestGrid manualData={manualData} />}
+      {manualData ? (
+        <ManualRequestGrid manualData={manualData} />
+      ) : (
+        <p>No data available for the day</p>
+      )}
     </div>
   );
 };
