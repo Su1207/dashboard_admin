@@ -179,16 +179,16 @@ const UsersDepositData = () => {
             <option className="filter_option" value="Admin">
               Admin
             </option>
-            <option className="filter_option" value="GPay">
+            <option className="filter_option" value="GPAY">
               GPay
             </option>
-            <option className="filter_option" value="phonePay">
-              PhonePay
+            <option className="filter_option" value="PHONEPE">
+              PhonePe
             </option>
-            <option className="filter_option" value="paytm">
+            <option className="filter_option" value="PAYTM">
               Paytm
             </option>
-            <option className="filter_option" value="Manual">
+            <option className="filter_option" value="MANUAL">
               Manual
             </option>
           </select>

@@ -25,6 +25,7 @@ import WinDetail from "./pages/Win/WinDetail";
 import { BidComponentProvider } from "./components/BidComponent/BidComponentContext";
 import Payout from "./pages/Payout/Payout";
 import Settings from "./pages/Settings/Settings";
+import ManualRequest from "./pages/ManualRequest/ManualRequest";
 
 const Layout = () => {
   const { isAuthenticated } = useAuth();
@@ -124,6 +125,10 @@ const router = createBrowserRouter([
       {
         path: "/notifications",
         element: <Notification />,
+      },
+      {
+        path: "/manualRequest",
+        element: <ManualRequest />,
       },
       {
         path: "/bid/:id",

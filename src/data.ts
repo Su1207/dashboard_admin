@@ -49,7 +49,7 @@ export const menu = [
         id: 5,
         title: "Bid",
         url: "/bid",
-        icon: "/withdraw.svg",
+        icon: "/deposit.svg",
       },
       {
         id: 6,
@@ -77,8 +77,8 @@ export const menu = [
       },
       {
         id: 3,
-        title: "Forms",
-        url: "/",
+        title: "Manual Request",
+        url: "/manualRequest",
         icon: "/form.svg",
       },
       {
