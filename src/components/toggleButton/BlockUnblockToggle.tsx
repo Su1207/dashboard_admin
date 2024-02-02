@@ -53,7 +53,9 @@ const BlockUnblockToggle: React.FC<DataTableProps> = ({ userId }) => {
   const handleToggle = () => {
     // Update the user's blocked status in the 'user list' node
     const userListRef = ref(database, `USERS LIST/${userId}`);
+    const blockedRef = ref(database, `BLOCKED LIST/${userId}`);
     set(userListRef, !isBlocked);
+    set(blockedRef, isBlocked);
   };
 
   return (

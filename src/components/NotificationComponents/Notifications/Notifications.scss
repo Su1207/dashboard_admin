@@ -35,11 +35,13 @@
     gap: 1rem;
     padding: 20px;
     margin-bottom: 1rem;
+
     border-radius: 5px;
     border-left: 14px solid rgb(18, 18, 63);
 
     @include sm {
       border-left: 10px solid rgb(18, 18, 63);
+      padding: 20px 10px;
     }
 
     .notifications_title {
@@ -51,11 +53,11 @@
 
       h3 {
         @include sm {
-          font-size: 1rem;
+          font-size: 0.875rem;
         }
 
         @include xsm {
-          font-size: 0.875rem;
+          font-size: 0.8rem;
         }
       }
 
@@ -65,9 +67,6 @@
         font-size: 0.875rem;
 
         @include sm {
-          font-size: 0.8rem;
-        }
-        @include xsm {
           font-size: 0.7rem;
         }
       }
@@ -75,7 +74,7 @@
 
     .notifications_content {
       @include sm {
-        font-size: 0.875rem;
+        font-size: 0.8rem;
       }
     }
   }

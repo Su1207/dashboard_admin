@@ -53,8 +53,7 @@ const WinTransaction: React.FC<{ userId: number }> = ({ userId }) => {
         if (dateA === dateB) {
           return b.previousPoints - a.previousPoints;
         }
-        console.log(a.date, dateA);
-        console.log(b.date, dateB);
+
         return dateB - dateA;
       });
 

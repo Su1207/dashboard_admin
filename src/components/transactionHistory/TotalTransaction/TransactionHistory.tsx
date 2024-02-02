@@ -34,7 +34,7 @@ const columns: GridColDef[] = [
   {
     field: "date",
     headerName: "Date",
-    width: 100,
+    width: 120,
     renderCell: (params) => (
       <div>
         <div>{params.value.split(" | ")[0]}</div>

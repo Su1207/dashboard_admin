@@ -38,7 +38,7 @@ const WinDataGrid: React.FC<WinDataGridProps> = ({ winData }) => {
     {
       field: "date",
       headerName: "Date",
-      width: 100,
+      width: 120,
       renderCell: (params) => (
         <div style={{ textAlign: "center" }}>
           <div>{params.value.split(" | ")[0]}</div>
