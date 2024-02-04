@@ -18,7 +18,7 @@ export interface GameData {
   CLOSE: number;
   DAYS: daysData;
   HIDDEN: string;
-  DISABLED: string;
+  DISABLE: string;
   NAME: string;
   OPEN: number;
   RESULT: string;

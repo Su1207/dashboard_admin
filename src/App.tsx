@@ -26,6 +26,7 @@ import { BidComponentProvider } from "./components/BidComponent/BidComponentCont
 import Payout from "./pages/Payout/Payout";
 import Settings from "./pages/Settings/Settings";
 import ManualRequest from "./pages/ManualRequest/ManualRequest";
+import Rewards from "./pages/games/Rewards/Rewards";
 
 const Layout = () => {
   const { isAuthenticated } = useAuth();
@@ -85,6 +86,10 @@ const router = createBrowserRouter([
       {
         path: "/market",
         element: <Games />,
+      },
+      {
+        path: "/rewards/:id",
+        element: <Rewards />,
       },
       {
         path: "/users/:id",

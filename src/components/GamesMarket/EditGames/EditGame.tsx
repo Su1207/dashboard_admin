@@ -10,7 +10,7 @@ export interface GameForm {
   NAME: string;
   OPEN: string;
   CLOSE: string;
-  DISABLED: boolean;
+  DISABLE: boolean;
   HIDDEN: boolean;
   DAYS: {
     MON: boolean;
@@ -49,7 +49,7 @@ const EditGame = ({ gameId, setEditGame }: Props) => {
     NAME: "",
     OPEN: getDefaultDateTime(),
     CLOSE: getDefaultDateTime(),
-    DISABLED: false,
+    DISABLE: false,
     HIDDEN: false,
     DAYS: {
       MON: true,
@@ -76,7 +76,7 @@ const EditGame = ({ gameId, setEditGame }: Props) => {
             NAME: data.NAME,
             OPEN: dateFetched(data.OPEN),
             CLOSE: dateFetched(data.CLOSE),
-            DISABLED: data.DISABLED === "false" ? false : true,
+            DISABLE: data.DISABLE === "false" ? false : true,
             HIDDEN: data.HIDDEN === "false" ? false : true,
             DAYS: {
               MON: data.DAYS?.MON === "false" ? false : true,
@@ -133,7 +133,7 @@ const EditGame = ({ gameId, setEditGame }: Props) => {
           NAME: gameData.NAME,
           OPEN: openDateTime.getTime(),
           CLOSE: closeDateTime.getTime(),
-          DISABLED: gameData.DISABLED.toString(),
+          DISABLED: gameData.DISABLE.toString(),
           HIDDEN: gameData.HIDDEN.toString(),
           DAYS: daysAsString,
         });
@@ -201,9 +201,9 @@ const EditGame = ({ gameId, setEditGame }: Props) => {
               control={
                 <Switch
                   size="small"
-                  checked={gameData.DISABLED}
+                  checked={gameData.DISABLE}
                   onChange={() =>
-                    handleInputChange("DISABLED", !gameData.DISABLED)
+                    handleInputChange("DISABLE", !gameData.DISABLE)
                   }
                 />
               }

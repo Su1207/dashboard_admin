@@ -10,7 +10,7 @@ export interface GameForm {
   NAME: string;
   OPEN: string;
   CLOSE: string;
-  DISABLED: boolean;
+  DISABLE: boolean;
   HIDDEN: boolean;
   DAYS: {
     MON: boolean;
@@ -40,7 +40,7 @@ const AddGames = (props: Props) => {
     NAME: "",
     OPEN: getDefaultDateTime(),
     CLOSE: getDefaultDateTime(),
-    DISABLED: false,
+    DISABLE: false,
     HIDDEN: false,
     DAYS: {
       MON: true,
@@ -91,7 +91,7 @@ const AddGames = (props: Props) => {
           NAME: gameData.NAME,
           OPEN: openDateTime.getTime(),
           CLOSE: closeDateTime.getTime(),
-          DISABLED: gameData.DISABLED.toString(),
+          DISABLE: gameData.DISABLE.toString(),
           HIDDEN: gameData.HIDDEN.toString(),
           DAYS: daysAsString,
         });
@@ -129,7 +129,7 @@ const AddGames = (props: Props) => {
     props.setAddGame(false);
   };
 
-  console.log(gameData.HIDDEN, gameData.DISABLED);
+  // console.log(gameData.HIDDEN, gameData.DISABLE);
 
   return (
     <div className={`add1 ${modalOpen ? "" : "closed"}`}>
@@ -180,13 +180,13 @@ const AddGames = (props: Props) => {
               control={
                 <Switch
                   size="small"
-                  checked={gameData.DISABLED}
+                  checked={gameData.DISABLE}
                   onChange={() =>
-                    handleInputChange("DISABLED", !gameData.DISABLED)
+                    handleInputChange("DISABLE", !gameData.DISABLE)
                   }
                 />
               }
-              label="DISABLED"
+              label="Disable"
             />
             <FormControlLabel
               className="formControl_switch"

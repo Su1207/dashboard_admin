@@ -7,6 +7,7 @@ import { toast } from "react-toastify";
 import { useState } from "react";
 import EditGame from "../EditGames/EditGame";
 import OpenCloseOption from "../OpenCloseOption/OpenCloseOption";
+import Rewards from "../Rewards/Rewards";
 
 type ColumnRow = GameData;
 
@@ -19,6 +20,7 @@ const GamesDataGrid: React.FC<gameDataGridProps> = ({ gameData }) => {
   const [gameId, setGameId] = useState("");
   const [gameName, setGameName] = useState("");
   const [openClose, setOpenClose] = useState(false);
+  const [rewards, setRewards] = useState(false);
 
   const getTime = (time: number) => {
     const date = new Date(time);
@@ -57,17 +59,17 @@ const GamesDataGrid: React.FC<gameDataGridProps> = ({ gameData }) => {
     {
       field: "open",
       headerName: "Open",
-      width: 120,
+      width: 100,
     },
     {
       field: "close",
       headerName: "Close",
-      width: 120,
+      width: 100,
     },
     {
       field: "disable",
       headerName: "Holiday",
-      width: 100,
+      width: 95,
       renderCell: (params) => (
         <div>{params.row.disable === "true" ? "Yes" : "No"}</div>
       ),
@@ -75,7 +77,7 @@ const GamesDataGrid: React.FC<gameDataGridProps> = ({ gameData }) => {
     {
       field: "hidden",
       headerName: "Hidden",
-      width: 100,
+      width: 95,
       renderCell: (params) => (
         <div>{params.row.hidden === "true" ? "Yes" : "No"}</div>
       ),
@@ -83,7 +85,7 @@ const GamesDataGrid: React.FC<gameDataGridProps> = ({ gameData }) => {
     {
       field: "result",
       headerName: "Result",
-      width: 150,
+      width: 120,
     },
     {
       field: "actions",
@@ -122,7 +124,29 @@ const GamesDataGrid: React.FC<gameDataGridProps> = ({ gameData }) => {
         </div>
       ),
     },
+    {
+      field: "Rewards",
+      headerName: "Rewards",
+      width: 100,
+      renderCell: (params) => (
+        <div>
+          <img
+            src="./gift.png"
+            alt="rewards"
+            className="update_img"
+            onClick={() => handleRewards(params.row.id, params.row.name)}
+          />
+        </div>
+      ),
+    },
   ];
+
+  const handleRewards = (gameid: string, gamename: string) => {
+    setGameId(gameid);
+    setRewards(!rewards);
+    setGameName(gamename);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
 
   const handleDelete = (gameId: string) => {
     const userConfirmed = window.confirm(
@@ -160,12 +184,15 @@ const GamesDataGrid: React.FC<gameDataGridProps> = ({ gameData }) => {
       close: timestampClose,
       open: timestampOpen,
       hidden: game.HIDDEN,
-      disable: game.DISABLED,
+      disable: game.DISABLE,
       result: game.RESULT,
     };
   });
   return (
     <div className="dataTable">
+      {rewards && (
+        <Rewards gameId={gameId} setRewards={setRewards} gameName={gameName} />
+      )}
       {editGame && <EditGame gameId={gameId} setEditGame={setEditGame} />}
       {openClose && (
         <OpenCloseOption
