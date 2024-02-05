@@ -79,7 +79,7 @@
       }
 
       li {
-        text-align: center;
+        // text-align: center;
         background: whitesmoke;
         .users_list {
           font-size: 0.875rem;
@@ -89,7 +89,7 @@
           margin-bottom: 1rem;
 
           @include md {
-            font-size: 0.85rem;
+            font-size: 0.8rem;
             justify-content: space-between;
           }
 
@@ -104,7 +104,7 @@
             justify-content: space-between;
 
             @include sm {
-              flex: auto;
+              flex: 1;
               flex-direction: column;
               align-items: flex-start;
               justify-content: flex-start;
@@ -112,6 +112,8 @@
             }
 
             .phone {
+              flex: 2;
+
               span {
                 text-transform: capitalize;
               }
@@ -121,11 +123,14 @@
             .gameName {
               @include md {
                 font-size: 0.65rem;
+                // flex: 1;
               }
             }
 
             .gameName {
-              margin: 0 auto;
+              //   margin: 0 auto;
+              flex: 1;
+              text-align: center;
 
               @include sm {
                 margin-left: 0;
@@ -140,10 +145,9 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            text-align: center;
 
             @include sm {
-              flex: auto;
+              flex: 1;
             }
 
             @include xsm {
@@ -154,18 +158,24 @@
             }
 
             .winning_points {
-              margin-right: auto;
+              //   margin-right: auto;
+              flex: 2;
+              text-align: center;
+
               @include md {
                 font-size: 0.7rem;
+                flex: 1;
               }
 
               @include sm {
-                margin: 0 auto;
+                //
                 font-size: 0.6rem;
+                text-align: left;
               }
 
               @include xsm {
                 margin: 0;
+                font-size: 0.55rem;
               }
             }
 
