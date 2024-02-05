@@ -111,6 +111,12 @@
               gap: 3px;
             }
 
+            .phone {
+              span {
+                text-transform: capitalize;
+              }
+            }
+
             .phone,
             .gameName {
               @include md {
