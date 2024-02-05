@@ -220,6 +220,14 @@
                 }
               }
             }
+
+            .rewards_sent {
+              background: green;
+
+              &:hover {
+                background: green;
+              }
+            }
           }
         }
       }

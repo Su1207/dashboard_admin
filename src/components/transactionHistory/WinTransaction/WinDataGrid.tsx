@@ -125,7 +125,7 @@ const WinDataGrid: React.FC<WinDataGridProps> = ({ winData }) => {
   };
 
   function parseCustomDateString(dateString: string) {
-    const parseDate = parse(dateString, "dd-MMM-yyyy | hh:mm:ss a", new Date());
+    const parseDate = parse(dateString, "dd-MM-yyyy | hh:mm:ss a", new Date());
 
     if (!isValid(parseDate)) {
       console.error(`Invalid Date: ${dateString}`);
