@@ -1,7 +1,7 @@
 import { ManualDataTye } from "./ManualRequests";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import "./ManualRequests.scss";
-import { ref, update } from "firebase/database";
+import { ref, set, update } from "firebase/database";
 import { database } from "../../firebase";
 import { useState } from "react";
 import EditStatusReq from "./EditStatusReq";
@@ -94,7 +94,17 @@ const ManualRequestGrid: React.FC<ManualDataGridProps> = ({ manualData }) => {
               <img
                 src="checkmark.svg"
                 alt=""
-                onClick={() => handleApprove(params.row.id)}
+                onClick={() =>
+                  handleApprove(
+                    params.row.id,
+                    params.row.Phone,
+                    params.row.AMOUNT,
+                    params.row.TOTAL,
+                    params.row.PAYMENT_APP,
+                    params.row.PAYMENT_BY,
+                    params.row.PAYMENT_TO
+                  )
+                }
               />
               <img
                 src="cross.svg"
@@ -120,7 +130,15 @@ const ManualRequestGrid: React.FC<ManualDataGridProps> = ({ manualData }) => {
     setStatus(currentStatus);
   };
 
-  const handleApprove = async (timestamp: string) => {
+  const handleApprove = async (
+    timestamp: string,
+    phone: string,
+    amount: number,
+    total: number,
+    paymentApp: string,
+    paymentBy: string,
+    paymentTo: string
+  ) => {
     const dateString = new Date(Number(timestamp));
     const year = dateString.getFullYear();
     const month = (dateString.getMonth() + 1).toString().padStart(2, "0");
@@ -142,6 +160,73 @@ const ManualRequestGrid: React.FC<ManualDataGridProps> = ({ manualData }) => {
       ACCEPT: "true",
       MoneyAdded: true,
     });
+
+    const depositRef = ref(
+      database,
+      `USERS TRANSACTION/${
+        phone.split("-")[0]
+      }/DEPOSIT/DATE WISE/${year}/${month}/${date}/${timestamp}`
+    );
+
+    const totalRef = ref(
+      database,
+      `USERS TRANSACTION/${phone.split("-")[0]}/DEPOSIT/TOTAL/${timestamp}`
+    );
+
+    const totalTransactionDateWiseRef = ref(
+      database,
+      `TOTAL TRANSACTION/DEPOSIT/DATE WISE/${year}/${month}/${date}/${timestamp}`
+    );
+
+    const totalTransactionTotalRef = ref(
+      database,
+      `TOTAL TRANSACTION/DEPOSIT/TOTAL/${timestamp}`
+    );
+
+    await set(depositRef, {
+      AMOUNT: amount,
+      DATE: date,
+      NAME: `${phone.split("-")[1]}`,
+      PAYMENT_APP: paymentApp,
+      PAYMENT_BY: paymentBy,
+      PAYMENT_TO: paymentTo,
+      TOTAL: total,
+      UID: `${phone.split("-")[0]}`,
+    });
+
+    await set(totalRef, {
+      AMOUNT: amount,
+      DATE: date,
+      NAME: `${phone.split("-")[1]}`,
+      PAYMENT_APP: paymentApp,
+      PAYMENT_BY: paymentBy,
+      PAYMENT_TO: paymentTo,
+      TOTAL: total,
+      UID: `${phone.split("-")[0]}`,
+    });
+
+    await set(totalTransactionDateWiseRef, {
+      AMOUNT: amount,
+      DATE: date,
+      NAME: `${phone.split("-")[1]}`,
+      PAYMENT_APP: paymentApp,
+      PAYMENT_BY: paymentBy,
+      PAYMENT_TO: paymentTo,
+      TOTAL: total,
+      UID: `${phone.split("-")[0]}`,
+    });
+
+    await set(totalTransactionTotalRef, {
+      AMOUNT: amount,
+      DATE: date,
+      NAME: `${phone.split("-")[1]}`,
+      PAYMENT_APP: paymentApp,
+      PAYMENT_BY: paymentBy,
+      PAYMENT_TO: paymentTo,
+      TOTAL: total,
+      UID: `${phone.split("-")[0]}`,
+    });
+
     toast.success("Payment Accepted successfully");
   };
 
@@ -167,7 +252,7 @@ const ManualRequestGrid: React.FC<ManualDataGridProps> = ({ manualData }) => {
       ACCEPT: "reject",
       MoneyAdded: false,
     });
-    toast.error("Payment Rejected");
+    toast.success("Payment Rejected");
   };
 
   const rows = manualData?.map((data) => {

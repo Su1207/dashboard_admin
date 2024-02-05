@@ -13,7 +13,8 @@ const WinDEtailsGrid: React.FC<WinDetailsGridType> = ({ winDetails }) => {
     {
       field: "userName",
       headerName: "User Name",
-      width: 120,
+      width: 110,
+      cellClassName: "phone-column",
       renderCell: (params) => (
         <div>
           <div className="user_name">{params.row.userName}</div>
@@ -77,10 +78,10 @@ const WinDEtailsGrid: React.FC<WinDetailsGridType> = ({ winDetails }) => {
     return `${row.phoneNumber}-${row.number}`;
   };
   return (
-    <div className="dataTable_UsersWithdraw">
+    <div className="dataTable">
       {winDetails ? (
         <DataGrid
-          className="dataGrid_UsersWithdraw"
+          className="dataGrid"
           rows={winDetails}
           columns={columns}
           getRowId={getRowId}

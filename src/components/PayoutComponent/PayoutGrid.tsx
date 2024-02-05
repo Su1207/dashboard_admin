@@ -16,7 +16,8 @@ const PayoutGrid: React.FC<PyoutGridProps> = ({ payoutData }) => {
     {
       field: "id",
       headerName: "Phone",
-      width: 110,
+      width: 105,
+      cellClassName: "phone-column",
       renderCell: (params) => (
         <div>
           <div>{params.row.id.split("-")[0]}</div>
@@ -62,7 +63,7 @@ const PayoutGrid: React.FC<PyoutGridProps> = ({ payoutData }) => {
     {
       field: "edit",
       headerName: "Action",
-      width: 80,
+      width: 75,
       renderCell: (params) => (
         <img
           src="view.svg"

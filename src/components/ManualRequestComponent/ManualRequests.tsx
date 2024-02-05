@@ -48,6 +48,12 @@ const ManualRequests = () => {
             });
           }
 
+          manualDataArray.sort((a, b) => {
+            const dateA = new Date(a.DATE.replace("|", "")).getTime();
+            const dateB = new Date(b.DATE.replace("|", "")).getTime();
+            return dateB - dateA;
+          });
+
           if (selectedOption !== "") {
             const filterManualReqData = manualDataArray.filter(
               (item) => item.ACCEPT === selectedOption

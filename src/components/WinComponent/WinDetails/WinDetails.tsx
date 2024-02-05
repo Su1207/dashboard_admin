@@ -68,6 +68,16 @@ const WinDetails: React.FC<{ gameId: string }> = ({ gameId }) => {
           });
         });
 
+        winData.sort((a, b) => {
+          const dateA = new Date(a.date.replace("|", "")).getTime();
+          const dateB = new Date(b.date.replace("|", "")).getTime();
+          if (dateA === dateB) {
+            return b.previousPoints - a.previousPoints;
+          }
+
+          return dateB - dateA;
+        });
+
         setTotalPoints(totaloint);
 
         if (selectedOption !== "") {
