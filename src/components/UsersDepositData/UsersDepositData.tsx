@@ -96,7 +96,16 @@ const UsersDepositData = () => {
           setContributingUsers(contributingUserSet.size);
 
           // Apply filter only if a payment option is selected
-          if (selectedPaymentOption !== "") {
+          if (selectedPaymentOption === "Admin") {
+            const filterDepositData = depositDataArray.filter(
+              (item) =>
+                item.PAYMENT_APP === "Admin" || item.PAYMENT_APP === "By Admin"
+            );
+            setDepositData(filterDepositData);
+          } else if (
+            selectedPaymentOption !== "" &&
+            selectedPaymentOption !== "Admin"
+          ) {
             const filteredDepositData = depositDataArray.filter(
               (item) => item.PAYMENT_APP === selectedPaymentOption
             );
