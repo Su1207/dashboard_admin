@@ -194,11 +194,12 @@
 
     .upi_id_container {
       display: flex;
+      position: relative;
+
       align-items: center;
       gap: 3px;
       .upi_id {
         flex: 1;
-        position: relative;
         font-size: 0.875rem;
         border: 1px solid gray;
         border-radius: 5px;
@@ -224,8 +225,8 @@
           font-weight: 600;
           cursor: pointer;
           position: absolute;
-          right: 0.5rem;
-          top: 6px;
+          right: 1.5rem;
+          top: -8px;
 
           @include sm {
             right: 0.2rem;
@@ -247,8 +248,8 @@
           font-weight: 500;
           cursor: pointer;
           position: absolute;
-          right: 0.5rem;
-          top: 6px;
+          right: 1.5rem;
+          top: -8px;
 
           @include sm {
             right: 0.2rem;

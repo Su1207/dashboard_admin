@@ -15,7 +15,7 @@ export type GeneralSettingDataType = {
 };
 
 export type PaymentDataType = {
-  GPAY_AUTO: boolean;
+  GAPY_AUTO: boolean;
   MIN_ADD: number;
   MIN_WITHDRAW: number;
 };
@@ -65,7 +65,7 @@ const PaymentSetting = () => {
       const handlePaymentData = (snapshot: any) => {
         if (snapshot.exists()) {
           setPaymentData({
-            GPAY_AUTO: snapshot.val().GPAY_AUTO,
+            GAPY_AUTO: snapshot.val().GAPY_AUTO,
             MIN_ADD: snapshot.val().MIN_ADD,
             MIN_WITHDRAW: snapshot.val().MIN_WITHDRAW,
           });
@@ -106,9 +106,9 @@ const PaymentSetting = () => {
   }, []);
 
   const handleToggle = () => {
-    const gpayRef = ref(database, "ADMIN/PAYMENT/GPAY_AUTO");
+    const gpayRef = ref(database, "ADMIN/PAYMENT/GAPY_AUTO");
 
-    set(gpayRef, !paymentData?.GPAY_AUTO);
+    set(gpayRef, !paymentData?.GAPY_AUTO);
   };
 
   const handleGeneralClick = () => {
@@ -197,7 +197,7 @@ const PaymentSetting = () => {
           <div className="auto_payment_setting">
             <p>GPay Auto Payment</p>
             <Switch
-              checked={paymentData?.GPAY_AUTO}
+              checked={paymentData?.GAPY_AUTO}
               className="switch"
               color="secondary"
               size="small"
