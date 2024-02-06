@@ -238,7 +238,7 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
     ...bidDetails.map((market) => ({
       field: market.marketName,
       headerName: market.marketName,
-      width: 150,
+      width: 134,
       renderCell: (params: GridCellParams) => (
         <div
           onClick={() => handleColumnClick(params.row, market.marketName)}

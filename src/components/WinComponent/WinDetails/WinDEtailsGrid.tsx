@@ -75,7 +75,7 @@ const WinDEtailsGrid: React.FC<WinDetailsGridType> = ({ winDetails }) => {
   ];
 
   const getRowId = (row: CustomRow) => {
-    return `${row.phoneNumber}-${row.number}`;
+    return `${row.phoneNumber}-${row.number}-${row.openClose}`;
   };
   return (
     <div className="dataTable">

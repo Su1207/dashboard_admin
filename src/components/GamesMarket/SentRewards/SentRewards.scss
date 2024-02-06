@@ -131,11 +131,25 @@
               //   margin: 0 auto;
               flex: 1;
               text-align: center;
+              font-weight: 400;
+              display: flex;
+              flex-direction: column;
+              align-items: center;
+              gap: 2px;
+
+              span {
+                font-size: 0.7rem;
+
+                @include md {
+                  font-size: 0.6rem;
+                }
+              }
 
               @include sm {
                 margin-left: 0;
                 font-weight: 400;
                 font-size: 0.6rem;
+                flex-direction: row;
               }
             }
           }
@@ -147,7 +161,7 @@
             justify-content: space-between;
 
             @include sm {
-              flex: 1;
+              margin: 0 auto;
             }
 
             @include xsm {
@@ -161,9 +175,34 @@
               //   margin-right: auto;
               flex: 2;
               text-align: center;
+              display: flex;
+              flex-direction: column-reverse;
+              gap: 2px;
+              align-items: center;
+              font-size: 0.7rem;
+
+              span {
+                font-size: 0.8rem;
+
+                @include md {
+                  font-size: 0.7rem;
+                }
+
+                @include xsm {
+                  font-size: 0.6rem;
+                }
+              }
+
+              .equal {
+                display: none;
+
+                @include xsm {
+                  display: block;
+                }
+              }
 
               @include md {
-                font-size: 0.7rem;
+                font-size: 0.6rem;
                 flex: 1;
               }
 
@@ -174,6 +213,7 @@
               }
 
               @include xsm {
+                flex-direction: row;
                 margin: 0;
                 font-size: 0.55rem;
               }
