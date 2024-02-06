@@ -319,7 +319,7 @@ const DataGridDemo: React.FC<DataGridDemoProps> = ({ totalData }) => {
   function parseCustomDateString(dateString: string) {
     const parsedDate = parse(
       dateString,
-      "dd-MMM-yyyy | hh:mm:ss a",
+      "dd-MMM-yyyy | hh:mm:ss a" || "MM-dd-yyyy | hh:mm:ss a",
       new Date()
     );
     // console.log(parsedDate);

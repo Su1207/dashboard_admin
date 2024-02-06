@@ -163,8 +163,6 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
           });
           promises.push(promise1);
         });
-
-        setUsersList(userListArray);
       }
 
       const openSingleNumber =
@@ -208,6 +206,7 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
         }
       });
       await Promise.all(promises);
+      setUsersList(userListArray);
       setSingleDigitUsers(singleDigitUsersArray);
     } catch (err) {
       console.log(err);
@@ -309,7 +308,7 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
         database,
         `TOTAL TRANSACTION/BIDS/${year}/${month}/${date}/${
           gameId.split("___")[0]
-        }/CLOSE/Jodi Digit/${closeJodiNumber}/USERS`
+        }/OPEN/Jodi Digit/${closeJodiNumber}/USERS`
       );
 
       const HSnumber1 = `${openMarketResult}-${closeSingleNumber}`;
@@ -319,14 +318,14 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
         database,
         `TOTAL TRANSACTION/BIDS/${year}/${month}/${date}/${
           gameId.split("___")[0]
-        }/CLOSE/Half Sangam/${HSnumber1}/USERS`
+        }/OPEN/Half Sangam/${HSnumber1}/USERS`
       );
 
       const HSRef2 = ref(
         database,
         `TOTAL TRANSACTION/BIDS/${year}/${month}/${date}/${
           gameId.split("___")[0]
-        }/CLOSE/Half Sangam/${HSnumber2}/USERS`
+        }/OPEN/Half Sangam/${HSnumber2}/USERS`
       );
 
       const FSNumber = `${openMarketResult}-${closeJodiNumber}-${closeMarketResult}`;
@@ -335,7 +334,7 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
         database,
         `TOTAL TRANSACTION/BIDS/${year}/${month}/${date}/${
           gameId.split("___")[0]
-        }/CLOSE/Full Sangam/${FSNumber}/USERS`
+        }/OPEN/Full Sangam/${FSNumber}/USERS`
       );
 
       const singleSnapshot = await get(singleRef);
@@ -478,8 +477,6 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
     }
   };
 
-  //   console.log(usersList);
-
   useEffect(() => {
     const rateRef = ref(database, `ADMIN/GAME RATE`);
 
@@ -519,8 +516,15 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
   };
 
   // Function to handle local storage logic
-  const updateLocalStorage = (phone: string, gameName: string) => {
-    localStorage.setItem(`${phone}${gameName}_rewardsSent`, "true");
+  const updateLocalStorage = (
+    phone: string,
+    gameName: string,
+    number: string
+  ) => {
+    localStorage.setItem(
+      `${phone}${gameName}${gameId.split("___")[2]}${number}_rewardsSent`,
+      "true"
+    );
     setRewardSentMap((prevData) => ({
       ...prevData,
       [`${phone}${gameName}`]: true,
@@ -578,7 +582,12 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
       NAME: userName,
       NEW_POINTS: newPoints,
       NUMBER: number,
-      OPEN_CLOSE: `${gameId.split("___")[2]}`,
+      OPEN_CLOSE:
+        gameName === "Jodi Digit" ||
+        gameName === "Half Sangam" ||
+        gameName === "Full Sangam"
+          ? "OPEN"
+          : `${gameId.split("___")[2]}`,
       PHONE: phone,
       POINTS: String(points),
       PREVIOUS_POINTS: previousPoints,
@@ -593,7 +602,12 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
       NAME: userName,
       NEW_POINTS: newPoints,
       NUMBER: number,
-      OPEN_CLOSE: `${gameId.split("___")[2]}`,
+      OPEN_CLOSE:
+        gameName === "Jodi Digit" ||
+        gameName === "Half Sangam" ||
+        gameName === "Full Sangam"
+          ? "OPEN"
+          : `${gameId.split("___")[2]}`,
       PHONE: phone,
       POINTS: String(points),
       PREVIOUS_POINTS: previousPoints,
@@ -608,7 +622,12 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
       NAME: userName,
       NEW_POINTS: newPoints,
       NUMBER: number,
-      OPEN_CLOSE: `${gameId.split("___")[2]}`,
+      OPEN_CLOSE:
+        gameName === "Jodi Digit" ||
+        gameName === "Half Sangam" ||
+        gameName === "Full Sangam"
+          ? "OPEN"
+          : `${gameId.split("___")[2]}`,
       PHONE: phone,
       POINTS: String(points),
       PREVIOUS_POINTS: previousPoints,
@@ -623,7 +642,12 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
       NAME: userName,
       NEW_POINTS: newPoints,
       NUMBER: number,
-      OPEN_CLOSE: `${gameId.split("___")[2]}`,
+      OPEN_CLOSE:
+        gameName === "Jodi Digit" ||
+        gameName === "Half Sangam" ||
+        gameName === "Full Sangam"
+          ? "OPEN"
+          : `${gameId.split("___")[2]}`,
       PHONE: phone,
       POINTS: String(points),
       PREVIOUS_POINTS: previousPoints,
@@ -631,7 +655,7 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
       WIN_POINTS: winPoints,
     });
 
-    updateLocalStorage(phone, gameName);
+    updateLocalStorage(phone, gameName, number);
     toast.success("Rewards successfully sent");
   };
 
@@ -699,7 +723,9 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
                         +91 {users.phone}{" "}
                         <span>({users.userName.split(" ")[0]})</span>
                       </div>
-                      <div className="gameName">{users.gameName}</div>
+                      <div className="gameName">
+                        {users.gameName} ({users.number})
+                      </div>
                     </div>
                     <div className="winning_button">
                       <div className="winning_points">
@@ -720,13 +746,17 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
                         }
                         disabled={
                           localStorage.getItem(
-                            `${users.phone}${users.gameName}_rewardsSent`
+                            `${users.phone}${users.gameName}${
+                              gameId.split("___")[2]
+                            }${users.number}_rewardsSent`
                           ) === "true" ||
                           rewardSentMap[`${users.phone}${users.gameName}`]
                         }
                         className={
                           localStorage.getItem(
-                            `${users.phone}${users.gameName}_rewardsSent`
+                            `${users.phone}${users.gameName}${
+                              gameId.split("___")[2]
+                            }${users.number}_rewardsSent`
                           ) === "true" ||
                           rewardSentMap[`${users.phone}${users.gameName}`]
                             ? "rewards_sent"
@@ -734,7 +764,9 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
                         }
                       >
                         {localStorage.getItem(
-                          `${users.phone}${users.gameName}_rewardsSent`
+                          `${users.phone}${users.gameName}${
+                            gameId.split("___")[2]
+                          }${users.number}_rewardsSent`
                         ) === "true" ||
                         rewardSentMap[`${users.phone}${users.gameName}`] ? (
                           <p className="button_text">
@@ -760,7 +792,9 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
                         +91 {users.phone}{" "}
                         <span>({users.userName.split(" ")[0]})</span>
                       </div>
-                      <div className="gameName">{users.gameName}</div>
+                      <div className="gameName">
+                        {users.gameName} ({users.number})
+                      </div>
                     </div>
 
                     <div className="winning_button">
@@ -804,13 +838,17 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
                         }
                         disabled={
                           localStorage.getItem(
-                            `${users.phone}${users.gameName}_rewardsSent`
+                            `${users.phone}${users.gameName}${
+                              gameId.split("___")[2]
+                            }${users.number}_rewardsSent`
                           ) === "true" ||
                           rewardSentMap[`${users.phone}${users.gameName}`]
                         }
                         className={
                           localStorage.getItem(
-                            `${users.phone}${users.gameName}_rewardsSent`
+                            `${users.phone}${users.gameName}${
+                              gameId.split("___")[2]
+                            }${users.number}_rewardsSent`
                           ) === "true" ||
                           rewardSentMap[`${users.phone}${users.gameName}`]
                             ? "rewards_sent"
@@ -818,7 +856,9 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
                         }
                       >
                         {localStorage.getItem(
-                          `${users.phone}${users.gameName}_rewardsSent`
+                          `${users.phone}${users.gameName}${
+                            gameId.split("___")[2]
+                          }${users.number}_rewardsSent`
                         ) === "true" ||
                         rewardSentMap[`${users.phone}${users.gameName}`] ? (
                           <p className="button_text">

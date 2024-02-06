@@ -21,14 +21,28 @@ const TotalTransaction: React.FC = () => {
     ...(withdrawData || []),
   ];
 
-  console.log(totalData);
+  // console.log(totalData);
 
   // Sort the combined data by date in descending order
   totalData.sort((a, b) => {
-    const dateA = new Date(a.date.replace("|", "")).getTime();
-    const dateB = new Date(b.date.replace("|", "")).getTime();
+    const dateA =
+      "winPoints" in totalData
+        ? convertToDate(a.date)
+        : new Date(a.date.replace("|", "")).getTime();
+    const dateB =
+      "winPoints" in totalData
+        ? convertToDate(b.date)
+        : new Date(b.date.replace("|", "")).getTime();
     return dateB - dateA;
   });
+
+  function convertToDate(dateString: string) {
+    const [datePart, timePart] = dateString.split(" | "); // Split the date and time parts
+    const [day, month, year] = datePart.split("-"); // Split the date part to separate day, month, and year
+
+    const formattedDateString = `${month}-${day}-${year} ${timePart}`;
+    return new Date(formattedDateString).getTime();
+  }
 
   return (
     <div className="totalTransaction_detail">
