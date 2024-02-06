@@ -9,6 +9,7 @@ type RewardsProps = {
 };
 
 type UserListDataType = {
+  gameRate: number;
   number: string;
   userName: string;
   gameName: string;
@@ -16,35 +17,10 @@ type UserListDataType = {
   points: number;
 };
 
-// type TotalWinDataType = {
-//   DATE: string;
-//   MARKET_ID: string;
-//   MARKET_NAME: string;
-//   NAME: string;
-//   NEW_POINTS: number;
-//   NUMBER: string;
-//   OPEN_CLOSE: string;
-//   PHONE: string;
-//   POINTS: string;
-//   PREVIOUS_POINTS: number;
-//   TYPE: string;
-//   WIN_POINTS: number;
-// };
-
 const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
   const [openMarketResult, setOpenMarketResult] = useState("");
   const [closeMarketResult, setCloseMarketResult] = useState("");
   const [usersList, setUsersList] = useState<UserListDataType[] | null>(null);
-  const [singleDigitUsers, setSingleDigitUsers] = useState<
-    UserListDataType[] | null
-  >(null);
-  const [gameRate, setGameRate] = useState(0);
-  const [rate, setRate] = useState({
-    SDGameRate: 0,
-    JDGameRate: 0,
-    HSGameRate: 0,
-    FSGameRate: 0,
-  });
   const [showOpenWinners, setShowOpenWinners] = useState(false);
   const [rewardSentMap, setRewardSentMap] = useState<{
     [key: string]: boolean;
@@ -106,112 +82,116 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
     }
   }, []);
 
-  const fetchOpenUsers = async () => {
-    try {
-      const a = parseInt(openMarketResult[0]);
-      const b = parseInt(openMarketResult[1]);
-      const c = parseInt(openMarketResult[2]);
-      let gameName = "";
-      if (a === b && b === c) {
-        gameName = "Triple Panel";
-      } else if (a === b || b === c || a === c) {
-        gameName = "Double Panel";
-      } else {
-        gameName = "Single Panel";
-      }
+  const getGameName = (marketResult: string): string => {
+    // Your logic to determine the game name based on the market result
+    // Example logic:
+    const a = parseInt(marketResult[0]);
+    const b = parseInt(marketResult[1]);
+    const c = parseInt(marketResult[2]);
+    if (a === b && b === c) {
+      return "Triple Panel";
+    } else if (a === b || b === c || a === c) {
+      return "Double Panel";
+    } else {
+      return "Single Panel";
+    }
+  };
 
-      const game = `${gameName.split(" ")[0][0]}${gameName.split(" ")[1][0]}`;
+  const getGameAbbreviation = (gameName: string): string => {
+    if (gameName === "Triple Panel") {
+      return "TP";
+    } else if (gameName === "Double Panel") {
+      return "DP";
+    } else {
+      return "SP";
+    }
+  };
 
-      const rateRef = ref(database, `ADMIN/GAME RATE/${game}`);
+  const fetchUsers = async (
+    marketResult: string,
+    marketType: string,
+    userListArray: UserListDataType[]
+  ) => {
+    let gameName: string;
+    let game: string;
 
-      get(rateRef).then((rateSnapshot) => {
-        if (rateSnapshot.exists()) {
-          setGameRate(rateSnapshot.val());
+    if (marketResult.length === 1) {
+      gameName = "Single Digit";
+      game = "SD";
+    } else if (marketResult.length === 2) {
+      gameName = "Jodi Digit";
+      game = "JD";
+    } else if (marketResult.length === 3) {
+      gameName = getGameName(marketResult);
+      game = getGameAbbreviation(gameName);
+    } else if (marketResult.replace("-", "").length === 4) {
+      gameName = "Half Sangam";
+      game = "HS";
+    } else {
+      gameName = "Full Sangam";
+      game = "FS";
+    }
+
+    const rateRef = ref(database, `ADMIN/GAME RATE/${game}`);
+    const userRewardsRef = ref(
+      database,
+      `TOTAL TRANSACTION/BIDS/${year}/${month}/${date}/${
+        gameId.split("___")[0]
+      }/${marketType}/${gameName}/${marketResult}/USERS`
+    );
+
+    const [rateSnapshot, usersnapshot] = await Promise.all([
+      get(rateRef),
+      get(userRewardsRef),
+    ]);
+
+    const gameRate = rateSnapshot.exists() ? rateSnapshot.val() : 0;
+    const promises: Promise<void>[] = [];
+
+    usersnapshot.forEach((userSnapshot) => {
+      const phone = userSnapshot.key;
+      const points = userSnapshot.val();
+
+      const userRef = ref(database, `USERS/${phone}`);
+      const promise = get(userRef).then((userSnapshot: any) => {
+        if (userSnapshot.exists()) {
+          const userName = userSnapshot.val().NAME;
+          const number = marketResult;
+
+          checkRewards(phone, gameName, number);
+
+          userListArray.push({
+            gameRate,
+            number,
+            userName,
+            gameName,
+            phone,
+            points,
+          });
         }
       });
+      promises.push(promise);
+    });
 
-      const userRewardsRef = ref(
-        database,
-        `TOTAL TRANSACTION/BIDS/${year}/${month}/${date}/${
-          gameId.split("___")[0]
-        }/OPEN/${gameName}/${openMarketResult}`
-      );
+    await Promise.all(promises);
+  };
 
-      const snapshot = await get(userRewardsRef);
-      const userListArray: UserListDataType[] = [];
-      const promises: Promise<void>[] = [];
-
-      if (snapshot.exists()) {
-        snapshot.child("USERS").forEach((userSnapshot) => {
-          const phone = userSnapshot.key;
-          const points = userSnapshot.val();
-
-          const userRef = ref(database, `USERS/${phone}`);
-          const promise1 = get(userRef).then((userSnapshot) => {
-            if (userSnapshot.exists()) {
-              const userName = userSnapshot.val().NAME;
-              const number = openMarketResult;
-
-              checkRewards(phone, gameName, number);
-
-              userListArray.push({
-                number,
-                userName,
-                gameName,
-                phone,
-                points,
-              });
-            }
-          });
-          promises.push(promise1);
-        });
-      }
-
+  const fetchOpenUsers = async () => {
+    try {
       const openSingleNumber =
         (parseInt(openMarketResult[0]) +
           parseInt(openMarketResult[1]) +
           parseInt(openMarketResult[2])) %
         10;
 
-      const singleRef = ref(
-        database,
-        `TOTAL TRANSACTION/BIDS/${year}/${month}/${date}/${
-          gameId.split("___")[0]
-        }/OPEN/Single Digit/${openSingleNumber}/USERS`
-      );
+      const userListArray: UserListDataType[] = [];
 
-      const singleSnapshot = await get(singleRef);
-      const singleDigitUsersArray: UserListDataType[] = [];
+      await Promise.all([
+        fetchUsers(openMarketResult, "OPEN", userListArray), // Pass userListArray as an argument
+        fetchUsers(String(openSingleNumber), "OPEN", userListArray), // Pass userListArray as an argument
+      ]);
 
-      singleSnapshot.forEach((singlesnapshot) => {
-        if (singlesnapshot.exists()) {
-          const phone = singlesnapshot.key;
-          const points = singlesnapshot.val();
-          const gameName = "Single Digit";
-
-          const userRef = ref(database, `USERS/${phone}`);
-          const promise2 = get(userRef).then((userSnapshot: any) => {
-            if (userSnapshot.exists()) {
-              const userName = userSnapshot.val().NAME.split(" ")[0];
-              const number = String(openSingleNumber);
-
-              checkRewards(phone, gameName, number);
-
-              singleDigitUsersArray.push({
-                number,
-                userName,
-                gameName,
-                phone,
-                points,
-              });
-            }
-          });
-          promises.push(promise2);
-        }
-      });
-      await Promise.all(promises);
-      setUsersList(userListArray);
-      setSingleDigitUsers(singleDigitUsersArray);
+      setUsersList(userListArray); // Set userListArray after both calls to fetchUsers
     } catch (err) {
       console.log(err);
     }
@@ -219,67 +199,6 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
 
   const fetchCloseUsers = async () => {
     try {
-      const a = parseInt(closeMarketResult[0]);
-      const b = parseInt(closeMarketResult[1]);
-      const c = parseInt(closeMarketResult[2]);
-      let gameName = "";
-      if (a === b && b === c) {
-        gameName = "Triple Panel";
-      } else if (a === b || b === c || a === c) {
-        gameName = "Double Panel";
-      } else {
-        gameName = "Single Panel";
-      }
-
-      const game = `${gameName.split(" ")[0][0]}${gameName.split(" ")[1][0]}`;
-
-      const rateRef = ref(database, `ADMIN/GAME RATE/${game}`);
-
-      get(rateRef).then((rateSnapshot) => {
-        if (rateSnapshot.exists()) {
-          setGameRate(rateSnapshot.val());
-        }
-      });
-
-      const userRewardsRef = ref(
-        database,
-        `TOTAL TRANSACTION/BIDS/${year}/${month}/${date}/${
-          gameId.split("___")[0]
-        }/CLOSE/${gameName}/${closeMarketResult}`
-      );
-
-      const snapshot = await get(userRewardsRef);
-      const userListArray: UserListDataType[] = [];
-      const number = closeMarketResult;
-
-      if (snapshot.exists()) {
-        snapshot.child("USERS").forEach((userSnapshot) => {
-          const phone = userSnapshot.key;
-          const points = userSnapshot.val();
-
-          const userRef = ref(database, `USERS/${phone}`);
-          get(userRef).then((userSnapshot) => {
-            if (userSnapshot.exists()) {
-              const userName = userSnapshot.val().NAME;
-
-              checkRewards(phone, gameName, number);
-
-              userListArray.push({
-                number,
-                userName,
-                gameName,
-                phone,
-                points,
-              });
-            }
-          });
-        });
-
-        setUsersList(userListArray);
-      } else {
-        console.log("No users found");
-      }
-
       const openSingleNumber =
         (parseInt(openMarketResult[0]) +
           parseInt(openMarketResult[1]) +
@@ -292,235 +211,29 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
           parseInt(closeMarketResult[2])) %
         10;
 
-      const closeJodiNumber = `${
-        (parseInt(openMarketResult[0]) +
-          parseInt(openMarketResult[1]) +
-          parseInt(openMarketResult[2])) %
-        10
-      }${
-        (parseInt(closeMarketResult[0]) +
-          parseInt(closeMarketResult[1]) +
-          parseInt(closeMarketResult[2])) %
-        10
-      }`;
-
-      const singleRef = ref(
-        database,
-        `TOTAL TRANSACTION/BIDS/${year}/${month}/${date}/${
-          gameId.split("___")[0]
-        }/CLOSE/Single Digit/${closeSingleNumber}/USERS`
-      );
-
-      const jodiRef = ref(
-        database,
-        `TOTAL TRANSACTION/BIDS/${year}/${month}/${date}/${
-          gameId.split("___")[0]
-        }/OPEN/Jodi Digit/${closeJodiNumber}/USERS`
-      );
+      const jodiNumber = `${openSingleNumber}${closeSingleNumber}`;
 
       const HSnumber1 = `${openMarketResult}-${closeSingleNumber}`;
       const HSnumber2 = `${openSingleNumber}-${closeMarketResult}`;
 
-      const HSRef1 = ref(
-        database,
-        `TOTAL TRANSACTION/BIDS/${year}/${month}/${date}/${
-          gameId.split("___")[0]
-        }/OPEN/Half Sangam/${HSnumber1}/USERS`
-      );
+      const FSNumber = `${openMarketResult}-${jodiNumber}-${closeMarketResult}`;
 
-      const HSRef2 = ref(
-        database,
-        `TOTAL TRANSACTION/BIDS/${year}/${month}/${date}/${
-          gameId.split("___")[0]
-        }/OPEN/Half Sangam/${HSnumber2}/USERS`
-      );
+      const userListArray: UserListDataType[] = [];
 
-      const FSNumber = `${openMarketResult}-${closeJodiNumber}-${closeMarketResult}`;
+      await Promise.all([
+        fetchUsers(closeMarketResult, "CLOSE", userListArray), // Pass userListArray as an argument
+        fetchUsers(String(closeSingleNumber), "CLOSE", userListArray), // Pass userListArray as an argument
+        fetchUsers(jodiNumber, "OPEN", userListArray), // Pass userListArray as an argument
+        fetchUsers(HSnumber1, "OPEN", userListArray), // Pass userListArray as an argument
+        fetchUsers(HSnumber2, "OPEN", userListArray), // Pass userListArray as an argument
+        fetchUsers(FSNumber, "OPEN", userListArray), // Pass userListArray as an argument
+      ]);
 
-      const FSRef = ref(
-        database,
-        `TOTAL TRANSACTION/BIDS/${year}/${month}/${date}/${
-          gameId.split("___")[0]
-        }/OPEN/Full Sangam/${FSNumber}/USERS`
-      );
-
-      const singleSnapshot = await get(singleRef);
-      const JodiSnapshot = await get(jodiRef);
-      const FSSnapshot = await get(FSRef);
-      const HSSnapshot1 = await get(HSRef1);
-      const HSSnapshot2 = await get(HSRef2);
-
-      const singleDigitUsersArray: UserListDataType[] = [];
-      const promises: Promise<void>[] = [];
-
-      singleSnapshot.forEach((singlesnapshot) => {
-        if (singlesnapshot.exists()) {
-          const phone = singlesnapshot.key;
-          const points = singlesnapshot.val();
-          const gameName = "Single Digit";
-
-          const userRef = ref(database, `USERS/${phone}`);
-          const promise = get(userRef).then((userSnapshot: any) => {
-            if (userSnapshot.exists()) {
-              const userName = userSnapshot.val().NAME.split(" ")[0];
-              const number = String(closeSingleNumber);
-
-              checkRewards(phone, gameName, number);
-
-              singleDigitUsersArray.push({
-                number,
-                userName,
-                gameName,
-                phone,
-                points,
-              });
-            }
-          });
-          promises.push(promise);
-        }
-      });
-
-      JodiSnapshot.forEach((jodisnapshot) => {
-        if (jodisnapshot.exists()) {
-          const phone = jodisnapshot.key;
-          const points = jodisnapshot.val();
-          const gameName = "Jodi Digit";
-
-          const userRef = ref(database, `USERS/${phone}`);
-          const promise1 = get(userRef).then((userSnapshot: any) => {
-            if (userSnapshot.exists()) {
-              const userName = userSnapshot.val().NAME.split(" ")[0];
-              const number = String(closeJodiNumber);
-
-              checkRewards(phone, gameName, number);
-
-              singleDigitUsersArray.push({
-                number,
-                userName,
-                gameName,
-                phone,
-                points,
-              });
-            }
-          });
-          promises.push(promise1);
-        }
-      });
-
-      HSSnapshot1.forEach((HSsnapshot) => {
-        if (HSsnapshot.exists()) {
-          const phone = HSsnapshot.key;
-          const points = HSsnapshot.val();
-          const gameName = "Half Sangam";
-
-          const userRef = ref(database, `USERS/${phone}`);
-          const promise2 = get(userRef).then((userSnapshot: any) => {
-            if (userSnapshot.exists()) {
-              const userName = userSnapshot.val().NAME.split(" ")[0];
-              const number = String(HSnumber1);
-
-              checkRewards(phone, gameName, number);
-
-              singleDigitUsersArray.push({
-                number,
-                userName,
-                gameName,
-                phone,
-                points,
-              });
-            }
-          });
-          promises.push(promise2);
-        }
-      });
-
-      HSSnapshot2.forEach((HSsnapshot) => {
-        if (HSsnapshot.exists()) {
-          const phone = HSsnapshot.key;
-          const points = HSsnapshot.val();
-          const gameName = "Half Sangam";
-
-          const userRef = ref(database, `USERS/${phone}`);
-          const promise4 = get(userRef).then((userSnapshot: any) => {
-            if (userSnapshot.exists()) {
-              const userName = userSnapshot.val().NAME.split(" ")[0];
-              const number = String(HSnumber2);
-
-              checkRewards(phone, gameName, number);
-
-              singleDigitUsersArray.push({
-                number,
-                userName,
-                gameName,
-                phone,
-                points,
-              });
-            }
-          });
-          promises.push(promise4);
-        }
-      });
-
-      FSSnapshot.forEach((FSsnapshot) => {
-        if (FSsnapshot.exists()) {
-          const phone = FSsnapshot.key;
-          const points = FSsnapshot.val();
-          const gameName = "Full Sangam";
-
-          const userRef = ref(database, `USERS/${phone}`);
-          const promise3 = get(userRef).then((userSnapshot: any) => {
-            if (userSnapshot.exists()) {
-              const userName = userSnapshot.val().NAME.split(" ")[0];
-              const number = String(FSNumber);
-
-              checkRewards(phone, gameName, number);
-
-              singleDigitUsersArray.push({
-                number,
-                userName,
-                gameName,
-                phone,
-                points,
-              });
-            }
-          });
-          promises.push(promise3);
-        }
-      });
-      await Promise.all(promises);
-      setSingleDigitUsers(singleDigitUsersArray);
+      setUsersList(userListArray);
     } catch (err) {
       console.log(err);
     }
   };
-
-  useEffect(() => {
-    const rateRef = ref(database, `ADMIN/GAME RATE`);
-
-    get(rateRef).then((rateSnapshot) => {
-      if (rateSnapshot.exists()) {
-        setRate({
-          SDGameRate: rateSnapshot.val().SD,
-          JDGameRate: rateSnapshot.val().JD,
-          HSGameRate: rateSnapshot.val().HS,
-          FSGameRate: rateSnapshot.val().FS,
-        });
-      }
-    });
-
-    const unsubscribe = onValue(rateRef, (rateSnapshot) => {
-      if (rateSnapshot.exists()) {
-        setRate({
-          SDGameRate: rateSnapshot.val().SD,
-          JDGameRate: rateSnapshot.val().JD,
-          HSGameRate: rateSnapshot.val().HS,
-          FSGameRate: rateSnapshot.val().FS,
-        });
-      }
-    });
-
-    return () => unsubscribe();
-  }, []);
 
   const handleOpenClick = () => {
     fetchOpenUsers();
@@ -555,8 +268,6 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
     });
   };
 
-  console.log(rewardSentMap);
-
   const sendRewards = async (
     userName: string,
     phone: string,
@@ -570,30 +281,46 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
     const usersAmountRef = ref(database, `USERS/${phone}`);
     const userSnapshot = await get(usersAmountRef);
     const previousPoints = userSnapshot.val().AMOUNT;
-
     const newPoints = previousPoints + winPoints;
 
     await update(usersAmountRef, { AMOUNT: newPoints });
+
+    const transactionData = {
+      DATE: dateString,
+      MARKET_ID: gameId.split("___")[0],
+      MARKET_NAME: gameId.split("___")[1],
+      NAME: userName,
+      NEW_POINTS: newPoints,
+      NUMBER: number,
+      OPEN_CLOSE:
+        gameName === "Jodi Digit" ||
+        gameName === "Half Sangam" ||
+        gameName === "Full Sangam"
+          ? "OPEN"
+          : gameId.split("___")[2],
+      PHONE: phone,
+      POINTS: String(points),
+      PREVIOUS_POINTS: previousPoints,
+      TYPE: gameName,
+      WIN_POINTS: winPoints,
+    };
 
     const totalTransactionTotalRef = ref(
       database,
       `TOTAL TRANSACTION/WIN/TOTAL/${gameId.split("___")[0]}/${timestamp}`
     );
-
     const totalTransactionDateWiseRef = ref(
       database,
       `TOTAL TRANSACTION/WIN/DATE WISE/${year}/${month}/${date}/${
         gameId.split("___")[0]
       }/${timestamp}`
     );
-
     const userTransactionDateWiseRef = ref(
       database,
       `USERS TRANSACTION/${phone}/WIN/DATE WISE/${year}/${month}/${date}/${
         gameId.split("___")[0]
       }/${timestamp}`
     );
-
     const userTransactionTotalRef = ref(
       database,
       `USERS TRANSACTION/${phone}/WIN/TOTAL/${
@@ -601,103 +328,16 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
       }/${timestamp}`
     );
 
-    await set(totalTransactionTotalRef, {
-      DATE: dateString,
-      MARKET_ID: `${gameId.split("___")[0]}`,
-      MARKET_NAME: `${gameId.split("___")[1]}`,
-      NAME: userName,
-      NEW_POINTS: newPoints,
-      NUMBER: number,
-      OPEN_CLOSE:
-        gameName === "Jodi Digit" ||
-        gameName === "Half Sangam" ||
-        gameName === "Full Sangam"
-          ? "OPEN"
-          : `${gameId.split("___")[2]}`,
-      PHONE: phone,
-      POINTS: String(points),
-      PREVIOUS_POINTS: previousPoints,
-      TYPE: gameName,
-      WIN_POINTS: winPoints,
-    });
-
-    await set(totalTransactionDateWiseRef, {
-      DATE: dateString,
-      MARKET_ID: `${gameId.split("___")[0]}`,
-      MARKET_NAME: `${gameId.split("___")[1]}`,
-      NAME: userName,
-      NEW_POINTS: newPoints,
-      NUMBER: number,
-      OPEN_CLOSE:
-        gameName === "Jodi Digit" ||
-        gameName === "Half Sangam" ||
-        gameName === "Full Sangam"
-          ? "OPEN"
-          : `${gameId.split("___")[2]}`,
-      PHONE: phone,
-      POINTS: String(points),
-      PREVIOUS_POINTS: previousPoints,
-      TYPE: gameName,
-      WIN_POINTS: winPoints,
-    });
-
-    await set(userTransactionDateWiseRef, {
-      DATE: dateString,
-      MARKET_ID: `${gameId.split("___")[0]}`,
-      MARKET_NAME: `${gameId.split("___")[1]}`,
-      NAME: userName,
-      NEW_POINTS: newPoints,
-      NUMBER: number,
-      OPEN_CLOSE:
-        gameName === "Jodi Digit" ||
-        gameName === "Half Sangam" ||
-        gameName === "Full Sangam"
-          ? "OPEN"
-          : `${gameId.split("___")[2]}`,
-      PHONE: phone,
-      POINTS: String(points),
-      PREVIOUS_POINTS: previousPoints,
-      TYPE: gameName,
-      WIN_POINTS: winPoints,
-    });
-
-    await set(userTransactionTotalRef, {
-      DATE: dateString,
-      MARKET_ID: `${gameId.split("___")[0]}`,
-      MARKET_NAME: `${gameId.split("___")[1]}`,
-      NAME: userName,
-      NEW_POINTS: newPoints,
-      NUMBER: number,
-      OPEN_CLOSE:
-        gameName === "Jodi Digit" ||
-        gameName === "Half Sangam" ||
-        gameName === "Full Sangam"
-          ? "OPEN"
-          : `${gameId.split("___")[2]}`,
-      PHONE: phone,
-      POINTS: String(points),
-      PREVIOUS_POINTS: previousPoints,
-      TYPE: gameName,
-      WIN_POINTS: winPoints,
-    });
+    await Promise.all([
+      set(totalTransactionTotalRef, transactionData),
+      set(totalTransactionDateWiseRef, transactionData),
+      set(userTransactionDateWiseRef, transactionData),
+      set(userTransactionTotalRef, transactionData),
+    ]);
 
     checkRewards(phone, gameName, number);
     toast.success("Rewards successfully sent");
   };
-
-  //   // When the component mounts
-  //   useEffect(() => {
-  //     const isRewardsSent =
-  //       localStorage.getItem(`${phone}${gameName}_rewardsSent`) === "true";
-
-  //     if (isRewardsSent) {
-  //       // Update the state accordingly
-  //       setRewardSentMap((prevData) => ({
-  //         ...prevData,
-  //         [`${phone}${gameName}`]: true,
-  //       }));
-  //     }
-  //   }, [phone,gameName]);
 
   return (
     <div className="rewards">
@@ -735,8 +375,7 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
         </div>
       )}
 
-      {(singleDigitUsers && singleDigitUsers?.length > 0) ||
-      (usersList && usersList.length > 0) ? (
+      {usersList && usersList.length > 0 ? (
         <div className="winning_users_container">
           <h4>Winning Users</h4>
           <ul>
@@ -755,9 +394,9 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
                     </div>
                     <div className="winning_button">
                       <div className="winning_points">
-                        {users.points} &#8377; x {gameRate} Rate{" "}
+                        {users.points} &#8377; x {users.gameRate} Rate{" "}
                         <span className="equal">=</span>
-                        <span>{users.points * gameRate} &#8377;</span>
+                        <span>{users.points * users.gameRate} &#8377;</span>
                       </div>
                       <button
                         onClick={() =>
@@ -767,98 +406,7 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
                             users.gameName,
                             users.number,
                             users.points,
-                            users.points * gameRate
-                          )
-                        }
-                        disabled={
-                          rewardSentMap[
-                            `${users.phone}${users.gameName}${
-                              gameId.split("___")[2]
-                            }${users.number}`
-                          ]
-                        }
-                        className={
-                          rewardSentMap[
-                            `${users.phone}${users.gameName}${
-                              gameId.split("___")[2]
-                            }${users.number}`
-                          ]
-                            ? "rewards_sent"
-                            : ""
-                        }
-                      >
-                        {rewardSentMap[
-                          `${users.phone}${users.gameName}${
-                            gameId.split("___")[2]
-                          }${users.number}`
-                        ] ? (
-                          <p className="button_text">
-                            ✓ Sent <span>Rewards</span>
-                          </p>
-                        ) : (
-                          <>
-                            Send <span>Rewards</span>
-                            <img src="/gift.png" alt="" />
-                          </>
-                        )}
-                      </button>
-                    </div>
-                  </div>
-                </li>
-              ))}
-            {singleDigitUsers &&
-              singleDigitUsers.map((users) => (
-                <li key={`${users.phone}${users.gameName}`}>
-                  <div className="users_list">
-                    <div className="phone_gameName">
-                      <div className="phone">
-                        +91 {users.phone}{" "}
-                        <span>({users.userName.split(" ")[0]})</span>
-                      </div>
-                      <div className="gameName">
-                        {users.gameName} <span>({users.number})</span>
-                      </div>
-                    </div>
-
-                    <div className="winning_button">
-                      <div className="winning_points">
-                        {users.points} &#8377; x{" "}
-                        {users.gameName === "Single Digit"
-                          ? rate.SDGameRate
-                          : users.gameName === "Jodi Digit"
-                          ? rate.JDGameRate
-                          : users.gameName === "Half Sangam"
-                          ? rate.HSGameRate
-                          : rate.FSGameRate}{" "}
-                        Rate <span className="equal">=</span>
-                        <span>
-                          {users.points *
-                            (users.gameName === "Single Digit"
-                              ? rate.SDGameRate
-                              : users.gameName === "Jodi Digit"
-                              ? rate.JDGameRate
-                              : users.gameName === "Half Sangam"
-                              ? rate.HSGameRate
-                              : rate.FSGameRate)}{" "}
-                          &#8377;
-                        </span>
-                      </div>
-                      <button
-                        onClick={() =>
-                          sendRewards(
-                            users.userName,
-                            users.phone,
-                            users.gameName,
-                            users.number,
-                            users.points,
-                            users.points *
-                              (users.gameName === "Single Digit"
-                                ? rate.SDGameRate
-                                : users.gameName === "Jodi Digit"
-                                ? rate.JDGameRate
-                                : users.gameName === "Half Sangam"
-                                ? rate.HSGameRate
-                                : rate.FSGameRate)
+                            users.points * users.gameRate
                           )
                         }
                         disabled={

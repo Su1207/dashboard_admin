@@ -16,24 +16,6 @@ interface WinDataGridProps {
 const WinDataGrid: React.FC<WinDataGridProps> = ({ winData }) => {
   const [selectDate, setSelectDate] = useState<Date | null>(null);
 
-  //   const rows = winData.map((winDataNode) => {
-  //     const winDetails: WinDetails = {
-  //       winPoints: winDataNode.winPoints,
-  //       marketName: winDataNode.marketName,
-  //       points: winDataNode.points,
-  //       marketId: winDataNode.marketId || "", // Add default value or handle appropriately
-  //       name: winDataNode.name || "", // Add default value or handle appropriately
-  //       newPoints: winDataNode.newPoints || 0, // Add default value or handle appropriately
-  //       number: winDataNode.number || "", // Add default value or handle appropriately
-  //       date: winDataNode.date,
-  //       openClose: winDataNode.openClose,
-  //       phone: winDataNode.phone,
-  //       previousPoints: winDataNode.previousPoints,
-  //       type: winDataNode.type,
-  //     };
-  //     return winDetails;
-  //   });
-
   const columns: GridColDef[] = [
     {
       field: "date",
@@ -50,7 +32,7 @@ const WinDataGrid: React.FC<WinDataGridProps> = ({ winData }) => {
     {
       field: "particulars",
       headerName: "Particulars",
-      width: 400,
+      width: 430,
       renderCell: (params) => (
         <div className="row_details">
           Win ( {params.row.marketName} : {params.row.type} :{" "}

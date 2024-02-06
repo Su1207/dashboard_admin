@@ -31,7 +31,7 @@ const BidDataGrid: React.FC<BidDataGridProps> = ({ bidData }) => {
     {
       field: "particulars",
       headerName: "Particulars",
-      width: 400,
+      width: 430,
       renderCell: (params) => (
         <div>
           Bid ( {params.row.marketName} : {params.row.type} :{" "}
