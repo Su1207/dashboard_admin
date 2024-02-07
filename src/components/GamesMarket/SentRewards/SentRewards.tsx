@@ -158,7 +158,7 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
           const userName = userSnapshot.val().NAME;
           const number = marketResult;
 
-          checkRewards(phone, gameName, number);
+          checkRewards(phone, gameName, number, marketType);
 
           userListArray.push({
             gameRate,
@@ -248,7 +248,8 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
   const checkRewards = async (
     phone: string,
     gameName: string,
-    number: string
+    number: string,
+    openClose: string
   ) => {
     const usersRef = ref(
       database,
@@ -259,10 +260,13 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
     const snapshot = await get(usersRef);
 
     snapshot.forEach((winSnapshot) => {
-      if (winSnapshot.val().NUMBER === number) {
+      if (
+        winSnapshot.val().NUMBER === number &&
+        winSnapshot.val().OPEN_CLOSE === openClose
+      ) {
         setRewardSentMap((prevData) => ({
           ...prevData,
-          [`${phone}${gameName}${gameId.split("___")[2]}${number}`]: true,
+          [`${phone}${gameName}${openClose}${number}`]: true,
         }));
       }
     });
@@ -285,6 +289,13 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
 
     await update(usersAmountRef, { AMOUNT: newPoints });
 
+    const openClose =
+      gameName === "Jodi Digit" ||
+      gameName === "Half Sangam" ||
+      gameName === "Full Sangam"
+        ? "OPEN"
+        : gameId.split("___")[2];
+
     const transactionData = {
       DATE: dateString,
       MARKET_ID: gameId.split("___")[0],
@@ -292,12 +303,7 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
       NAME: userName,
       NEW_POINTS: newPoints,
       NUMBER: number,
-      OPEN_CLOSE:
-        gameName === "Jodi Digit" ||
-        gameName === "Half Sangam" ||
-        gameName === "Full Sangam"
-          ? "OPEN"
-          : gameId.split("___")[2],
+      OPEN_CLOSE: openClose,
       PHONE: phone,
       POINTS: String(points),
       PREVIOUS_POINTS: previousPoints,
@@ -335,7 +341,7 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
       set(userTransactionTotalRef, transactionData),
     ]);
 
-    checkRewards(phone, gameName, number);
+    checkRewards(phone, gameName, number, openClose);
     toast.success("Rewards successfully sent");
   };
 
