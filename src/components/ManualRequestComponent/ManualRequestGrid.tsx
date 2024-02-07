@@ -255,6 +255,8 @@ const ManualRequestGrid: React.FC<ManualDataGridProps> = ({ manualData }) => {
     toast.success("Payment Rejected");
   };
 
+  
+
   const rows = manualData?.map((data) => {
     return {
       id: data.timestamp,

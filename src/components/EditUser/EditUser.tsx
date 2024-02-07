@@ -136,7 +136,7 @@ const EditUser = (props: Props) => {
         console.error("Error updating user");
       }
     } else {
-      toast.error("All fields are required required");
+      toast.error("All fields are required");
       return;
     }
 
