@@ -2,6 +2,7 @@ import { Navigate, useParams } from "react-router-dom";
 import "./user.scss";
 import UserDetail from "../../components/UserDetail/UserDetail";
 import { useAuth } from "../../components/auth-context";
+import { useSubAuth } from "../../components/subAdmin-authContext";
 
 const User = () => {
   //this way ensure that useParams never return undefined value
@@ -10,8 +11,9 @@ const User = () => {
   console.log(userId);
 
   const { isAuthenticated } = useAuth();
+  const { isSubAuthenticated } = useSubAuth();
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated && !isSubAuthenticated) {
     return <Navigate to="/login" />;
   }
 

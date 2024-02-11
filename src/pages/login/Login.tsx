@@ -3,19 +3,42 @@ import { useAuth } from "../../components/auth-context";
 import "./login.scss";
 import PersonIcon from "@mui/icons-material/Person";
 import KeyIcon from "@mui/icons-material/Key";
+import { useSubAuth } from "../../components/subAdmin-authContext";
 
 const Login = () => {
   const [username, setUsername] = useState("");
   const [password, setPassword] = useState("");
+  const [selectedOption, setSelectedOption] = useState(true);
+  const [admin, setAdmin] = useState(false);
   const { login } = useAuth();
+  const { subLogin } = useSubAuth();
+
+  const handleAdmin = () => {
+    setAdmin(true);
+    setSelectedOption(false);
+  };
+
+  const handleSubAdmin = () => {
+    setAdmin(false);
+    setSelectedOption(false);
+  };
 
   const handleLogin = () => {
-    // Call the login function from the auth context
-    login(username, password);
+    admin ? login(username, password) : subLogin(username, password);
   };
 
   return (
     <div className="auth">
+      {selectedOption && (
+        <div className="openCloseOption_container">
+          <div className="openCloseOption_main_container">
+            <h2>Select Your Identity</h2>
+            <button onClick={handleAdmin}>ADMIN</button>
+            <button onClick={handleSubAdmin}>SUB-ADMIN</button>
+          </div>
+        </div>
+      )}
+
       <div className="auth_container">
         <div className="login_img_container">
           <img src="./login.jpg" alt="" className="login_img" />

@@ -5,6 +5,8 @@ import { database } from "../../firebase";
 import { toast } from "react-toastify";
 import ClearIcon from "@mui/icons-material/Clear";
 import "./AdminWithdrawPointsForm.scss";
+import { useAuth } from "../auth-context";
+import { usePermissionContext } from "../subAdminPermission";
 
 interface AdminPointsData {
   phoneNumber: string;
@@ -186,31 +188,35 @@ const AdminWithdrawPointsForm = (props: Props) => {
     withdrawPoints(formData);
   };
 
+  const { isAuthenticated } = useAuth();
+  const { permissions } = usePermissionContext();
+
   return (
     <div className={`add ${modalOpen ? "" : "closed"}`}>
-      <div className="modal">
-        <span className="close" onClick={toggleModal}>
-          <ClearIcon />
-        </span>
-        <div className="title-card">
-          Withdraw Points{" "}
-          <span>
-            <img src={WithdrawPoint} alt="" className="withdraw_img" />
+      {isAuthenticated || permissions?.USERS_WITHDRAW ? (
+        <div className="modal">
+          <span className="close" onClick={toggleModal}>
+            <ClearIcon />
           </span>
-        </div>
-        <form onSubmit={handleSubmit}>
-          <div className="item">
-            <label>Amount</label>
-            <input
-              type="number"
-              name="amount"
-              placeholder="Amount"
-              inputMode="numeric"
-              value={formData.amount}
-              onChange={handleChange}
-            />
+          <div className="title-card">
+            Withdraw Points{" "}
+            <span>
+              <img src={WithdrawPoint} alt="" className="withdraw_img" />
+            </span>
           </div>
-          {/* <div className="item">
+          <form onSubmit={handleSubmit}>
+            <div className="item">
+              <label>Amount</label>
+              <input
+                type="number"
+                name="amount"
+                placeholder="Amount"
+                inputMode="numeric"
+                value={formData.amount}
+                onChange={handleChange}
+              />
+            </div>
+            {/* <div className="item">
             <label>App</label>
             <input
               type="text"
@@ -241,11 +247,19 @@ const AdminWithdrawPointsForm = (props: Props) => {
               onChange={handleChange}
             />
           </div> */}
-          <button className="withdraw-btn" type="submit">
-            Withdraw Points
-          </button>
-        </form>
-      </div>
+            <button className="withdraw-btn" type="submit">
+              Withdraw Points
+            </button>
+          </form>
+        </div>
+      ) : (
+        <div>
+          <span className="close-permission" onClick={toggleModal}>
+            <ClearIcon />
+          </span>
+          <p>Sorry, No access to add points !!!</p>
+        </div>
+      )}
     </div>
   );
 };

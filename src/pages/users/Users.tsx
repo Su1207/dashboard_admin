@@ -11,6 +11,8 @@ import { FaUserPlus } from "react-icons/fa6";
 import AddUser from "../../components/AddUser/AddUser";
 import { useAuth } from "../../components/auth-context";
 import { Navigate } from "react-router-dom";
+import { useSubAuth } from "../../components/subAdmin-authContext";
+import { usePermissionContext } from "../../components/subAdminPermission";
 
 type User = {
   AMOUNT: number;
@@ -188,47 +190,56 @@ const Users: React.FC = () => {
   };
 
   const { isAuthenticated } = useAuth();
+  const { isSubAuthenticated } = useSubAuth();
+  const { permissions } = usePermissionContext();
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated && !isSubAuthenticated) {
     return <Navigate to="/login" />;
   }
 
+  console.log("USERS:", permissions?.USERS);
+
   return (
-    <div className="users">
-      <div className="users_heading">
-        <h1>Users</h1>
-        <div className="users_heading_options">
-          <div onClick={handleClick} className="add_user_option">
-            {!addUser && <FaUserPlus size={25} />}
+    <>
+      {isAuthenticated || (isSubAuthenticated && permissions?.USERS) ? (
+        <div className="users">
+          <div className="users_heading">
+            <h1>Users</h1>
+            <div className="users_heading_options">
+              <div onClick={handleClick} className="add_user_option">
+                {!addUser && <FaUserPlus size={25} />}
+              </div>
+
+              {/* User List Dropdown */}
+              <div>
+                <UserListDropdown
+                  selectedListOption={selectedListOption}
+                  onListOptionChange={handleListOptionChange}
+                />
+              </div>
+
+              {/* User Filter Dropdown */}
+              <div>
+                <UserFilterDropDown
+                  filterOption={filterOption}
+                  onFilterOptionChange={handleOptionChange}
+                />
+              </div>
+            </div>
           </div>
 
-          {/* User List Dropdown */}
-          <div>
-            <UserListDropdown
-              selectedListOption={selectedListOption}
-              onListOptionChange={handleListOptionChange}
-            />
-          </div>
+          {addUser && (
+            <div>
+              <AddUser setAddUser={setAddUser} />
+            </div>
+          )}
 
-          {/* User Filter Dropdown */}
-          <div>
-            <UserFilterDropDown
-              filterOption={filterOption}
-              onFilterOptionChange={handleOptionChange}
-            />
-          </div>
-        </div>
-      </div>
-
-      {addUser && (
-        <div>
-          <AddUser setAddUser={setAddUser} />
-        </div>
-      )}
-
-      {/* Display the UserList component with the usersData and filterOption */}
-      <UserList usersData={getFilteredUsers()} filterOption={filterOption} />
-      {/* <ul>
+          {/* Display the UserList component with the usersData and filterOption */}
+          <UserList
+            usersData={getFilteredUsers()}
+            filterOption={filterOption}
+          />
+          {/* <ul>
         {usersData &&
           Object.entries(usersData).map(([userId, user]) => (
             <li key={userId}>
@@ -238,7 +249,11 @@ const Users: React.FC = () => {
             </li>
           ))}
       </ul> */}
-    </div>
+        </div>
+      ) : (
+        <p>No access to this data</p>
+      )}
+    </>
   );
 };
 

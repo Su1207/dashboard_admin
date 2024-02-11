@@ -15,6 +15,7 @@ import TemporaryDrawer from "./components/menu/TemporaryDrawer";
 import Deposit from "./pages/Deposit/Deposit";
 import Withdraw from "./pages/Withdraw/Withdraw";
 import { AuthProvider, useAuth } from "./components/auth-context";
+import { SubAuthProvider, useSubAuth } from "./components/subAdmin-authContext";
 import GameRate from "./pages/GameRate/GameRate";
 import GameSettings from "./pages/GameSettings/GameSettings";
 import Notification from "./pages/Notification/Notification";
@@ -27,12 +28,15 @@ import Payout from "./pages/Payout/Payout";
 import Settings from "./pages/Settings/Settings";
 import ManualRequest from "./pages/ManualRequest/ManualRequest";
 import Rewards from "./pages/games/Rewards/Rewards";
+import { PermissionProvider } from "./components/subAdminPermission";
 
 const Layout = () => {
   const { isAuthenticated } = useAuth();
+  const { isSubAuthenticated } = useSubAuth();
+  console.log(isSubAuthenticated);
   return (
     <div>
-      {isAuthenticated ? (
+      {isAuthenticated || isSubAuthenticated ? (
         <div className="main">
           <div className="main_navbar">
             <div className="menu_drawer">
@@ -149,12 +153,18 @@ const router = createBrowserRouter([
 
 function App() {
   return (
-    <AuthProvider>
-      <>
-        <ToastContainer />
-        <RouterProvider router={router} />
-      </>
-    </AuthProvider>
+    <>
+      <AuthProvider>
+        <SubAuthProvider>
+          <PermissionProvider>
+            <>
+              <ToastContainer />
+              <RouterProvider router={router} />
+            </>
+          </PermissionProvider>
+        </SubAuthProvider>
+      </AuthProvider>
+    </>
   );
 }
 

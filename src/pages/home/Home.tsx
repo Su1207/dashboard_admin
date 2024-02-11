@@ -6,11 +6,12 @@ import TotalBalance from "../../components/UsersHome/TotalBalance/TotalBalance";
 import TransactionTotal from "../../components/UsersHome/TransactionTotal/TransactionTotal";
 import { useAuth } from "../../components/auth-context";
 import { Navigate } from "react-router-dom";
+import { useSubAuth } from "../../components/subAdmin-authContext";
 
 const Home = () => {
   const { isAuthenticated } = useAuth();
-
-  if (!isAuthenticated) {
+  const { isSubAuthenticated } = useSubAuth();
+  if (!isAuthenticated && !isSubAuthenticated) {
     return <Navigate to="/login" />;
   }
   return (

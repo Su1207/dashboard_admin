@@ -1,11 +1,13 @@
 import { useAuth } from "../auth-context";
+import { useSubAuth } from "../subAdmin-authContext";
 import "./navbar.scss";
 
 const Navbar = () => {
   const { logout, isAuthenticated } = useAuth();
+  const { subLogout, isSubAuthenticated } = useSubAuth();
 
   const handleLogout = () => {
-    logout();
+    isAuthenticated ? logout() : subLogout();
   };
 
   return (
@@ -25,7 +27,7 @@ const Navbar = () => {
           <span>Admin</span>
         </div>
         <img src="/setting.svg" alt="" className="icon" />
-        {isAuthenticated && (
+        {(isAuthenticated || isSubAuthenticated) && (
           <span className="logout" onClick={handleLogout}>
             Logout
           </span>

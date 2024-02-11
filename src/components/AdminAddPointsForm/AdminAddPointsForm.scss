@@ -2,7 +2,7 @@
 @import "../../styles/responsive.scss";
 
 .add {
-  width: 98.5vw;
+  width: 100vw;
   height: 100vh;
   position: absolute;
   top: 0;
@@ -13,6 +13,13 @@
   justify-content: center;
   z-index: 1;
   overflow-x: hidden;
+
+  .close-permission {
+    position: absolute;
+    top: 10px;
+    right: 10px;
+    cursor: pointer;
+  }
 
   .modal {
     width: 40%;

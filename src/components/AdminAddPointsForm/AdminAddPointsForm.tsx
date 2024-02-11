@@ -5,6 +5,8 @@ import ClearIcon from "@mui/icons-material/Clear";
 import "./AdminAddPointsForm.scss";
 import AddPoints from "../../assets/wallet.png";
 import { toast } from "react-toastify";
+import { useAuth } from "../auth-context";
+import { usePermissionContext } from "../subAdminPermission";
 
 interface AdminPointsData {
   phoneNumber: string;
@@ -181,31 +183,35 @@ const AdminAddPointsForm = (props: Props) => {
     addPoints(formData);
   };
 
+  const { isAuthenticated } = useAuth();
+  const { permissions } = usePermissionContext();
+
   return (
     <div className={`add ${modalOpen ? "" : "closed"}`}>
-      <div className="modal">
-        <span className="close" onClick={toggleModal}>
-          <ClearIcon />
-        </span>
-        <h1>
-          Add Points
-          <span className="addNew">
-            <img src={AddPoints} alt="Add New" className="add-new_img" />
+      {isAuthenticated || permissions?.USERS_DEPOSIT ? (
+        <div className="modal">
+          <span className="close" onClick={toggleModal}>
+            <ClearIcon />
           </span>
-        </h1>
-        <form onSubmit={handleSubmit}>
-          <div className="item">
-            <label htmlFor="amount">Amount</label>
-            <input
-              type="number"
-              name="amount"
-              value={formData.amount}
-              onChange={handleChange}
-              inputMode="numeric"
-              placeholder="Amount"
-            />
-          </div>
-          {/* <div className="item">
+          <h1>
+            Add Points
+            <span className="addNew">
+              <img src={AddPoints} alt="Add New" className="add-new_img" />
+            </span>
+          </h1>
+          <form onSubmit={handleSubmit}>
+            <div className="item">
+              <label htmlFor="amount">Amount</label>
+              <input
+                type="number"
+                name="amount"
+                value={formData.amount}
+                onChange={handleChange}
+                inputMode="numeric"
+                placeholder="Amount"
+              />
+            </div>
+            {/* <div className="item">
             <label htmlFor="paymentApp">Payment App</label>
             <input
               type="text"
@@ -235,11 +241,19 @@ const AdminAddPointsForm = (props: Props) => {
               placeholder="Payment To"
             />
           </div> */}
-          <button className="add-btn" type="submit">
-            Add Points
-          </button>
-        </form>
-      </div>
+            <button className="add-btn" type="submit">
+              Add Points
+            </button>
+          </form>
+        </div>
+      ) : (
+        <div>
+          <span className="close-permission" onClick={toggleModal}>
+            <ClearIcon />
+          </span>
+          <p>Sorry, No access to add points !!!</p>
+        </div>
+      )}
     </div>
   );
 };
