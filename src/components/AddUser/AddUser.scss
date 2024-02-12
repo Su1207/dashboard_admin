@@ -35,13 +35,19 @@
       cursor: pointer;
     }
 
-    h1 {
-      margin-bottom: 3rem;
+    h1,
+    h2 {
+      margin-bottom: 2rem;
       font-size: 24px;
       display: flex;
       // justify-content: center;
       align-items: center;
       gap: 10px;
+
+      @include sm {
+        font-size: 1.2rem;
+        margin-bottom: 1.5rem;
+      }
 
       .add-new_img {
         height: 35px;
@@ -55,7 +61,7 @@
       max-width: 500px;
       justify-content: space-between;
 
-      @include md {
+      @include xl {
         flex-direction: column;
       }
 
@@ -76,6 +82,7 @@
           border: 1px solid $soft-color;
           outline: none;
           border-radius: 3px;
+          width: 100%;
 
           @include md {
             width: 100%;

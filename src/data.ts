@@ -83,8 +83,8 @@ export const menu = [
       },
       {
         id: 4,
-        title: "Calendar",
-        url: "/",
+        title: "Admin Users",
+        url: "/subAdmin",
         icon: "/calendar.svg",
       },
     ],

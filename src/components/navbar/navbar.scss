@@ -7,6 +7,10 @@
   align-items: center;
   justify-content: space-between;
 
+  @include md {
+    justify-content: end;
+  }
+
   @include sm {
     padding-left: 4px;
   }
@@ -18,8 +22,8 @@
   font-weight: bold;
   gap: 8px;
 
-  @include sm {
-    gap: 2px;
+  @include md {
+    display: none;
   }
 }
 
@@ -29,9 +33,7 @@
   gap: 20px;
 
   .user {
-    @include sm {
-      display: none;
-    }
+    text-transform: capitalize;
   }
 
   .icon {

@@ -29,6 +29,8 @@ import Settings from "./pages/Settings/Settings";
 import ManualRequest from "./pages/ManualRequest/ManualRequest";
 import Rewards from "./pages/games/Rewards/Rewards";
 import { PermissionProvider } from "./components/subAdminPermission";
+import AdminUsers from "./pages/AdminUsers/AdminUsers";
+import AdminRoles from "./pages/AdminUsers/AdminRoles/AdminRoles";
 
 const Layout = () => {
   const { isAuthenticated } = useAuth();
@@ -146,6 +148,14 @@ const router = createBrowserRouter([
       {
         path: "/win/:id",
         element: <WinDetail />,
+      },
+      {
+        path: "/subAdmin",
+        element: <AdminUsers />,
+      },
+      {
+        path: "/subAdmin/:id",
+        element: <AdminRoles />,
       },
     ],
   },

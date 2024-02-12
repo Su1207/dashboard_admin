@@ -72,7 +72,7 @@ export const SubAuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
           toast.error("Invalid username or password");
         }
       } else {
-        console.log("User not found");
+        toast.error("User not found");
       }
     } catch (error) {
       console.error("Error fetching user data:", error);
@@ -82,7 +82,7 @@ export const SubAuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const subLogout = () => {
     // Clear stored authentication data
     localStorage.removeItem("user");
-    localStorage.removeItem("isAuthenticated");
+    localStorage.removeItem("isSubAuthenticated");
 
     // Update state
     setUser(null);
