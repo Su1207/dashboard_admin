@@ -1,12 +1,4 @@
-import { get, ref } from "firebase/database";
-import {
-  createContext,
-  ReactNode,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import { database } from "../firebase";
+import { createContext, ReactNode, useContext, useState } from "react";
 
 type UsersPermissions = {
   USERS: boolean;
@@ -15,7 +7,8 @@ type UsersPermissions = {
 };
 
 interface PermissionContextProps {
-  username: string;
+  username: string | null;
+  setUsername: (data: string | null) => void;
   permissions: UsersPermissions | null;
   setPermissions: (data: UsersPermissions | null) => void;
 }
@@ -28,30 +21,7 @@ export const PermissionProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [permissions, setPermissions] = useState<UsersPermissions | null>(null);
-  const [username, setUsername] = useState("");
-
-  useEffect(() => {
-    const fetchPermissions = async () => {
-      const userString = localStorage.getItem("user");
-      if (userString !== null) {
-        const user = await JSON.parse(userString);
-        setUsername(user.ID);
-      }
-      if (!username) return;
-
-      const permissionRef = ref(
-        database,
-        `ADMIN/SUB_ADMIN/${username}/PERMISSIONS`
-      );
-
-      const permissionSnapshot = await get(permissionRef);
-      if (permissionSnapshot.exists()) {
-        setPermissions(permissionSnapshot.val());
-      }
-    };
-
-    fetchPermissions();
-  }, [username]);
+  const [username, setUsername] = useState<string | null>(null);
 
   return (
     <PermissionContext.Provider
@@ -59,6 +29,7 @@ export const PermissionProvider: React.FC<{ children: ReactNode }> = ({
         permissions,
         setPermissions,
         username,
+        setUsername,
       }}
     >
       {children}

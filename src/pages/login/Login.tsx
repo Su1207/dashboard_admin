@@ -4,14 +4,40 @@ import "./login.scss";
 import PersonIcon from "@mui/icons-material/Person";
 import KeyIcon from "@mui/icons-material/Key";
 import { useSubAuth } from "../../components/subAdmin-authContext";
+import { usePermissionContext } from "../../components/AdmissionPermission";
+import { get, ref } from "firebase/database";
+import { database } from "../../firebase";
 
 const Login = () => {
-  const [username, setUsername] = useState("");
+  const { username, setUsername } = usePermissionContext();
   const [password, setPassword] = useState("");
   const [selectedOption, setSelectedOption] = useState(true);
   const [admin, setAdmin] = useState(false);
   const { login } = useAuth();
   const { subLogin } = useSubAuth();
+
+  const { permissions, setPermissions } = usePermissionContext();
+
+  const fetchPermissions = async () => {
+    // const userString = localStorage.getItem("user");
+    // if (userString !== null) {
+    //   const user = await JSON.parse(userString);
+    //   setUsername(user.ID);
+    // }
+    if (!username) return;
+
+    const permissionRef = ref(
+      database,
+      `ADMIN/SUB_ADMIN/${username}/PERMISSIONS`
+    );
+
+    const permissionSnapshot = await get(permissionRef);
+    if (permissionSnapshot.exists()) {
+      setPermissions(permissionSnapshot.val());
+    }
+  };
+
+  console.log(permissions);
 
   const handleAdmin = () => {
     setAdmin(true);
@@ -24,7 +50,10 @@ const Login = () => {
   };
 
   const handleLogin = () => {
-    admin ? login(username, password) : subLogin(username, password);
+    admin
+      ? login(username ?? "", password)
+      : subLogin(username ?? "", password);
+    fetchPermissions();
   };
 
   return (
@@ -52,7 +81,7 @@ const Login = () => {
                 type="text"
                 id="username"
                 placeholder="Username"
-                value={username}
+                value={username ?? ""}
                 onChange={(e) => setUsername(e.target.value)}
               />
             </div>

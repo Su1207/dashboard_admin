@@ -15,10 +15,13 @@ import {
   //   ListItemIcon,
   //   ListItemText,
 } from "@mui/material";
+import { useSubAuth } from "../subAdmin-authContext";
 
 type Anchor = "left";
 
 export default function TemporaryDrawer() {
+  const { isSubAuthenticated } = useSubAuth();
+
   const [state, setState] = React.useState({
     left: false,
   });
@@ -46,13 +49,15 @@ export default function TemporaryDrawer() {
         {menu.map((item) => (
           <div className="item" key={item.id}>
             <span className="title">{item.title}</span>
-            {item.listItems.map((listItem) => (
-              <Link to={listItem.url} className="listItem" key={listItem.id}>
-                <img src={listItem.icon} alt="" className="listItem_icon" />
-                {/* <ListItemText primary={listItem.title} /> */}
-                <span className="listItemTitle">{listItem.title}</span>
-              </Link>
-            ))}
+            {item.listItems.map((listItem) =>
+              isSubAuthenticated && listItem.title === "Admin Users" ? null : (
+                <Link to={listItem.url} className="listItem" key={listItem.id}>
+                  <img src={listItem.icon} alt="" className="listItem_icon" />
+                  {/* <ListItemText primary={listItem.title} /> */}
+                  <span className="listItemTitle">{listItem.title}</span>
+                </Link>
+              )
+            )}
           </div>
         ))}
       </div>

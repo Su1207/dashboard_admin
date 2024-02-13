@@ -28,14 +28,48 @@ import Payout from "./pages/Payout/Payout";
 import Settings from "./pages/Settings/Settings";
 import ManualRequest from "./pages/ManualRequest/ManualRequest";
 import Rewards from "./pages/games/Rewards/Rewards";
-import { PermissionProvider } from "./components/AdmissionPermission";
+import {
+  PermissionProvider,
+  usePermissionContext,
+} from "./components/AdmissionPermission";
 import AdminUsers from "./pages/AdminUsers/AdminUsers";
 import AdminRoles from "./pages/AdminUsers/AdminRoles/AdminRoles";
+import { useEffect } from "react";
+import { get, ref } from "firebase/database";
+import { database } from "./firebase";
 
 const Layout = () => {
   const { isAuthenticated } = useAuth();
   const { isSubAuthenticated } = useSubAuth();
-  console.log(isSubAuthenticated);
+
+  const { permissions, setPermissions } = usePermissionContext();
+  const { username, setUsername } = usePermissionContext();
+
+  useEffect(() => {
+    const fetchPermissions = async () => {
+      const userString = localStorage.getItem("user");
+      if (userString !== null) {
+        const user = await JSON.parse(userString);
+        setUsername(user.ID);
+      }
+      if (!username) return;
+
+      const permissionRef = ref(
+        database,
+        `ADMIN/SUB_ADMIN/${username}/PERMISSIONS`
+      );
+
+      const permissionSnapshot = await get(permissionRef);
+      if (permissionSnapshot.exists()) {
+        setPermissions(permissionSnapshot.val());
+      }
+    };
+
+    fetchPermissions();
+  }, [username]);
+
+  console.log(permissions);
+
   return (
     <div>
       {isAuthenticated || isSubAuthenticated ? (
