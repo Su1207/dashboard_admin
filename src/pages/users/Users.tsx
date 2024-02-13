@@ -12,7 +12,7 @@ import AddUser from "../../components/AddUser/AddUser";
 import { useAuth } from "../../components/auth-context";
 import { Navigate } from "react-router-dom";
 import { useSubAuth } from "../../components/subAdmin-authContext";
-import { usePermissionContext } from "../../components/subAdminPermission";
+import { usePermissionContext } from "../../components/AdmissionPermission";
 
 type User = {
   AMOUNT: number;

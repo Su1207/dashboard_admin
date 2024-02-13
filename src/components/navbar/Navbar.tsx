@@ -1,27 +1,17 @@
-import { useEffect, useState } from "react";
 import { useAuth } from "../auth-context";
 import { useSubAuth } from "../subAdmin-authContext";
 import "./navbar.scss";
+import { usePermissionContext } from "../AdmissionPermission";
 
 const Navbar = () => {
   const { logout, isAuthenticated } = useAuth();
   const { subLogout, isSubAuthenticated } = useSubAuth();
-  const [admin, setAdmin] = useState("");
 
   const handleLogout = () => {
     isAuthenticated ? logout() : subLogout();
   };
 
-  useEffect(() => {
-    const userString = localStorage.getItem("user");
-
-    if (userString !== null) {
-      const user = JSON.parse(userString);
-      setAdmin(user.ID);
-    }
-  }, []);
-
-  console.log(admin);
+  const { username } = usePermissionContext();
 
   return (
     <div className="navbar">
@@ -37,7 +27,7 @@ const Navbar = () => {
           <span>1</span>
         </div>
         <div className="user">
-          <span>{admin}</span>
+          <span>{username}</span>
         </div>
         <img src="/setting.svg" alt="" className="icon" />
         {(isAuthenticated || isSubAuthenticated) && (

@@ -6,7 +6,7 @@ import { toast } from "react-toastify";
 import ClearIcon from "@mui/icons-material/Clear";
 import "./AdminWithdrawPointsForm.scss";
 import { useAuth } from "../auth-context";
-import { usePermissionContext } from "../subAdminPermission";
+import { usePermissionContext } from "../AdmissionPermission";
 
 interface AdminPointsData {
   phoneNumber: string;

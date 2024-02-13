@@ -6,7 +6,7 @@ import "./AdminAddPointsForm.scss";
 import AddPoints from "../../assets/wallet.png";
 import { toast } from "react-toastify";
 import { useAuth } from "../auth-context";
-import { usePermissionContext } from "../subAdminPermission";
+import { usePermissionContext } from "../AdmissionPermission";
 
 interface AdminPointsData {
   phoneNumber: string;

@@ -15,6 +15,7 @@ type UsersPermissions = {
 };
 
 interface PermissionContextProps {
+  username: string;
   permissions: UsersPermissions | null;
   setPermissions: (data: UsersPermissions | null) => void;
 }
@@ -27,31 +28,15 @@ export const PermissionProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [permissions, setPermissions] = useState<UsersPermissions | null>(null);
-  const [username, setUsername] = useState<string | null>(null);
-
-  useEffect(() => {
-    const handleUserChange = () => {
-      const userString = localStorage.getItem("user");
-      if (userString !== null) {
-        const user = JSON.parse(userString);
-        setUsername(user.ID);
-      }
-    };
-
-    // Listen to storage events to detect changes in localStorage
-    window.addEventListener("storage", handleUserChange);
-
-    // Initial check to set the username on component mount
-    handleUserChange();
-
-    return () => {
-      // Remove the event listener when the component unmounts
-      window.removeEventListener("storage", handleUserChange);
-    };
-  }, []);
+  const [username, setUsername] = useState("");
 
   useEffect(() => {
     const fetchPermissions = async () => {
+      const userString = localStorage.getItem("user");
+      if (userString !== null) {
+        const user = await JSON.parse(userString);
+        setUsername(user.ID);
+      }
       if (!username) return;
 
       const permissionRef = ref(
@@ -73,6 +58,7 @@ export const PermissionProvider: React.FC<{ children: ReactNode }> = ({
       value={{
         permissions,
         setPermissions,
+        username,
       }}
     >
       {children}

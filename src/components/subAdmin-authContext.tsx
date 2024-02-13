@@ -38,13 +38,16 @@ export const SubAuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
 
   // Check for stored authentication data on component mount
   useEffect(() => {
-    const storedUser = localStorage.getItem("user");
-    const storedAuth = localStorage.getItem("isSubAuthenticated");
+    const fetchData = async () => {
+      const storedUser = localStorage.getItem("user");
+      const storedAuth = localStorage.getItem("isSubAuthenticated");
 
-    if (storedUser && storedAuth) {
-      setUser(JSON.parse(storedUser));
-      setIsSubAuthenticated(JSON.parse(storedAuth));
-    }
+      if (storedUser && storedAuth) {
+        setUser(await JSON.parse(storedUser));
+        setIsSubAuthenticated(await JSON.parse(storedAuth));
+      }
+    };
+    fetchData();
   }, []);
 
   const subLogin = async (username: string, password: string) => {
