@@ -16,11 +16,33 @@ import {
   //   ListItemText,
 } from "@mui/material";
 import { useSubAuth } from "../subAdmin-authContext";
+import { usePermissionContext } from "../AdmissionPermission";
 
 type Anchor = "left";
 
 export default function TemporaryDrawer() {
   const { isSubAuthenticated } = useSubAuth();
+  const { permissions } = usePermissionContext();
+
+  const filteredMenu = menu
+    .map((item) => {
+      // Filter listItems based on permissions
+      const filteredListItems = item.listItems.filter((listItem) => {
+        // Check if permissions exist and if the permission for listItem.id is true,
+        // or if the permission is not present (default to true)
+        return (
+          !permissions ||
+          (permissions[listItem.id] === undefined &&
+            isSubAuthenticated &&
+            listItem.id !== "ADMIN_USERS") ||
+          permissions[listItem.id]
+        );
+      });
+
+      return { ...item, listItems: filteredListItems };
+    })
+    // Remove menu items that don't have any list items left after filtering
+    .filter((item) => item.listItems.length > 0);
 
   const [state, setState] = React.useState({
     left: false,
@@ -46,7 +68,7 @@ export default function TemporaryDrawer() {
       onKeyDown={toggleDrawer(anchor, false)}
     >
       <div className="temp_menu_drawer">
-        {menu.map((item) => (
+        {filteredMenu.map((item) => (
           <div className="item" key={item.id}>
             <span className="title">{item.title}</span>
             {item.listItems.map((listItem) =>

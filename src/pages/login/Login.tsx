@@ -34,6 +34,8 @@ const Login = () => {
     const permissionSnapshot = await get(permissionRef);
     if (permissionSnapshot.exists()) {
       setPermissions(permissionSnapshot.val());
+    } else {
+      setPermissions(null);
     }
   };
 

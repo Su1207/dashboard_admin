@@ -36,9 +36,20 @@ const AddSubAdmin = (props: Props) => {
         });
 
         await set(permissionRef, {
+          BID: false,
+          DEPOSIT: false,
+          GAME_RATE: false,
+          GAME_SETTINGS: false,
+          MANUAL_REQUEST: false,
+          MARKET: false,
+          NOTIFICATION: false,
+          PAYOUT: false,
+          SETTINGS: false,
           USERS: false,
           USERS_DEPOSIT: false,
           USERS_WITHDRAW: false,
+          WIN: false,
+          WITHDRAW: false,
         });
 
         toast.success("Admin added successfully");

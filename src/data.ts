@@ -4,13 +4,13 @@ export const menu = [
     title: "main",
     listItems: [
       {
-        id: 1,
+        id: "HOMEPAGE",
         title: "Homepage",
         url: "/",
         icon: "/home.svg",
       },
       {
-        id: 2,
+        id: "PAYOUT",
         title: "Payout",
         url: "/payout",
         icon: "/log.svg",
@@ -22,37 +22,37 @@ export const menu = [
     title: "lists",
     listItems: [
       {
-        id: 1,
+        id: "USERS",
         title: "Users",
         url: "/users",
         icon: "/user.svg",
       },
       {
-        id: 2,
+        id: "MARKET",
         title: "Market",
         url: "/market",
         icon: "/product.svg",
       },
       {
-        id: 3,
+        id: "DEPOSIT",
         title: "Deposit",
         url: "/deposit",
         icon: "/deposit.svg",
       },
       {
-        id: 4,
+        id: "WITHDRAW",
         title: "Withdraw",
         url: "/withdraw",
         icon: "/withdraw.svg",
       },
       {
-        id: 5,
+        id: "BID",
         title: "Bid",
         url: "/bid",
         icon: "/deposit.svg",
       },
       {
-        id: 6,
+        id: "WIN",
         title: "Win",
         url: "/win",
         icon: "/withdraw.svg",
@@ -64,25 +64,25 @@ export const menu = [
     title: "general",
     listItems: [
       {
-        id: 1,
+        id: "GAME_RATE",
         title: "Game Rate",
         url: "/gameRate",
         icon: "/element.svg",
       },
       {
-        id: 2,
+        id: "NOTIFICATION",
         title: "Notification",
         url: "/notifications",
         icon: "/notifications.svg",
       },
       {
-        id: 3,
+        id: "MANUAL_REQUEST",
         title: "Manual Request",
         url: "/manualRequest",
         icon: "/form.svg",
       },
       {
-        id: 4,
+        id: "ADMIN_USERS",
         title: "Admin Users",
         url: "/subAdmin",
         icon: "/calendar.svg",
@@ -94,13 +94,13 @@ export const menu = [
     title: "Maintenance",
     listItems: [
       {
-        id: 1,
+        id: "SETTINGS",
         title: "Settings",
         url: "/settings",
         icon: "/setting.svg",
       },
       {
-        id: 2,
+        id: "GAME_SETTINGS",
         title: "Game Settings",
         url: "/gameSettings",
         icon: "/setting.svg",

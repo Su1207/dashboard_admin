@@ -1,9 +1,21 @@
 import { createContext, ReactNode, useContext, useState } from "react";
 
 type UsersPermissions = {
+  BID: boolean;
+  DEPOSIT: boolean;
+  GAME_RATE: boolean;
+  GAME_SETTINGS: boolean;
+  MANUAL_REQUEST: boolean;
+  MARKET: boolean;
+  NOTIFICATION: boolean;
+  PAYOUT: boolean;
+  SETTINGS: boolean;
   USERS: boolean;
   USERS_DEPOSIT: boolean;
   USERS_WITHDRAW: boolean;
+  WIN: boolean;
+  WITHDRAW: boolean;
+  [key: string]: boolean; // Add index signature
 };
 
 interface PermissionContextProps {
