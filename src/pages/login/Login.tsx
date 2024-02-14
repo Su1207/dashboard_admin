@@ -67,7 +67,7 @@ const Login = () => {
 
       <div className="auth_container">
         <div className="login_img_container">
-          <img src="./login.jpg" alt="" className="login_img" />
+          <img src="login.jpg" alt="" className="login_img" />
         </div>
         <div className="login_container">
           <div className="login_title">Login</div>

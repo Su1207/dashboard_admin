@@ -16,7 +16,7 @@ const PayoutGrid: React.FC<PyoutGridProps> = ({ payoutData }) => {
     {
       field: "id",
       headerName: "Phone",
-      width: 105,
+      width: 120,
       cellClassName: "phone-column",
       renderCell: (params) => (
         <div>
@@ -28,42 +28,42 @@ const PayoutGrid: React.FC<PyoutGridProps> = ({ payoutData }) => {
     {
       field: "acc_name",
       headerName: "Account Name",
-      width: 125,
+      width: 150,
     },
     {
       field: "acc_num",
       headerName: "Account Number",
-      width: 150,
+      width: 170,
     },
     {
       field: "acc_ifsc",
       headerName: "IFSC Code",
-      width: 110,
+      width: 120,
     },
     {
       field: "gpay",
       headerName: "GPay",
-      width: 100,
+      width: 110,
     },
     {
       field: "paytm",
       headerName: "Paytm",
-      width: 100,
+      width: 110,
     },
     {
       field: "phonepe",
       headerName: "PhonePe",
-      width: 100,
+      width: 110,
     },
     {
       field: "upi",
       headerName: "UPI",
-      width: 140,
+      width: 180,
     },
     {
       field: "edit",
       headerName: "Action",
-      width: 75,
+      width: 90,
       renderCell: (params) => (
         <img
           src="view.svg"

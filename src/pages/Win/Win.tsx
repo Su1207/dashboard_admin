@@ -14,7 +14,7 @@ const Win = () => {
   }
   return (
     <div>
-      {isAuthenticated && isSubAuthenticated && permissions?.WIN ? (
+      {isAuthenticated || (isSubAuthenticated && permissions?.WIN) ? (
         <WinData />
       ) : (
         <p>No access to this data!!!</p>
