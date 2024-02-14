@@ -192,30 +192,6 @@ const Users: React.FC = () => {
   const { isAuthenticated } = useAuth();
   const { isSubAuthenticated } = useSubAuth();
   const { permissions } = usePermissionContext();
-  // const { username, setUsername } = usePermissionContext();
-
-  // useEffect(() => {
-  //   const fetchPermissions = async () => {
-  //     const userString = localStorage.getItem("user");
-  //     if (userString !== null) {
-  //       const user = await JSON.parse(userString);
-  //       setUsername(user.ID);
-  //     }
-  //     if (!username) return;
-
-  //     const permissionRef = ref(
-  //       database,
-  //       `ADMIN/SUB_ADMIN/${username}/PERMISSIONS`
-  //     );
-
-  //     const permissionSnapshot = await get(permissionRef);
-  //     if (permissionSnapshot.exists()) {
-  //       setPermissions(permissionSnapshot.val());
-  //     }
-  //   };
-
-  //   fetchPermissions();
-  // }, [username]);
 
   if (!isAuthenticated && !isSubAuthenticated) {
     return <Navigate to="/login" />;

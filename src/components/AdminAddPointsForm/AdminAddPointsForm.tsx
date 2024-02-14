@@ -7,6 +7,7 @@ import AddPoints from "../../assets/wallet.png";
 import { toast } from "react-toastify";
 import { useAuth } from "../auth-context";
 import { usePermissionContext } from "../AdmissionPermission";
+import { useSubAuth } from "../subAdmin-authContext";
 
 interface AdminPointsData {
   phoneNumber: string;
@@ -184,11 +185,12 @@ const AdminAddPointsForm = (props: Props) => {
   };
 
   const { isAuthenticated } = useAuth();
+  const { isSubAuthenticated } = useSubAuth();
   const { permissions } = usePermissionContext();
 
   return (
     <div className={`add ${modalOpen ? "" : "closed"}`}>
-      {isAuthenticated || permissions?.USERS_DEPOSIT ? (
+      {isAuthenticated || (isSubAuthenticated && permissions?.USERS_DEPOSIT) ? (
         <div className="modal">
           <span className="close" onClick={toggleModal}>
             <ClearIcon />

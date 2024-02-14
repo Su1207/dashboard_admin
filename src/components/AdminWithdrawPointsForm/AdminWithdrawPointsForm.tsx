@@ -7,6 +7,7 @@ import ClearIcon from "@mui/icons-material/Clear";
 import "./AdminWithdrawPointsForm.scss";
 import { useAuth } from "../auth-context";
 import { usePermissionContext } from "../AdmissionPermission";
+import { useSubAuth } from "../subAdmin-authContext";
 
 interface AdminPointsData {
   phoneNumber: string;
@@ -189,11 +190,13 @@ const AdminWithdrawPointsForm = (props: Props) => {
   };
 
   const { isAuthenticated } = useAuth();
+  const { isSubAuthenticated } = useSubAuth();
   const { permissions } = usePermissionContext();
 
   return (
     <div className={`add ${modalOpen ? "" : "closed"}`}>
-      {isAuthenticated || permissions?.USERS_WITHDRAW ? (
+      {isAuthenticated ||
+      (isSubAuthenticated && permissions?.USERS_WITHDRAW) ? (
         <div className="modal">
           <span className="close" onClick={toggleModal}>
             <ClearIcon />

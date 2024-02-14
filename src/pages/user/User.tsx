@@ -3,6 +3,7 @@ import "./user.scss";
 import UserDetail from "../../components/UserDetail/UserDetail";
 import { useAuth } from "../../components/auth-context";
 import { useSubAuth } from "../../components/subAdmin-authContext";
+import { usePermissionContext } from "../../components/AdmissionPermission";
 
 const User = () => {
   //this way ensure that useParams never return undefined value
@@ -12,6 +13,7 @@ const User = () => {
 
   const { isAuthenticated } = useAuth();
   const { isSubAuthenticated } = useSubAuth();
+  const { permissions } = usePermissionContext();
 
   if (!isAuthenticated && !isSubAuthenticated) {
     return <Navigate to="/login" />;
@@ -19,8 +21,11 @@ const User = () => {
 
   return (
     <div>
-      <UserDetail userId={Number(userId)} />
-      {/* <Single userId={Number(userId)} /> */}
+      {isAuthenticated || (isSubAuthenticated && permissions?.USERS) ? (
+        <UserDetail userId={Number(userId)} />
+      ) : (
+        <p>No access to this data</p>
+      )}
     </div>
   );
 };

@@ -31,7 +31,6 @@ interface AuthProviderProps {
 
 export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
-  //   const navigate = useNavigate();
   const [isAuthenticated, setIsAuthenticated] = useState(false);
 
   // Check for stored authentication data on component mount

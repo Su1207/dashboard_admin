@@ -19,11 +19,6 @@ const Login = () => {
   const { permissions, setPermissions } = usePermissionContext();
 
   const fetchPermissions = async () => {
-    // const userString = localStorage.getItem("user");
-    // if (userString !== null) {
-    //   const user = await JSON.parse(userString);
-    //   setUsername(user.ID);
-    // }
     if (!username) return;
 
     const permissionRef = ref(
