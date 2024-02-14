@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 import { menu } from "../../data";
 import { useSubAuth } from "../../components/subAdmin-authContext";
 import { useEffect, useState } from "react";
-import { UsersPermissions } from "../AdmissionPermission";
+import { UsersPermissions, usePermissionContext } from "../AdmissionPermission";
 import { onValue, ref } from "firebase/database";
 import { database } from "../../firebase";
 
@@ -11,6 +11,7 @@ const Menu = () => {
   const { isSubAuthenticated } = useSubAuth();
   const [permissions, setPermissions] = useState<UsersPermissions | null>(null);
   const { user } = useSubAuth();
+  const { permission } = usePermissionContext();
 
   useEffect(() => {
     try {
@@ -36,7 +37,7 @@ const Menu = () => {
     } catch (err) {
       console.log(err);
     }
-  }, []);
+  }, [permission]);
 
   // Filter the menu based on permissions
   const filteredMenu = menu

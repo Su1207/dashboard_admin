@@ -1,5 +1,5 @@
 // TemporaryDrawer.tsx
-import React from "react";
+import React, { useEffect, useState } from "react";
 // import Box from "@mui/material/Box";
 import IconButton from "@mui/material/IconButton";
 import MenuIcon from "@mui/icons-material/Menu";
@@ -16,14 +16,43 @@ import {
   //   ListItemText,
 } from "@mui/material";
 import { useSubAuth } from "../subAdmin-authContext";
-import { usePermissionContext } from "../AdmissionPermission";
+import { UsersPermissions, usePermissionContext } from "../AdmissionPermission";
+import { onValue, ref } from "firebase/database";
+import { database } from "../../firebase";
 
 type Anchor = "left";
 
 export default function TemporaryDrawer() {
   const { isSubAuthenticated } = useSubAuth();
-  const { permissions } = usePermissionContext();
+  const [permissions, setPermissions] = useState<UsersPermissions | null>(null);
+  const { user } = useSubAuth();
+  const { permission } = usePermissionContext();
 
+  useEffect(() => {
+    try {
+      const perRef = ref(database, `ADMIN/SUB_ADMIN/${user?.ID}/PERMISSIONS`);
+
+      // get(perRef).then((snapshot) => {
+      //   if (snapshot.exists()) {
+      //     setPermissions(snapshot.val());
+      //   } else {
+      //     setPermissions(null);
+      //   }
+      // });
+
+      const unsub = onValue(perRef, (snapshot) => {
+        if (snapshot.exists()) {
+          setPermissions(snapshot.val());
+        } else {
+          setPermissions(null);
+        }
+      });
+
+      return () => unsub();
+    } catch (err) {
+      console.log(err);
+    }
+  }, [permission]);
   const filteredMenu = menu
     .map((item) => {
       // Filter listItems based on permissions
