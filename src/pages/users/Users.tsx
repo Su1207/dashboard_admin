@@ -12,7 +12,6 @@ import AddUser from "../../components/AddUser/AddUser";
 import { useAuth } from "../../components/auth-context";
 import { Navigate } from "react-router-dom";
 import { useSubAuth } from "../../components/subAdmin-authContext";
-import { usePermissionContext } from "../../components/AdmissionPermission";
 
 type User = {
   AMOUNT: number;
@@ -191,7 +190,6 @@ const Users: React.FC = () => {
 
   const { isAuthenticated } = useAuth();
   const { isSubAuthenticated, user } = useSubAuth();
-  const { switched } = usePermissionContext();
   const [permission, setPermission] = useState<boolean>();
 
   if (!isAuthenticated && !isSubAuthenticated) {
@@ -205,15 +203,17 @@ const Users: React.FC = () => {
         `ADMIN/SUB_ADMIN/${user?.ID}/PERMISSIONS/USERS`
       );
 
-      get(permissionRef).then((snapshot: any) => {
+      const unsub = onValue(permissionRef, (snapshot) => {
         if (snapshot.exists()) {
           setPermission(snapshot.val());
         }
       });
+
+      return () => unsub();
     } catch (err) {
       console.log(err);
     }
-  }, [switched]);
+  }, []);
 
   return (
     <>

@@ -5,10 +5,9 @@ import "./games.scss";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 import { useEffect, useState } from "react";
 import { useSubAuth } from "../../components/subAdmin-authContext";
-import { usePermissionContext } from "../../components/AdmissionPermission";
 import { Navigate } from "react-router-dom";
 import { database } from "../../firebase";
-import { get, ref } from "firebase/database";
+import { onValue, ref } from "firebase/database";
 
 const Games = () => {
   const [addGame, setAddGame] = useState(false);
@@ -19,7 +18,6 @@ const Games = () => {
 
   const { isAuthenticated } = useAuth();
   const { isSubAuthenticated, user } = useSubAuth();
-  const { switched } = usePermissionContext();
   const [permission, setPermission] = useState<boolean>();
 
   if (!isAuthenticated && !isSubAuthenticated) {
@@ -33,15 +31,17 @@ const Games = () => {
         `ADMIN/SUB_ADMIN/${user?.ID}/PERMISSIONS/USERS`
       );
 
-      get(permissionRef).then((snapshot: any) => {
+      const unsub = onValue(permissionRef, (snapshot) => {
         if (snapshot.exists()) {
           setPermission(snapshot.val());
         }
       });
+
+      return () => unsub();
     } catch (err) {
       console.log(err);
     }
-  }, [switched]);
+  }, []);
 
   if (!isAuthenticated && !isSubAuthenticated) {
     return <Navigate to="/login" />;
