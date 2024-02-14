@@ -33,17 +33,17 @@ import {
   usePermissionContext,
 } from "./components/AdmissionPermission";
 import AdminUsers from "./pages/AdminUsers/AdminUsers";
-import AdminRoles from "./pages/AdminUsers/AdminRoles/AdminRoles";
 import { useEffect } from "react";
 import { get, ref } from "firebase/database";
 import { database } from "./firebase";
+import AdminRole from "./pages/AdminUsers/AdminRoles/AdminRole";
 
 const Layout = () => {
   const { isAuthenticated } = useAuth();
   const { isSubAuthenticated } = useSubAuth();
 
   const { permissions, setPermissions } = usePermissionContext();
-  const { username, setUsername } = usePermissionContext();
+  const { username, setUsername, switched } = usePermissionContext();
 
   useEffect(() => {
     const fetchPermissions = async () => {
@@ -66,7 +66,7 @@ const Layout = () => {
     };
 
     fetchPermissions();
-  }, [username]);
+  }, [username, switched]);
 
   console.log(permissions);
 
@@ -189,7 +189,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/subAdmin/:id",
-        element: <AdminRoles />,
+        element: <AdminRole />,
       },
     ],
   },

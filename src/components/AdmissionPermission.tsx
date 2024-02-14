@@ -19,6 +19,8 @@ type UsersPermissions = {
 };
 
 interface PermissionContextProps {
+  switched: boolean;
+  setSwitched: (data: boolean) => void;
   username: string | null;
   setUsername: (data: string | null) => void;
   permissions: UsersPermissions | null;
@@ -34,6 +36,7 @@ export const PermissionProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [permissions, setPermissions] = useState<UsersPermissions | null>(null);
   const [username, setUsername] = useState<string | null>(null);
+  const [switched, setSwitched] = useState(false);
 
   return (
     <PermissionContext.Provider
@@ -42,6 +45,8 @@ export const PermissionProvider: React.FC<{ children: ReactNode }> = ({
         setPermissions,
         username,
         setUsername,
+        switched,
+        setSwitched,
       }}
     >
       {children}
