@@ -190,16 +190,34 @@ const Users: React.FC = () => {
   };
 
   const { isAuthenticated } = useAuth();
-  const { isSubAuthenticated } = useSubAuth();
-  const { permissions } = usePermissionContext();
+  const { isSubAuthenticated, user } = useSubAuth();
+  const { switched } = usePermissionContext();
+  const [permission, setPermission] = useState<boolean>();
 
   if (!isAuthenticated && !isSubAuthenticated) {
     return <Navigate to="/login" />;
   }
 
+  useEffect(() => {
+    try {
+      const permissionRef = ref(
+        database,
+        `ADMIN/SUB_ADMIN/${user?.ID}/PERMISSIONS/USERS`
+      );
+
+      get(permissionRef).then((snapshot: any) => {
+        if (snapshot.exists()) {
+          setPermission(snapshot.val());
+        }
+      });
+    } catch (err) {
+      console.log(err);
+    }
+  }, [switched]);
+
   return (
     <>
-      {isAuthenticated || (isSubAuthenticated && permissions?.USERS) ? (
+      {isAuthenticated || (isSubAuthenticated && permission) ? (
         <div className="users">
           <div className="users_heading">
             <h1>Users</h1>
@@ -237,16 +255,6 @@ const Users: React.FC = () => {
             usersData={getFilteredUsers()}
             filterOption={filterOption}
           />
-          {/* <ul>
-        {usersData &&
-          Object.entries(usersData).map(([userId, user]) => (
-            <li key={userId}>
-              <p>ID: {userId}</p>
-              <p>Name: {user.NAME}</p>
-              <p>Phone: {user.PHONE}</p>
-            </li>
-          ))}
-      </ul> */}
         </div>
       ) : (
         <p>No access to this data</p>
