@@ -1,21 +1,21 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { get, ref, set } from "firebase/database";
 import { database } from "../../../firebase";
 import { Switch } from "@mui/material";
 import "./AdminRoles.scss";
 import { usePermissionContext } from "../../AdmissionPermission";
 
-type UsersPermissions = {
-  key: string;
-  value: boolean;
-};
-
 interface AdminProps {
   adminId: string;
 }
 
+type UsersPermission = {
+  key: string;
+  value: boolean;
+};
+
 const AdminRoles: React.FC<AdminProps> = ({ adminId }) => {
-  const [permission, setPermission] = useState<UsersPermissions[] | null>(null);
+  const { permission, setPermission } = usePermissionContext();
   const { switched, setSwitched } = usePermissionContext();
 
   useEffect(() => {
@@ -25,7 +25,7 @@ const AdminRoles: React.FC<AdminProps> = ({ adminId }) => {
         `ADMIN/SUB_ADMIN/${adminId}/PERMISSIONS`
       );
 
-      const permissionArray: UsersPermissions[] = [];
+      const permissionArray: UsersPermission[] = [];
 
       const snapshots = await get(permissionRef);
       if (snapshots.exists()) {

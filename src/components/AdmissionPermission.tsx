@@ -18,6 +18,11 @@ type UsersPermissions = {
   [key: string]: boolean; // Add index signature
 };
 
+type UsersPermission = {
+  key: string;
+  value: boolean;
+};
+
 interface PermissionContextProps {
   switched: boolean;
   setSwitched: (data: boolean) => void;
@@ -25,6 +30,8 @@ interface PermissionContextProps {
   setUsername: (data: string | null) => void;
   permissions: UsersPermissions | null;
   setPermissions: (data: UsersPermissions | null) => void;
+  permission: UsersPermission[] | null;
+  setPermission: (data: UsersPermission[] | null) => void;
 }
 
 const PermissionContext = createContext<PermissionContextProps | undefined>(
@@ -37,6 +44,7 @@ export const PermissionProvider: React.FC<{ children: ReactNode }> = ({
   const [permissions, setPermissions] = useState<UsersPermissions | null>(null);
   const [username, setUsername] = useState<string | null>(null);
   const [switched, setSwitched] = useState(false);
+  const [permission, setPermission] = useState<UsersPermission[] | null>(null);
 
   return (
     <PermissionContext.Provider
@@ -47,6 +55,8 @@ export const PermissionProvider: React.FC<{ children: ReactNode }> = ({
         setUsername,
         switched,
         setSwitched,
+        permission,
+        setPermission,
       }}
     >
       {children}

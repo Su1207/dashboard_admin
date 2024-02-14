@@ -43,7 +43,8 @@ const Layout = () => {
   const { isSubAuthenticated } = useSubAuth();
 
   const { permissions, setPermissions } = usePermissionContext();
-  const { username, setUsername, switched } = usePermissionContext();
+  const { username, setUsername, switched, permission } =
+    usePermissionContext();
 
   useEffect(() => {
     const fetchPermissions = async () => {
@@ -66,7 +67,7 @@ const Layout = () => {
     };
 
     fetchPermissions();
-  }, [username, switched]);
+  }, [username, switched, permission]);
 
   console.log(permissions);
 
