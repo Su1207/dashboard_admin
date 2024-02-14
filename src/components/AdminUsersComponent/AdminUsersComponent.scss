@@ -51,8 +51,8 @@
           align-items: center;
 
           @include sm {
-            gap: 5px;
-            justify-content: stretch;
+            gap: 2px;
+            justify-content: space-evenly;
           }
 
           img {

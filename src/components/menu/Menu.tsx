@@ -2,11 +2,41 @@ import "./menu.scss";
 import { Link } from "react-router-dom";
 import { menu } from "../../data";
 import { useSubAuth } from "../../components/subAdmin-authContext";
-import { usePermissionContext } from "../AdmissionPermission";
+import { useEffect, useState } from "react";
+import { UsersPermissions } from "../AdmissionPermission";
+import { onValue, ref } from "firebase/database";
+import { database } from "../../firebase";
 
 const Menu = () => {
   const { isSubAuthenticated } = useSubAuth();
-  const { permissions } = usePermissionContext();
+  const [permissions, setPermissions] = useState<UsersPermissions | null>(null);
+  const { user } = useSubAuth();
+
+  useEffect(() => {
+    try {
+      const perRef = ref(database, `ADMIN/SUB_ADMIN/${user?.ID}/PERMISSIONS`);
+
+      // get(perRef).then((snapshot) => {
+      //   if (snapshot.exists()) {
+      //     setPermissions(snapshot.val());
+      //   } else {
+      //     setPermissions(null);
+      //   }
+      // });
+
+      const unsub = onValue(perRef, (snapshot) => {
+        if (snapshot.exists()) {
+          setPermissions(snapshot.val());
+        } else {
+          setPermissions(null);
+        }
+      });
+
+      return () => unsub();
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
 
   // Filter the menu based on permissions
   const filteredMenu = menu
