@@ -42,7 +42,7 @@ const Layout = () => {
   const { isAuthenticated } = useAuth();
   const { isSubAuthenticated } = useSubAuth();
 
-  const { permissions, setPermissions } = usePermissionContext();
+  const { setPermissions } = usePermissionContext();
   const { username, setUsername, switched, permission } =
     usePermissionContext();
 
@@ -68,8 +68,6 @@ const Layout = () => {
 
     fetchPermissions();
   }, [username, switched, permission]);
-
-  console.log(permissions);
 
   return (
     <div>
