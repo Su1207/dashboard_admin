@@ -174,7 +174,9 @@ const DepositDataGrid: React.FC<DepositDataGridProps> = ({ depositData }) => {
           getRowId={getRowId}
         />
       ) : (
-        <p>No Data Available for the day</p>
+        <div className="no-data">
+          <img src="/noData.gif" alt="" className="no-data-img" />
+        </div>
       )}
     </div>
   );

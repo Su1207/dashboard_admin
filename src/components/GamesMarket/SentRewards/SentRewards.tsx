@@ -454,7 +454,9 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
           </ul>
         </div>
       ) : (
-        ""
+        <div className="no-data">
+          <img src="/noData.gif" alt="" className="no-data-img" />
+        </div>
       )}
     </div>
   );

@@ -128,7 +128,7 @@ const ManualRequests = () => {
         <ManualRequestGrid manualData={manualData} />
       ) : (
         <div className="no-data">
-          <img src="/noData1.gif" alt="" className="no-data-img" />
+          <img src="/noData.gif" alt="" className="no-data-img" />
         </div>
       )}
     </div>

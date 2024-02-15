@@ -412,7 +412,9 @@ const DataGridDemo: React.FC<DataGridDemoProps> = ({ totalData }) => {
           getRowId={getRowId}
         />
       ) : (
-        <p>No data available</p>
+        <div className="no-data">
+          <img src="/noData.gif" alt="" className="no-data-img" />
+        </div>
       )}
     </div>
   );

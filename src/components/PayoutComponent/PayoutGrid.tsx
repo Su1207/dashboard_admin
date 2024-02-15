@@ -100,31 +100,37 @@ const PayoutGrid: React.FC<PyoutGridProps> = ({ payoutData }) => {
       {editPayout && (
         <EditPayout userId={userId} setEditPayout={setEditPayout} />
       )}
-      <DataGrid
-        className="dataGrid payout_dataGrid"
-        rows={rows}
-        columns={columns}
-        initialState={{
-          pagination: {
-            paginationModel: {
-              pageSize: 7,
+      {rows ? (
+        <DataGrid
+          className="dataGrid payout_dataGrid"
+          rows={rows}
+          columns={columns}
+          initialState={{
+            pagination: {
+              paginationModel: {
+                pageSize: 7,
+              },
             },
-          },
-        }}
-        slots={{ toolbar: GridToolbar }}
-        slotProps={{
-          toolbar: {
-            showQuickFilter: true,
-            quickFilterProps: { debounceMs: 500 },
-          },
-        }}
-        pageSizeOptions={[7]}
-        // checkboxSelection
-        disableRowSelectionOnClick
-        disableColumnFilter
-        disableColumnSelector
-        disableDensitySelector
-      />
+          }}
+          slots={{ toolbar: GridToolbar }}
+          slotProps={{
+            toolbar: {
+              showQuickFilter: true,
+              quickFilterProps: { debounceMs: 500 },
+            },
+          }}
+          pageSizeOptions={[7]}
+          // checkboxSelection
+          disableRowSelectionOnClick
+          disableColumnFilter
+          disableColumnSelector
+          disableDensitySelector
+        />
+      ) : (
+        <div className="no-data">
+          <img src="/noData.gif" alt="" className="no-data-img" />
+        </div>
+      )}
     </div>
   );
 };

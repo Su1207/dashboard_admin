@@ -92,51 +92,57 @@ const AdminUsersComponent = () => {
               Add New <RiAdminFill />
             </div>
           </div>
-          <div className="table_container">
-            <table className="custom-table">
-              <thead>
-                <tr>
-                  <th>Full Name</th>
-                  <th>Username</th>
-                  <th>Password</th>
-                  <th>Actions</th>
-                  <th>Roles</th>
-                </tr>
-              </thead>
-              <tbody>
-                {subAdminData &&
-                  subAdminData.map((data) => (
-                    <tr key={data.ID}>
-                      <td>{data.FULL_NAME}</td>
-                      <td>{data.ID}</td>
-                      <td>{data.PASSWORD}</td>
-                      <td>
-                        <div className="actions">
+          {subAdminData ? (
+            <div className="table_container">
+              <table className="custom-table">
+                <thead>
+                  <tr>
+                    <th>Full Name</th>
+                    <th>Username</th>
+                    <th>Password</th>
+                    <th>Actions</th>
+                    <th>Roles</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {subAdminData &&
+                    subAdminData.map((data) => (
+                      <tr key={data.ID}>
+                        <td>{data.FULL_NAME}</td>
+                        <td>{data.ID}</td>
+                        <td>{data.PASSWORD}</td>
+                        <td>
+                          <div className="actions">
+                            <img
+                              src="view.svg"
+                              alt=""
+                              onClick={() => handleEdit(data.ID)}
+                            />
+                            <img
+                              src="delete.svg"
+                              alt=""
+                              onClick={() => handleDelete(data.ID)}
+                            />
+                          </div>
+                        </td>
+                        <td>
                           <img
-                            src="view.svg"
+                            src="admin-roles.png"
                             alt=""
-                            onClick={() => handleEdit(data.ID)}
+                            className="admin_roles_img"
+                            onClick={() => handleRoles(data.ID)}
                           />
-                          <img
-                            src="delete.svg"
-                            alt=""
-                            onClick={() => handleDelete(data.ID)}
-                          />
-                        </div>
-                      </td>
-                      <td>
-                        <img
-                          src="admin-roles.png"
-                          alt=""
-                          className="admin_roles_img"
-                          onClick={() => handleRoles(data.ID)}
-                        />
-                      </td>
-                    </tr>
-                  ))}
-              </tbody>
-            </table>
-          </div>
+                        </td>
+                      </tr>
+                    ))}
+                </tbody>
+              </table>
+            </div>
+          ) : (
+            <div className="no-data">
+              <img src="/noData.gif" alt="" className="no-data-img" />
+            </div>
+          )}
         </div>
       ) : (
         <p>No access to this data!!!</p>

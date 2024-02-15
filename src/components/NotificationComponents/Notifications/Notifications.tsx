@@ -87,7 +87,7 @@ const Notifications: React.FC = () => {
           <span>Send</span> Notification
         </div>
       </div>
-      {notificationsData &&
+      {notificationsData ? (
         Object.entries(notificationsData)
           .sort((a, b) => parseInt(b[0]) - parseInt(a[0]))
           .map(([timestamp, notification]) => (
@@ -98,7 +98,12 @@ const Notifications: React.FC = () => {
               </div>
               <p className="notifications_content">{notification.MSG}</p>
             </div>
-          ))}
+          ))
+      ) : (
+        <div className="no-data">
+          <img src="/noData.gif" alt="" className="no-data-img" />
+        </div>
+      )}
     </div>
   );
 };

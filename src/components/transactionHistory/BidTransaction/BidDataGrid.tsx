@@ -170,7 +170,9 @@ const BidDataGrid: React.FC<BidDataGridProps> = ({ bidData }) => {
           getRowId={getRowId}
         />
       ) : (
-        <p>No Data available for the day</p>
+        <div className="no-data">
+          <img src="/noData.gif" alt="" className="no-data-img" />
+        </div>
       )}
     </div>
   );

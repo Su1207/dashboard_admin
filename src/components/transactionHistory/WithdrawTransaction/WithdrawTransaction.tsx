@@ -76,11 +76,7 @@ const WithdrawTransaction: React.FC<{ userId: number }> = ({ userId }) => {
   return (
     <div className="withdraw_data">
       <h2>Withdraw History</h2>
-      {withdrawData ? (
-        <WithdrawDataGrid withdrawData={withdrawData} />
-      ) : (
-        <p>No Withdraw till now</p>
-      )}
+      {withdrawData && <WithdrawDataGrid withdrawData={withdrawData} />}
     </div>
   );
 };
