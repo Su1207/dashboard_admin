@@ -1,17 +1,33 @@
-import { useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import "./OpenCloseOption.scss";
 import { get, ref, set, update } from "firebase/database";
 import { database } from "../../../firebase";
 import { toast } from "react-toastify";
 import ClearIcon from "@mui/icons-material/Clear";
+import { ClickPosition } from "../GamesDetails/GamesDataGrid";
 
-type Props = {
+type OpenCloseProps = {
   gameId: string;
   gameName: string;
   setOpenClose: React.Dispatch<React.SetStateAction<boolean>>;
+  clickPosition: ClickPosition | null;
 };
 
-const OpenCloseOption = (props: Props) => {
+const OpenCloseOption: React.FC<OpenCloseProps> = ({
+  gameId,
+  gameName,
+  setOpenClose,
+  clickPosition,
+}) => {
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (modalRef.current) {
+      modalRef.current.style.left = `${clickPosition?.x}px`;
+      modalRef.current.style.top = `${clickPosition?.y}px`;
+    }
+  }, [clickPosition]);
+
   const [openResult, setOpenResult] = useState(false);
   const [closeResult, setCloseResult] = useState(false);
 
@@ -20,25 +36,25 @@ const OpenCloseOption = (props: Props) => {
 
   const handleOpen = () => {
     setOpenResult(!openResult);
-    // props.setOpenClose(false);
+    // setOpenClose(false);
   };
 
   const handleClose = () => {
     const resultRef = ref(
       database,
-      `RESULTS/${props.gameId}/${year}/${month}/${date}`
+      `RESULTS/${gameId}/${year}/${month}/${date}`
     );
 
     get(resultRef).then((snapshot) => {
       if (snapshot.exists()) {
         setCloseResult(!closeResult);
       } else {
-        props.setOpenClose(false);
+        setOpenClose(false);
         toast.error("You can't declare Close result before Open");
       }
     });
 
-    // props.setOpenClose(false);
+    // setOpenClose(false);
   };
 
   const handleOpenInputChnage = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -61,15 +77,12 @@ const OpenCloseOption = (props: Props) => {
       try {
         const resultRef = ref(
           database,
-          `RESULTS/${props.gameId}/${year}/${month}/${date}`
+          `RESULTS/${gameId}/${year}/${month}/${date}`
         );
 
         const timestamp = Date.now();
 
-        const totalRef = ref(
-          database,
-          `GAME CHART/${props.gameId}/${timestamp}`
-        );
+        const totalRef = ref(database, `GAME CHART/${gameId}/${timestamp}`);
 
         const midResult = `${
           (parseInt(openFormResult[0]) +
@@ -90,7 +103,7 @@ const OpenCloseOption = (props: Props) => {
           CLOSE: "♦♦♦",
         });
 
-        props.setOpenClose(false);
+        setOpenClose(false);
         toast.success("Open Result updated successfully");
       } catch (error) {
         console.log("Error in submitting", error);
@@ -107,15 +120,12 @@ const OpenCloseOption = (props: Props) => {
       try {
         const resultRef = ref(
           database,
-          `RESULTS/${props.gameId}/${year}/${month}/${date}`
+          `RESULTS/${gameId}/${year}/${month}/${date}`
         );
 
         const timestamp = Date.now();
 
-        const totalRef = ref(
-          database,
-          `GAME CHART/${props.gameId}/${timestamp}`
-        );
+        const totalRef = ref(database, `GAME CHART/${gameId}/${timestamp}`);
 
         get(resultRef).then(async (snapshot) => {
           if (snapshot.exists()) {
@@ -139,7 +149,7 @@ const OpenCloseOption = (props: Props) => {
               CLOSE: closeFormResult,
             });
             toast.success("Close Result updated successfully");
-            props.setOpenClose(false);
+            setOpenClose(false);
           }
         });
       } catch (error) {
@@ -151,13 +161,16 @@ const OpenCloseOption = (props: Props) => {
   };
 
   return (
-    <div className="openCloseOption_container">
+    <div
+      className="openCloseOption_container"
+      style={{ top: `${clickPosition?.y}px` }}
+    >
       {!openResult && !closeResult && (
         <div className="openCloseOption_main_container">
-          <span className="close" onClick={() => props.setOpenClose(false)}>
+          <span className="close" onClick={() => setOpenClose(false)}>
             <ClearIcon />
           </span>
-          <h2>{props.gameName}</h2>
+          <h2>{gameName}</h2>
           <p>Please choose which market do you want to explore ?</p>
           <button onClick={handleOpen}>OPEN</button>
           <button onClick={handleClose}>CLOSE</button>
@@ -166,7 +179,7 @@ const OpenCloseOption = (props: Props) => {
 
       {openResult && (
         <div className="openCloseOption_main_container open_container">
-          <span className="close" onClick={() => props.setOpenClose(false)}>
+          <span className="close" onClick={() => setOpenClose(false)}>
             <ClearIcon />
           </span>
           <form onSubmit={handleOpenSubmit}>
@@ -187,7 +200,7 @@ const OpenCloseOption = (props: Props) => {
 
       {closeResult && (
         <div className="openCloseOption_main_container close_container">
-          <span className="close" onClick={() => props.setOpenClose(false)}>
+          <span className="close" onClick={() => setOpenClose(false)}>
             <ClearIcon />
           </span>
           <form onSubmit={handleCloseSubmit}>

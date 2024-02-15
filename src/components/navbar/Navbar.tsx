@@ -2,10 +2,14 @@ import { useAuth } from "../auth-context";
 import { useSubAuth } from "../subAdmin-authContext";
 import "./navbar.scss";
 import { usePermissionContext } from "../AdmissionPermission";
+import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
+import { useState } from "react";
+import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 
 const Navbar = () => {
   const { logout, isAuthenticated } = useAuth();
   const { subLogout, isSubAuthenticated } = useSubAuth();
+  const [adminClicked, setAdminClicked] = useState(false);
 
   const handleLogout = () => {
     isAuthenticated ? logout() : subLogout();
@@ -26,15 +30,26 @@ const Navbar = () => {
           <img src="/notifications.svg" alt="" />
           <span>1</span>
         </div>
-        <div className="user">
-          <span>{username}</span>
+        <div className={`admin_column ${adminClicked ? "admin" : ""}`}>
+          <div className="user" onClick={() => setAdminClicked(!adminClicked)}>
+            <img src="/man.png" alt="" />
+            <div>{username}</div>
+            <ExpandMoreIcon className="arrow_icon" />
+          </div>
+
+          {adminClicked && (
+            <div className="logout_column">
+              {(isAuthenticated || isSubAuthenticated) && (
+                <div className="logout_section">
+                  <PowerSettingsNewIcon className="logout_icon" />
+                  <span className="logout" onClick={handleLogout}>
+                    Logout
+                  </span>
+                </div>
+              )}
+            </div>
+          )}
         </div>
-        <img src="/setting.svg" alt="" className="icon" />
-        {(isAuthenticated || isSubAuthenticated) && (
-          <span className="logout" onClick={handleLogout}>
-            Logout
-          </span>
-        )}
       </div>
     </div>
   );

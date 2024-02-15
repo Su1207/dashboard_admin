@@ -151,50 +151,54 @@ const MarketBidData = () => {
         </div>
       </div>
 
-      <div className="bidDataList">
-        <ul>
-          {bidDataType ? (
-            <li className="header_li">
-              <div className="header">
-                <p>MARKETS</p>
-                <p>OPEN</p>
-                <p>CLOSE</p>
-                <p>TOTAL</p>
-              </div>
-            </li>
-          ) : (
-            <div className="noData">No data available for the day</div>
-          )}
-
-          {bidDataType &&
-            bidDataType.map((bidData) => (
-              <li key={bidData.gameKey}>
-                <div className="bidDataDetails">
-                  <p className="gameName">{bidData.gameName}</p>
-                  <p
-                    className="openTotal"
-                    onClick={() =>
-                      handleOpenClick(bidData.gameKey, bidData.gameName)
-                    }
-                  >
-                    {bidData.openTotal}
-                  </p>
-                  <p
-                    className="closeTotal"
-                    onClick={() =>
-                      handleCloseClick(bidData.gameKey, bidData.gameName)
-                    }
-                  >
-                    {bidData.closeTotal}
-                  </p>
-                  <p className="marketTotal">
-                    {bidData.openTotal + bidData.closeTotal}
-                  </p>
+      {bidDataType ? (
+        <div className="bidDataList">
+          <ul>
+            {bidDataType && (
+              <li className="header_li">
+                <div className="header">
+                  <p>MARKETS</p>
+                  <p>OPEN</p>
+                  <p>CLOSE</p>
+                  <p>TOTAL</p>
                 </div>
               </li>
-            ))}
-        </ul>
-      </div>
+            )}
+
+            {bidDataType &&
+              bidDataType.map((bidData) => (
+                <li key={bidData.gameKey}>
+                  <div className="bidDataDetails">
+                    <p className="gameName">{bidData.gameName}</p>
+                    <p
+                      className="openTotal"
+                      onClick={() =>
+                        handleOpenClick(bidData.gameKey, bidData.gameName)
+                      }
+                    >
+                      {bidData.openTotal}
+                    </p>
+                    <p
+                      className="closeTotal"
+                      onClick={() =>
+                        handleCloseClick(bidData.gameKey, bidData.gameName)
+                      }
+                    >
+                      {bidData.closeTotal}
+                    </p>
+                    <p className="marketTotal">
+                      {bidData.openTotal + bidData.closeTotal}
+                    </p>
+                  </div>
+                </li>
+              ))}
+          </ul>
+        </div>
+      ) : (
+        <div className="no-data">
+          <img src="/noData1.gif" alt="" className="no-data-img" />
+        </div>
+      )}
     </div>
   );
 };

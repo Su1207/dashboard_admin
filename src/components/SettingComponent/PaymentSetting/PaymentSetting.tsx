@@ -228,29 +228,32 @@ const PaymentSetting = () => {
         {upiData &&
           Object.entries(upiData.IDS)
             .sort(([, data1], [, data2]) => (data1 ? -1 : data2 ? 1 : 0))
-            .map(([key, data]) => (
-              <div key={key} className="upi_id_container">
-                <div className="upi_id">
-                  {key}
-                  {data ? (
-                    <button className="default">DEFAULT</button>
-                  ) : (
-                    <button
-                      className="set_as_default"
-                      onClick={() => handleClick(key)}
-                    >
-                      Set as Default
-                    </button>
-                  )}
+            .map(([key, data]) => {
+              const formattedKey = key.replace("*", ".");
+              return (
+                <div key={formattedKey} className="upi_id_container">
+                  <div className="upi_id">
+                    {formattedKey}
+                    {data ? (
+                      <button className="default">DEFAULT</button>
+                    ) : (
+                      <button
+                        className="set_as_default"
+                        onClick={() => handleClick(key)}
+                      >
+                        Set as Default
+                      </button>
+                    )}
+                  </div>
+                  <img
+                    className="delete_icon"
+                    src="delete.svg"
+                    alt=""
+                    onClick={() => handleDelete(key)}
+                  />
                 </div>
-                <img
-                  className="delete_icon"
-                  src="delete.svg"
-                  alt=""
-                  onClick={() => handleDelete(key)}
-                />
-              </div>
-            ))}
+              );
+            })}
       </div>
     </div>
   );

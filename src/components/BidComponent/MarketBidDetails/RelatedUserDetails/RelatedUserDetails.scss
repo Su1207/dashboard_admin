@@ -15,7 +15,7 @@
   overflow-x: hidden;
 
   .modal {
-    width: 30%;
+    width: 45%;
     padding: 30px;
     border-radius: 15px;
     background-color: aliceblue;
@@ -28,11 +28,22 @@
       width: 80%;
     }
 
+    @include sm {
+      width: 90%;
+      padding: 20px;
+    }
+
     .close {
       position: absolute;
       top: 10px;
       right: 10px;
       cursor: pointer;
+    }
+
+    .userDetails_header {
+      display: flex;
+      align-items: center;
+      gap: 7px;
     }
 
     .details_main_container {
@@ -46,6 +57,13 @@
         justify-content: space-between;
         align-items: center;
         font-size: 0.875rem;
+
+        .userName_num {
+          @include xsm {
+            display: flex;
+            flex-direction: column;
+          }
+        }
 
         .username {
           text-transform: capitalize;

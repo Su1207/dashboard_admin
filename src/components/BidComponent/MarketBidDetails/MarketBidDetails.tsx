@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { Fragment, useEffect, useState } from "react";
 import "./MarketBidDetails.scss";
 import { get, ref } from "firebase/database";
 import { database } from "../../../firebase";
@@ -26,6 +26,11 @@ export type UserDetailsType = {
   userName: string;
 };
 
+export type ClickPosition = {
+  x: number;
+  y: number;
+};
+
 const currentFormattedDate = () => {
   const currentDate = new Date();
   const year = currentDate.getFullYear();
@@ -47,6 +52,12 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
   const [clickedNumber, setClickedNumber] = useState(false);
   const [formattedText, setFormattedText] = useState<any>(""); // Declare formattedText as state
   const [isEditorVisible, setIsEditorVisible] = useState(false);
+  const [bidNumber, setBidNumber] = useState<number>();
+
+  // In the parent component where you declare state for click position
+  const [clickPosition, setClickPosition] = useState<ClickPosition | null>(
+    null
+  );
 
   const { selectedBidDate } = useBidComponentContext();
 
@@ -128,8 +139,15 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
 
   //   console.log(bidDetails);
 
-  const handleColumnClick = async (row: any, columnName: string) => {
+  const handleColumnClick = async (
+    event: React.MouseEvent,
+    row: any,
+    columnName: string
+  ) => {
     try {
+      const rect = event.currentTarget.getBoundingClientRect();
+      const x = event.clientX - rect.left + window.scrollX; // Adjust for horizontal scroll
+      const y = event.clientY - rect.top + window.scrollY;
       const gameActualKey = gameKey.split("___")[1];
       const openClose = gameKey.split("___")[0];
       const currentYear = selectedBidDate.getFullYear();
@@ -144,6 +162,8 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
           row[columnName].split(" = ")[0]
         }/USERS`
       );
+
+      setBidNumber(row[columnName].split(" = ")[0]);
 
       const usersSnapshot = await get(bidRef);
 
@@ -170,7 +190,7 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
       await Promise.all(promises);
       setClickedNumber(!clickedNumber);
       setUserDetails(usersList);
-      window.scrollTo({ top: 0, behavior: "smooth" });
+      setClickPosition({ x, y });
     } catch (err) {
       console.error("Error fetching users:", err);
     }
@@ -241,10 +261,22 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
       width: 134,
       renderCell: (params: GridCellParams) => (
         <div
-          onClick={() => handleColumnClick(params.row, market.marketName)}
+          onClick={(event) =>
+            handleColumnClick(event, params.row, market.marketName)
+          }
           style={{ cursor: "pointer" }}
         >
-          {params.row[market.marketName]}
+          {params.row[market.marketName]
+            .split("=")
+            .map((item: any, index: any) => (
+              <Fragment key={index}>
+                {index === 0 ? (
+                  <span className="bold">{item.trim()} </span>
+                ) : (
+                  <span>= {item.trim()}</span>
+                )}
+              </Fragment>
+            ))}
         </div>
       ),
     })),
@@ -283,12 +315,16 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
     setIsEditorVisible(!isEditorVisible);
   };
 
+  console.log(clickPosition);
+
   return (
     <div className="dataTable_deposit">
       {clickedNumber && (
         <RelatedUserDetails
           userDetails={userDetails}
           setClickedNumber={setClickedNumber}
+          bidNumber={bidNumber}
+          clickPosition={clickPosition}
         />
       )}
       <button className="back_button" onClick={handleBackClick}>
@@ -333,14 +369,6 @@ const MarketbidDetails: React.FC<{ gameKey: string }> = ({ gameKey }) => {
           className="dataGrid_deposit"
           rows={rows}
           columns={columns}
-          // checkboxSelection
-          //   initialState={{
-          //     pagination: {
-          //       paginationModel: {
-          //         pageSize: 15,
-          //       },
-          //     },
-          //   }}
           slots={{ toolbar: GridToolbar }}
           slotProps={{
             toolbar: {

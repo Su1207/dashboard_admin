@@ -80,7 +80,6 @@ const ManualRequests = () => {
     setSelectedDate(currentDate);
   }
 
-  console.log(manualData);
   return (
     <div className="manualReq">
       <div className="manualReq_header">
@@ -128,7 +127,9 @@ const ManualRequests = () => {
       {manualData ? (
         <ManualRequestGrid manualData={manualData} />
       ) : (
-        <p>No data available for the day</p>
+        <div className="no-data">
+          <img src="/noData1.gif" alt="" className="no-data-img" />
+        </div>
       )}
     </div>
   );

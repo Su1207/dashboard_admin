@@ -85,7 +85,7 @@ export const menu = [
         id: "ADMIN_USERS",
         title: "Admin Users",
         url: "/subAdmin",
-        icon: "/calendar.svg",
+        icon: "/user.svg",
       },
     ],
   },

@@ -5,15 +5,26 @@ import { toast } from "react-toastify";
 import { useNavigate } from "react-router-dom";
 import ClearIcon from "@mui/icons-material/Clear";
 import "./Rewards.scss";
+import { ClickPosition } from "../GamesDetails/GamesDataGrid";
+import { useEffect, useRef } from "react";
 
 type Props = {
   gameId: string;
   gameName: string;
   setRewards: React.Dispatch<React.SetStateAction<boolean>>;
+  clickPosition: ClickPosition | null;
 };
 
 const Rewards = (props: Props) => {
   const navigate = useNavigate();
+
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  useEffect(() => {
+    if (modalRef.current) {
+      modalRef.current.style.top = `${props.clickPosition?.y}px`;
+    }
+  }, [props.clickPosition]);
 
   const handleOpen = () => {
     const openRef = ref(
@@ -55,7 +66,10 @@ const Rewards = (props: Props) => {
   };
 
   return (
-    <div className="openCloseOption_container">
+    <div
+      className="openCloseOption_container"
+      style={{ top: `${props.clickPosition?.y}px` }}
+    >
       <div className="openCloseOption_main_container">
         <span className="close" onClick={() => props.setRewards(false)}>
           <ClearIcon />

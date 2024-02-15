@@ -228,10 +228,6 @@
           right: 1.5rem;
           top: -8px;
 
-          @include sm {
-            right: 0.2rem;
-          }
-
           @include xsm {
             font-size: 0.5rem;
           }
@@ -250,10 +246,6 @@
           position: absolute;
           right: 1.5rem;
           top: -8px;
-
-          @include sm {
-            right: 0.2rem;
-          }
 
           @include xsm {
             font-size: 0.5rem;
@@ -409,7 +401,7 @@
     }
 
     h2 {
-      margin-bottom: 0.5rem;
+      margin-bottom: 0.8rem;
     }
 
     form {
@@ -420,7 +412,6 @@
         display: flex;
         flex-direction: column;
         gap: 10px;
-        margin-bottom: 0.8rem;
 
         input {
           padding: 10px;

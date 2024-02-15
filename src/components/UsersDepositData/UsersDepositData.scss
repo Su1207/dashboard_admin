@@ -1,5 +1,6 @@
 @import "../../styles/variables.scss";
 @import "../../styles/responsive.scss";
+
 .dataTable_Usersdeposit {
   .dataGrid_Usersdeposit {
     background-color: white;
@@ -127,51 +128,82 @@
     }
   }
 
-  .usersTotalDeposit {
-    padding: 20px;
-    margin-bottom: 1rem;
-    border-radius: 5px;
-    border: none;
-    width: 20rem;
-    min-height: 150px;
-    background-image: linear-gradient(to right, #8e2de2, #4a00e0);
+  .deposit_dashboard {
     display: flex;
-    flex-direction: column;
+    align-items: center;
+    gap: 1rem;
 
     @include sm {
-      width: 100%;
-    }
-    .total_deposit_title {
-      flex: 1;
+      flex-direction: column;
+      gap: 0.1rem;
     }
 
-    .total_deposit {
-      flex: 1;
+    .usersTotalDeposit,
+    .usersTotalDeposit1 {
+      padding: 20px;
+      margin-bottom: 1rem;
+      border-radius: 5px;
+      border: none;
+      width: 20rem;
+      min-height: 150px;
+      background-image: linear-gradient(to right, #8e2de2, #4a00e0);
       display: flex;
-      align-items: flex-end;
-      gap: 0.5rem;
-      // justify-content: flex-start;
+      flex-direction: column;
 
-      .amount {
-        font-size: 1.8rem;
-        font-weight: 700;
+      @include sm {
+        width: 100%;
+      }
+      .total_deposit_title {
+        flex: 1;
       }
 
-      .users_involve {
-        font-size: 0.8rem;
-        font-weight: 300;
+      .total_deposit {
+        flex: 1;
+        display: flex;
+        align-items: flex-end;
+        gap: 0.5rem;
+        // justify-content: flex-start;
+
+        .amount {
+          font-size: 1.8rem;
+          font-weight: 700;
+        }
+
+        .users_involve {
+          font-size: 0.8rem;
+          font-weight: 300;
+        }
+      }
+
+      .money_icon {
+        display: flex;
+        flex: 1;
+        justify-content: flex-end;
+        align-items: flex-end;
+
+        .deposit_image {
+          height: 40px;
+          width: 40px;
+        }
       }
     }
 
-    .money_icon {
-      display: flex;
-      flex: 1;
-      justify-content: flex-end;
-      align-items: flex-end;
+    .usersTotalDeposit1 {
+      background: linear-gradient(to right, #0099f7, #f11712);
 
-      .deposit_image {
-        height: 40px;
-        width: 40px;
+      .total_deposit_title1 {
+        margin-bottom: 1.5rem;
+      }
+
+      .total_deposit1 {
+        display: flex;
+        align-items: center;
+        justify-content: space-between;
+        margin-bottom: 0.3rem;
+
+        .deposit_type {
+          font-weight: 600;
+        }
       }
     }
   }

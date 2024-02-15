@@ -14,7 +14,10 @@ a {
 
 .main {
   font-family: "Inter", sans-serif !important;
-  background-color: $dark-bg;
+  background: url("/bg.svg");
+  background-size: cover; /* Adjust as needed */
+  background-repeat: no-repeat; /* Adjust as needed */
+  transition: background 0.2s linear;
   color: $main-color;
   overflow-x: hidden;
   min-height: 100vh;
@@ -29,8 +32,8 @@ a {
 
 .menuContainer {
   width: 11rem;
-  padding: 5px 5px 5px 15px;
-  border-right: 2px solid $soft-bg;
+  padding: 5px 5px 5px 10px;
+  border-right: 1px solid $dark-bg;
   // align-self: stretch; // Ensure it takes full height
   flex-shrink: 0; // Prevent shrinking
 
@@ -57,4 +60,16 @@ a {
 .contentContainer {
   padding: 5px 15px;
   width: 100%;
+}
+
+.no-data {
+  background: transparent;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  .no-data-img {
+    height: 300px;
+  }
 }

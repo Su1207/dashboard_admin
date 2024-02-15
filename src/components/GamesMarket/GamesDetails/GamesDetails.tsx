@@ -73,6 +73,10 @@ const GamesDetails = () => {
             }
           );
 
+          gamesData.sort((a, b) => {
+            return a.OPEN - b.OPEN;
+          });
+
           setGameData(gamesData);
         }
       } catch (error) {

@@ -1,21 +1,43 @@
 import { Navigate } from "react-router-dom";
-import { usePermissionContext } from "../../components/AdmissionPermission";
 import GameSetting from "../../components/GameSetting/GameSetting";
 import { useAuth } from "../../components/auth-context";
 import { useSubAuth } from "../../components/subAdmin-authContext";
 import "./GameSettings.scss";
+import { useEffect, useState } from "react";
+import { onValue, ref } from "firebase/database";
+import { database } from "../../firebase";
 
 const GameSettings = () => {
   const { isAuthenticated } = useAuth();
-  const { isSubAuthenticated } = useSubAuth();
-  const { permissions } = usePermissionContext();
+  const { isSubAuthenticated, user } = useSubAuth();
+  const [permission, setPermission] = useState<boolean>();
 
   if (!isAuthenticated && !isSubAuthenticated) {
     return <Navigate to="/login" />;
   }
+
+  useEffect(() => {
+    try {
+      const permissionRef = ref(
+        database,
+        `ADMIN/SUB_ADMIN/${user?.ID}/PERMISSIONS/GAME_SETTINGS`
+      );
+
+      const unsub = onValue(permissionRef, (snapshot) => {
+        if (snapshot.exists()) {
+          setPermission(snapshot.val());
+        }
+      });
+
+      return () => unsub();
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
+
   return (
     <div>
-      {isAuthenticated || (isSubAuthenticated && permissions?.GAME_SETTINGS) ? (
+      {isAuthenticated || (isSubAuthenticated && permission) ? (
         <>
           <h1>Game Settings</h1>
           <GameSetting />

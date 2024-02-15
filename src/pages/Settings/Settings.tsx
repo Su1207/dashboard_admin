@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./Settings.scss";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import PaymentSetting from "../../components/SettingComponent/PaymentSetting/PaymentSetting";
@@ -6,8 +6,9 @@ import VersionSetting from "../../components/SettingComponent/VersionSetting/Ver
 import GeneralSetting from "../../components/SettingComponent/GeneralSetting/GeneralSetting";
 import { useAuth } from "../../components/auth-context";
 import { useSubAuth } from "../../components/subAdmin-authContext";
-import { usePermissionContext } from "../../components/AdmissionPermission";
 import { Navigate } from "react-router-dom";
+import { onValue, ref } from "firebase/database";
+import { database } from "../../firebase";
 
 const Settings = () => {
   const [upiSetting, setUpiSetting] = useState(false);
@@ -33,16 +34,35 @@ const Settings = () => {
   };
 
   const { isAuthenticated } = useAuth();
-  const { isSubAuthenticated } = useSubAuth();
-  const { permissions } = usePermissionContext();
+  const { isSubAuthenticated, user } = useSubAuth();
+  const [permission, setPermission] = useState<boolean>();
 
   if (!isAuthenticated && !isSubAuthenticated) {
     return <Navigate to="/login" />;
   }
 
+  useEffect(() => {
+    try {
+      const permissionRef = ref(
+        database,
+        `ADMIN/SUB_ADMIN/${user?.ID}/PERMISSIONS/SETTINGS`
+      );
+
+      const unsub = onValue(permissionRef, (snapshot) => {
+        if (snapshot.exists()) {
+          setPermission(snapshot.val());
+        }
+      });
+
+      return () => unsub();
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
+
   return (
     <>
-      {isAuthenticated || (isSubAuthenticated && permissions?.SETTINGS) ? (
+      {isAuthenticated || (isSubAuthenticated && permission) ? (
         <div className="setting">
           <h2>Settings</h2>
           <div className="setting_mainContainer">

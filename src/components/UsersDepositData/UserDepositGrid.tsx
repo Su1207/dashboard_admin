@@ -90,13 +90,6 @@ const UserDepositGrid: React.FC<UserDepositDataProps> = ({ depositData }) => {
           className="dataGrid_Usersdeposit"
           rows={depositData}
           columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 7,
-              },
-            },
-          }}
           slots={{ toolbar: GridToolbar }}
           slotProps={{
             toolbar: {
@@ -107,7 +100,6 @@ const UserDepositGrid: React.FC<UserDepositDataProps> = ({ depositData }) => {
               },
             },
           }}
-          pageSizeOptions={[7]}
           disableRowSelectionOnClick
           disableColumnFilter
           disableColumnSelector
@@ -115,7 +107,9 @@ const UserDepositGrid: React.FC<UserDepositDataProps> = ({ depositData }) => {
           getRowId={getRowId}
         />
       ) : (
-        <p>No Data Available for the day</p>
+        <div className="no-data">
+          <img src="/noData1.gif" alt="" className="no-data-img" />
+        </div>
       )}
     </div>
   );

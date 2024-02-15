@@ -79,23 +79,6 @@ const WithdrawTransaction: React.FC<{ userId: number }> = ({ userId }) => {
       {withdrawData ? (
         <WithdrawDataGrid withdrawData={withdrawData} />
       ) : (
-        // <div>
-        //   {withdrawData.map((withdrawal, index) => (
-        //     <div key={index}>
-        //       <h3>Withdrawal</h3>
-        //       <p>Amount: {withdrawal.amount}</p>
-        //       <p>Date: {withdrawal.date}</p>
-        //       <p>Name: {withdrawal.name}</p>
-        //       <p>App: {withdrawal.app}</p>
-        //       <p>Payout To: {withdrawal.payoutTo}</p>
-        //       <p>Pending: {withdrawal.pending}</p>
-        //       <p>Type: {withdrawal.type}</p>
-        //       <p>Total: {withdrawal.total}</p>
-        //       <p>UID: {withdrawal.uid}</p>
-        //       <hr />
-        //     </div>
-        //   ))}
-        // </div>
         <p>No Withdraw till now</p>
       )}
     </div>

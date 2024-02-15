@@ -15,12 +15,20 @@ interface gameDataGridProps {
   gameData: ColumnRow[];
 }
 
+export type ClickPosition = {
+  x: number;
+  y: number;
+};
+
 const GamesDataGrid: React.FC<gameDataGridProps> = ({ gameData }) => {
   const [editGame, setEditGame] = useState(false);
   const [gameId, setGameId] = useState("");
   const [gameName, setGameName] = useState("");
   const [openClose, setOpenClose] = useState(false);
   const [rewards, setRewards] = useState(false);
+  const [clickPosition, setClickPosition] = useState<ClickPosition | null>(
+    null
+  );
 
   const getTime = (time: number) => {
     const date = new Date(time);
@@ -36,17 +44,27 @@ const GamesDataGrid: React.FC<gameDataGridProps> = ({ gameData }) => {
     return formattedTime;
   };
 
-  const handleEdit = (gameid: string) => {
+  const handleEdit = (gameid: string, event: React.MouseEvent) => {
     setEditGame(!editGame);
     setGameId(gameid);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = event.clientX - rect.left + window.scrollX; // Adjust for horizontal scroll
+    const y = event.clientY - rect.top + window.scrollY;
+    setClickPosition({ x, y });
   };
 
-  const handleUpdate = (gameid: string, gamename: string) => {
+  const handleUpdate = (
+    event: React.MouseEvent,
+    gameid: string,
+    gamename: string
+  ) => {
     setGameId(gameid);
     setOpenClose(!openClose);
     setGameName(gamename);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = event.clientX - rect.left + window.scrollX; // Adjust for horizontal scroll
+    const y = event.clientY - rect.top + window.scrollY;
+    setClickPosition({ x, y });
   };
 
   const columns: GridColDef[] = [
@@ -98,7 +116,7 @@ const GamesDataGrid: React.FC<gameDataGridProps> = ({ gameData }) => {
             style={{ cursor: "pointer" }}
             src="view.svg"
             alt=""
-            onClick={() => handleEdit(params.row.id)}
+            onClick={(event) => handleEdit(params.row.id, event)}
           />
           <img
             style={{ cursor: "pointer" }}
@@ -119,7 +137,9 @@ const GamesDataGrid: React.FC<gameDataGridProps> = ({ gameData }) => {
             src="./update.png"
             alt="update"
             className="update_img"
-            onClick={() => handleUpdate(params.row.id, params.row.name)}
+            onClick={(event) =>
+              handleUpdate(event, params.row.id, params.row.name)
+            }
           />
         </div>
       ),
@@ -134,18 +154,27 @@ const GamesDataGrid: React.FC<gameDataGridProps> = ({ gameData }) => {
             src="./gift.png"
             alt="rewards"
             className="update_img"
-            onClick={() => handleRewards(params.row.id, params.row.name)}
+            onClick={(event) =>
+              handleRewards(event, params.row.id, params.row.name)
+            }
           />
         </div>
       ),
     },
   ];
 
-  const handleRewards = (gameid: string, gamename: string) => {
+  const handleRewards = (
+    event: React.MouseEvent,
+    gameid: string,
+    gamename: string
+  ) => {
     setGameId(gameid);
     setRewards(!rewards);
     setGameName(gamename);
-    window.scrollTo({ top: 0, behavior: "smooth" });
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = event.clientX - rect.left + window.scrollX; // Adjust for horizontal scroll
+    const y = event.clientY - rect.top + window.scrollY;
+    setClickPosition({ x, y });
   };
 
   const handleDelete = (gameId: string) => {
@@ -191,14 +220,26 @@ const GamesDataGrid: React.FC<gameDataGridProps> = ({ gameData }) => {
   return (
     <div className="dataTable">
       {rewards && (
-        <Rewards gameId={gameId} setRewards={setRewards} gameName={gameName} />
+        <Rewards
+          gameId={gameId}
+          setRewards={setRewards}
+          gameName={gameName}
+          clickPosition={clickPosition}
+        />
       )}
-      {editGame && <EditGame gameId={gameId} setEditGame={setEditGame} />}
+      {editGame && (
+        <EditGame
+          gameId={gameId}
+          setEditGame={setEditGame}
+          clickPosition={clickPosition}
+        />
+      )}
       {openClose && (
         <OpenCloseOption
           gameId={gameId}
           gameName={gameName}
           setOpenClose={setOpenClose}
+          clickPosition={clickPosition}
         />
       )}
       {rows.length > 0 ? (
@@ -206,13 +247,6 @@ const GamesDataGrid: React.FC<gameDataGridProps> = ({ gameData }) => {
           className="dataGrid"
           rows={rows}
           columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 7,
-              },
-            },
-          }}
           slots={{ toolbar: GridToolbar }}
           slotProps={{
             toolbar: {
@@ -220,7 +254,6 @@ const GamesDataGrid: React.FC<gameDataGridProps> = ({ gameData }) => {
               quickFilterProps: { debounceMs: 500 },
             },
           }}
-          pageSizeOptions={[7]}
           // checkboxSelection
           disableRowSelectionOnClick
           disableColumnFilter
@@ -228,7 +261,9 @@ const GamesDataGrid: React.FC<gameDataGridProps> = ({ gameData }) => {
           disableDensitySelector
         />
       ) : (
-        <p>No data available</p>
+        <div className="no-data">
+          <img src="/noData1.gif" alt="" className="no-data-img" />
+        </div>
       )}
     </div>
   );

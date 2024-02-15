@@ -1,23 +1,8 @@
 import { useState, useEffect } from "react";
 import { ref, onValue, set, get } from "firebase/database";
 import { database } from "../../firebase";
-import { alpha, styled } from "@mui/material/styles";
-import { green } from "@mui/material/colors";
+import { green, red } from "@mui/material/colors";
 import Switch from "@mui/material/Switch";
-
-const GreenSwitch = styled(Switch)(({ theme }) => ({
-  "& .MuiSwitch-switchBase.Mui-checked": {
-    color: green[600],
-    "&:hover": {
-      backgroundColor: alpha(green[600], theme.palette.action.hoverOpacity),
-    },
-  },
-  "& .MuiSwitch-switchBase.Mui-checked + .MuiSwitch-track": {
-    backgroundColor: green[600],
-  },
-}));
-
-const label = { inputProps: { "aria-label": "Color switch" } };
 
 interface DataTableProps {
   userId: string;
@@ -25,6 +10,8 @@ interface DataTableProps {
 
 const BlockUnblockToggle: React.FC<DataTableProps> = ({ userId }) => {
   const [isBlocked, setIsBlocked] = useState(false);
+
+  const switchColor = isBlocked ? green[500] : red[500];
 
   useEffect(() => {
     // Reference to the 'user list' node in the database
@@ -58,11 +45,19 @@ const BlockUnblockToggle: React.FC<DataTableProps> = ({ userId }) => {
 
   return (
     <div className="toggle_icons">
-      <GreenSwitch
-        {...label}
+      <Switch
         size="small"
+        color="default"
         checked={isBlocked}
         onChange={handleToggle}
+        sx={{
+          "& .MuiSwitch-thumb": {
+            bgcolor: switchColor,
+          },
+          "& .MuiSwitch-track": {
+            bgcolor: switchColor,
+          },
+        }}
       />
     </div>
   );

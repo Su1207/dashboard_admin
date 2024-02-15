@@ -48,12 +48,10 @@ const WinDetails: React.FC<{ gameId: string }> = ({ gameId }) => {
         );
 
         const winData: WinDetailsType[] = [];
-        let totaloint = 0;
 
         const winSnapshot = await get(winRef);
 
         winSnapshot.forEach((timestamp) => {
-          totaloint += timestamp.val().WIN_POINTS || 0;
           winData.push({
             date: timestamp.val().DATE,
             phoneNumber: timestamp.val().PHONE,
@@ -78,14 +76,27 @@ const WinDetails: React.FC<{ gameId: string }> = ({ gameId }) => {
           return dateB - dateA;
         });
 
-        setTotalPoints(totaloint);
-
         if (selectedOption !== "") {
           const filterWinDetails = winData.filter(
             (item) => item.openClose === selectedOption
           );
+
+          let totalPoint = 0;
+          filterWinDetails.map((data) => {
+            totalPoint += data.winPoints;
+          });
+
+          setTotalPoints(totalPoint);
+
           setWinDetails(filterWinDetails);
         } else {
+          let totalPoint = 0;
+          winData.map((data) => {
+            totalPoint += data.winPoints;
+          });
+
+          setTotalPoints(totalPoint);
+
           setWinDetails(winData);
         }
       } catch (err) {

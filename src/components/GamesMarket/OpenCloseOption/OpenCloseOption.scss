@@ -3,7 +3,7 @@
 
 .openCloseOption_container {
   width: 98.7vw;
-  height: 100vh;
+  min-height: 100vh;
   position: absolute;
   top: 0;
   left: 0;
@@ -12,6 +12,7 @@
   justify-content: center;
   z-index: 1;
   background-color: rgba(0, 0, 0, 0.724);
+  overflow-x: hidden;
 
   .openCloseOption_main_container {
     width: 35%;

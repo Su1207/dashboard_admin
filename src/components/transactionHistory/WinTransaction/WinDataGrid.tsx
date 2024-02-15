@@ -170,7 +170,9 @@ const WinDataGrid: React.FC<WinDataGridProps> = ({ winData }) => {
           getRowId={getRowId}
         />
       ) : (
-        <p>No Data Available for the day</p>
+        <div className="no-data">
+          <img src="/noData1.gif" alt="" className="no-data-img" />
+        </div>
       )}
     </div>
   );

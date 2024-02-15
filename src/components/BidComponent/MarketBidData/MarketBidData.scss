@@ -83,7 +83,7 @@
       list-style: none;
 
       .noData {
-        background: $dark-bg;
+        background: transparent;
       }
 
       .header_li {
@@ -138,6 +138,18 @@
           }
         }
       }
+    }
+  }
+
+  .no-data {
+    background: transparent;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    .no-data-img {
+      height: 300px;
     }
   }
 }

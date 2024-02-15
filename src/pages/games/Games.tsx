@@ -28,7 +28,7 @@ const Games = () => {
     try {
       const permissionRef = ref(
         database,
-        `ADMIN/SUB_ADMIN/${user?.ID}/PERMISSIONS/USERS`
+        `ADMIN/SUB_ADMIN/${user?.ID}/PERMISSIONS/MARKET`
       );
 
       const unsub = onValue(permissionRef, (snapshot) => {
@@ -43,9 +43,6 @@ const Games = () => {
     }
   }, []);
 
-  if (!isAuthenticated && !isSubAuthenticated) {
-    return <Navigate to="/login" />;
-  }
   return (
     <>
       {isAuthenticated || (isSubAuthenticated && permission) ? (

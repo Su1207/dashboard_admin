@@ -40,13 +40,14 @@
       padding: 10px;
       border-radius: 5px;
       justify-content: flex-start;
+      transition: all 0.3s;
 
       &:hover {
-        background-color: $soft-bg;
+        background-color: rgb(41, 1, 79);
       }
 
       .listItemTitle {
-        font-size: 0.9rem;
+        font-size: 0.875rem;
         @include lg {
           display: none;
         }
@@ -92,7 +93,7 @@
       }
 
       .listItemTitle {
-        font-size: 1.1rem;
+        font-size: 1rem;
         font-weight: 600;
         font-family: "Inter", sans-serif;
       }

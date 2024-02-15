@@ -183,7 +183,7 @@ const ManualRequestGrid: React.FC<ManualDataGridProps> = ({ manualData }) => {
       `TOTAL TRANSACTION/DEPOSIT/TOTAL/${timestamp}`
     );
 
-    await set(depositRef, {
+    const setData = {
       AMOUNT: amount,
       DATE: date,
       NAME: `${phone.split("-")[1]}`,
@@ -192,40 +192,15 @@ const ManualRequestGrid: React.FC<ManualDataGridProps> = ({ manualData }) => {
       PAYMENT_TO: paymentTo,
       TOTAL: total,
       UID: `${phone.split("-")[0]}`,
-    });
+    };
 
-    await set(totalRef, {
-      AMOUNT: amount,
-      DATE: date,
-      NAME: `${phone.split("-")[1]}`,
-      PAYMENT_APP: paymentApp,
-      PAYMENT_BY: paymentBy,
-      PAYMENT_TO: paymentTo,
-      TOTAL: total,
-      UID: `${phone.split("-")[0]}`,
-    });
+    await set(depositRef, setData);
 
-    await set(totalTransactionDateWiseRef, {
-      AMOUNT: amount,
-      DATE: date,
-      NAME: `${phone.split("-")[1]}`,
-      PAYMENT_APP: paymentApp,
-      PAYMENT_BY: paymentBy,
-      PAYMENT_TO: paymentTo,
-      TOTAL: total,
-      UID: `${phone.split("-")[0]}`,
-    });
+    await set(totalRef, setData);
 
-    await set(totalTransactionTotalRef, {
-      AMOUNT: amount,
-      DATE: date,
-      NAME: `${phone.split("-")[1]}`,
-      PAYMENT_APP: paymentApp,
-      PAYMENT_BY: paymentBy,
-      PAYMENT_TO: paymentTo,
-      TOTAL: total,
-      UID: `${phone.split("-")[0]}`,
-    });
+    await set(totalTransactionDateWiseRef, setData);
+
+    await set(totalTransactionTotalRef, setData);
 
     toast.success("Payment Accepted successfully");
   };
@@ -254,8 +229,6 @@ const ManualRequestGrid: React.FC<ManualDataGridProps> = ({ manualData }) => {
     });
     toast.success("Payment Rejected");
   };
-
-  
 
   const rows = manualData?.map((data) => {
     return {
@@ -308,7 +281,9 @@ const ManualRequestGrid: React.FC<ManualDataGridProps> = ({ manualData }) => {
           disableDensitySelector
         />
       ) : (
-        <p>No data available for the day</p>
+        <div className="no-data">
+          <img src="/noData1.gif" alt="" className="no-data-img" />
+        </div>
       )}
     </div>
   );

@@ -79,20 +79,14 @@ const WinDEtailsGrid: React.FC<WinDetailsGridType> = ({ winDetails }) => {
   };
   return (
     <div className="dataTable">
-      {winDetails ? (
+      {winDetails && winDetails.length > 0 ? (
         <DataGrid
           className="dataGrid"
           rows={winDetails}
           columns={columns}
           getRowId={getRowId}
           // checkboxSelection
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 15,
-              },
-            },
-          }}
+
           slots={{ toolbar: GridToolbar }}
           slotProps={{
             toolbar: {
@@ -100,14 +94,15 @@ const WinDEtailsGrid: React.FC<WinDetailsGridType> = ({ winDetails }) => {
               quickFilterProps: { debounceMs: 500 },
             },
           }}
-          pageSizeOptions={[15]}
           disableRowSelectionOnClick
           disableColumnFilter
           disableColumnSelector
           disableDensitySelector
         />
       ) : (
-        <p>No data available</p>
+        <div className="no-data">
+          <img src="/noData1.gif" alt="" className="no-data-img" />
+        </div>
       )}
     </div>
   );

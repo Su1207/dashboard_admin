@@ -282,13 +282,13 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
           className="dataGrid"
           rows={rows}
           columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 7,
-              },
-            },
-          }}
+          // initialState={{
+          //   pagination: {
+          //     paginationModel: {
+          //       pageSize: 7,
+          //     },
+          //   },
+          // }}
           slots={{ toolbar: GridToolbar }}
           slotProps={{
             toolbar: {
@@ -296,7 +296,7 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
               quickFilterProps: { debounceMs: 500 },
             },
           }}
-          pageSizeOptions={[7]}
+          // pageSizeOptions={[7]}
           // checkboxSelection
           disableRowSelectionOnClick
           disableColumnFilter

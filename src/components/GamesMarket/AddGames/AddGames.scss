@@ -3,15 +3,16 @@
 
 .add1 {
   width: 98.7vw;
-  height: 100vh;
+  min-height: 110vh;
   position: absolute;
   top: 0;
   left: 0;
-  background-color: rgba(0, 0, 0, 0.724);
+  background-color: rgba(10, 9, 9, 0.724);
   display: flex;
   align-items: center;
   justify-content: center;
   z-index: 1;
+  overflow: hidden;
 
   .modal1 {
     width: 40%;

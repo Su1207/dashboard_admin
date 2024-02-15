@@ -198,9 +198,10 @@ const EditUser = (props: Props) => {
                 placeholder="PIN"
                 value={pin}
                 onChange={handleChange}
+                maxLength={4}
                 pattern="[0-9]{4}"
                 inputMode="numeric" // Display numeric keyboard on mobile devices
-                title="Please enter a 4-digit PIN" // Display a custom validation message
+                title="Please enter a 4-digit numeric PIN" // Display a custom validation message
               />
             </div>
 

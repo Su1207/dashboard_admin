@@ -36,6 +36,8 @@ const UsersDepositData = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   const [depositData, setDepositData] = useState<UserDeposit[] | null>(null);
   const [totalDeposit, setTotalDeposit] = useState(0);
+  const [upiDeposit, setUpiDeposit] = useState(0);
+  const [nonUpiDeposit, setNonUpiDeposit] = useState(0);
   const [contributingUsers, setContributingUsers] = useState(0);
   const [selectedPaymentOption, setSelectedPaymentOption] =
     useState<string>(""); // State to track the selected payment option
@@ -55,8 +57,6 @@ const UsersDepositData = () => {
         if (usersSnapshot.exists()) {
           const promises: Promise<void>[] = [];
           const depositDataArray: UserDeposit[] = [];
-          let total_deposit: number = 0;
-          const contributingUserSet: Set<string> = new Set();
 
           usersSnapshot.forEach((userSnapshot) => {
             const userPhone = userSnapshot.key;
@@ -71,7 +71,6 @@ const UsersDepositData = () => {
 
                 depositSnapshot.forEach((timeSnap) => {
                   const timeData = timeSnap.val() as DepositData;
-                  total_deposit += timeData.AMOUNT;
                   depositDataArray.push({
                     userPhone,
                     ...timeData,
@@ -82,8 +81,6 @@ const UsersDepositData = () => {
                     const dateB = new Date(b.DATE.replace("|", "")).getTime();
                     return dateB - dateA;
                   });
-                  // Track unique contributing users
-                  contributingUserSet.add(userPhone);
                 });
               }
             });
@@ -92,8 +89,34 @@ const UsersDepositData = () => {
           });
 
           await Promise.all(promises); // Wait for all promises to complete before updating the state
-          setTotalDeposit(total_deposit);
-          setContributingUsers(contributingUserSet.size);
+
+          let upideposit = 0;
+          let nonUpiDeposit = 0;
+          const upiData = depositDataArray.filter(
+            (data) =>
+              data.PAYMENT_APP !== "Admin" && data.PAYMENT_APP !== "By Admin"
+          );
+
+          if (upiData) {
+            upiData.map((data) => {
+              upideposit += data.AMOUNT;
+            });
+            setUpiDeposit(upideposit);
+          }
+          const nonUpiData = depositDataArray.filter(
+            (data) =>
+              data.PAYMENT_APP === "Admin" || data.PAYMENT_APP === "By Admin"
+          );
+
+          if (nonUpiData) {
+            nonUpiData.map((data) => {
+              nonUpiDeposit += data.AMOUNT;
+            });
+            setNonUpiDeposit(nonUpiDeposit);
+          }
+
+          let total_deposit: number = 0;
+          const contributingUserSet: Set<string> = new Set();
 
           // Apply filter only if a payment option is selected
           if (selectedPaymentOption === "Admin") {
@@ -101,6 +124,13 @@ const UsersDepositData = () => {
               (item) =>
                 item.PAYMENT_APP === "Admin" || item.PAYMENT_APP === "By Admin"
             );
+
+            filterDepositData.map((data) => {
+              total_deposit += data.AMOUNT;
+              contributingUserSet.add(data.userPhone);
+            });
+            setTotalDeposit(total_deposit);
+            setContributingUsers(contributingUserSet.size);
             setDepositData(filterDepositData);
           } else if (
             selectedPaymentOption !== "" &&
@@ -109,8 +139,21 @@ const UsersDepositData = () => {
             const filteredDepositData = depositDataArray.filter(
               (item) => item.PAYMENT_APP === selectedPaymentOption
             );
+
+            filteredDepositData.map((data) => {
+              total_deposit += data.AMOUNT;
+              contributingUserSet.add(data.userPhone);
+            });
+            setTotalDeposit(total_deposit);
+            setContributingUsers(contributingUserSet.size);
             setDepositData(filteredDepositData);
           } else {
+            depositDataArray.map((data) => {
+              total_deposit += data.AMOUNT;
+              contributingUserSet.add(data.userPhone);
+            });
+            setTotalDeposit(total_deposit);
+            setContributingUsers(contributingUserSet.size);
             setDepositData(depositDataArray);
           }
         } else {
@@ -161,14 +204,28 @@ const UsersDepositData = () => {
           </div>
         </div>
       </div>
-      <div className="usersTotalDeposit">
-        <h4 className="total_deposit_title">TOTAL DEPOSIT</h4>
-        <div className="total_deposit">
-          <div className="amount">&#8377; {totalDeposit}</div>
-          <div className="users_involve">({contributingUsers})</div>
+      <div className="deposit_dashboard">
+        <div className="usersTotalDeposit">
+          <h4 className="total_deposit_title">TOTAL DEPOSIT</h4>
+          <div className="total_deposit">
+            <div className="amount">&#8377; {totalDeposit}</div>
+            <div className="users_involve">({contributingUsers})</div>
+          </div>
+          <div className="money_icon">
+            <img src="/UserDeposit.png" alt="" className="deposit_image" />
+          </div>
         </div>
-        <div className="money_icon">
-          <img src="/UserDeposit.png" alt="" className="deposit_image" />
+
+        <div className="usersTotalDeposit1">
+          <h4 className="total_deposit_title1">DEPOSIT DETAILS</h4>
+          <div className="total_deposit1">
+            <div className="deposit_type">UPI</div>
+            <div className="deposit_amount">&#8377; {upiDeposit}</div>
+          </div>
+          <div className="total_deposit1">
+            <div className="deposit_type">Admin</div>
+            <div className="deposit_amount">&#8377; {nonUpiDeposit}</div>
+          </div>
         </div>
       </div>
       <div className="payment-option">

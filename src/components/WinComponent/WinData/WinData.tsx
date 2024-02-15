@@ -128,9 +128,9 @@ const WinData: React.FC = () => {
           <img src="/UserWithdraw.png" alt="" className="withdraw_image" />
         </div>
       </div>
-      <div className="winDataList">
-        <ul>
-          {winDataType ? (
+      {winDataType ? (
+        <div className="winDataList">
+          <ul>
             <li className="header_li">
               <div className="header">
                 <p>MARKETS</p>
@@ -139,32 +139,32 @@ const WinData: React.FC = () => {
                 <p>TOTAL</p>
               </div>
             </li>
-          ) : (
-            <div className="noData">No data available for the day</div>
-          )}
 
-          {winDataType &&
-            winDataType.map((winData) => (
-              <li key={winData.marketkey}>
-                <div className="winDataDetails">
-                  <p
-                    className="gameName"
-                    onClick={() =>
-                      handleClick(winData.marketkey, winData.marketName)
-                    }
-                  >
-                    {winData.marketName}
-                  </p>
-                  <p className="openTotal">{winData.openTotal}</p>
-                  <p className="closeTotal">{winData.closeTotal}</p>
-                  <p className="marketTotal">
-                    {winData.openTotal + winData.closeTotal}
-                  </p>
-                </div>
-              </li>
-            ))}
-        </ul>
-      </div>
+            {winDataType &&
+              winDataType.map((winData) => (
+                <li key={winData.marketkey}>
+                  <div className="winDataDetails">
+                    <p className="gameName">{winData.marketName}</p>
+                    <p className="openTotal">{winData.openTotal}</p>
+                    <p className="closeTotal">{winData.closeTotal}</p>
+                    <p
+                      className="marketTotal"
+                      onClick={() =>
+                        handleClick(winData.marketkey, winData.marketName)
+                      }
+                    >
+                      {winData.openTotal + winData.closeTotal}
+                    </p>
+                  </div>
+                </li>
+              ))}
+          </ul>
+        </div>
+      ) : (
+        <div className="no-data">
+          <img src="/noData1.gif" alt="" className="no-data-img" />
+        </div>
+      )}
     </div>
   );
 };

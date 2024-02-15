@@ -1,10 +1,11 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { ref, get, set } from "firebase/database";
 import { database } from "../../../firebase";
 import { FormControlLabel, Switch } from "@mui/material";
 import ClearIcon from "@mui/icons-material/Clear";
 import "./EditGame.scss"; // You can create a separate stylesheet for styling
 import { toast } from "react-toastify";
+import { ClickPosition } from "../GamesDetails/GamesDataGrid";
 
 export interface GameForm {
   NAME: string;
@@ -26,6 +27,7 @@ export interface GameForm {
 type Props = {
   gameId: string;
   setEditGame: React.Dispatch<React.SetStateAction<boolean>>;
+  clickPosition: ClickPosition | null;
 };
 
 const getDefaultDateTime = () => {
@@ -44,7 +46,7 @@ const dateFetched = (date: string) => {
   return `${hours}:${minutes}`;
 };
 
-const EditGame = ({ gameId, setEditGame }: Props) => {
+const EditGame = ({ gameId, setEditGame, clickPosition }: Props) => {
   const [gameData, setGameData] = useState<GameForm>({
     NAME: "",
     OPEN: getDefaultDateTime(),
@@ -63,6 +65,18 @@ const EditGame = ({ gameId, setEditGame }: Props) => {
   });
 
   const [modalOpen, setIsModalOpen] = useState(true);
+
+  const modalRef = useRef<HTMLDivElement>(null);
+
+  // Update the position of the modal when clickPosition changes
+  useEffect(() => {
+    if (modalRef.current) {
+      modalRef.current.style.left = `${clickPosition?.x}px`;
+      modalRef.current.style.top = `${clickPosition?.y}px`;
+    }
+  }, [clickPosition]);
+
+  // console.log(clickPosition);
 
   useEffect(() => {
     // Fetch the existing game data using gameId
@@ -155,7 +169,10 @@ const EditGame = ({ gameId, setEditGame }: Props) => {
   };
 
   return (
-    <div className={`add1 ${modalOpen ? "" : "closed"}`}>
+    <div
+      className={`add1 ${modalOpen ? "" : "closed"}`}
+      style={{ top: `${clickPosition?.y}px` }}
+    >
       <div className="modal1">
         <span className="close" onClick={toggleModal}>
           <ClearIcon />
