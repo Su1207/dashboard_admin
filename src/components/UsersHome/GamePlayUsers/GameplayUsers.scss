@@ -1,0 +1,56 @@
+.gamePlay_users {
+  display: flex;
+  flex-direction: column;
+  gap: 1.2rem;
+  align-items: flex-start;
+
+  .users_list {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.8rem;
+    max-height: 250px;
+    overflow-y: scroll;
+
+    .user_data {
+      display: flex;
+      align-items: center;
+      justify-content: flex-start;
+      gap: 15px;
+
+      .user_img_icon {
+        height: 25px;
+        width: 25px;
+      }
+
+      .user_detail {
+        display: flex;
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 4px;
+
+        .users_name {
+          font-size: 0.8rem;
+          text-transform: capitalize;
+        }
+
+        .user_phone {
+          font-size: 0.6rem;
+          font-weight: 400;
+        }
+      }
+    }
+  }
+
+  .noData {
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    img {
+      height: 180px;
+      border-radius: 50%;
+    }
+  }
+}

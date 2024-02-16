@@ -1,5 +1,4 @@
 import { useUsersDataContext } from "../UserContext";
-import MonetizationOnRoundedIcon from "@mui/icons-material/MonetizationOnRounded";
 import "./TotalBalance.scss";
 
 const TotalBalance = () => {
@@ -19,7 +18,7 @@ const TotalBalance = () => {
         <div className="users_involve">({contributingUsers?.length})</div>
       </div>
       <div className="money_icon">
-        <MonetizationOnRoundedIcon style={{ fontSize: "1.8rem" }} />
+        <img src="balance.svg" alt="" />
       </div>
     </div>
   );

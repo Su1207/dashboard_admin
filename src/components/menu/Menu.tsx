@@ -30,7 +30,7 @@ const Menu = () => {
           setPermissions(snapshot.val());
         } else {
           setPermissions(null);
-        }
+        } 
       });
 
       return () => unsub();

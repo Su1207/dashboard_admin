@@ -1,18 +1,17 @@
-import { useState, useEffect } from "react";
-import { useUsersDataContext } from "../UserContext";
-import "./ProfitLoss.scss";
+import { useEffect, useState } from "react";
+import { useUsersDataContext } from "../../UserContext";
 import KeyboardDoubleArrowUpRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowUpRounded";
 import KeyboardDoubleArrowDownRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowDownRounded";
 import RemoveCircleRoundedIcon from "@mui/icons-material/RemoveCircleRounded";
 
-const ProfitLoss = () => {
-  const { totalDeposit, totalWithdraw } = useUsersDataContext();
+const YesterdayProfitLoss = () => {
+  const { yesterdayDeposit, yesterdayWithdraw } = useUsersDataContext();
   const [profit, setProfit] = useState(false);
   const [calculatedValue, setCalculatedValue] = useState(0);
 
   useEffect(() => {
     const calculateProfit = () => {
-      const value = totalDeposit - totalWithdraw;
+      const value = yesterdayDeposit - yesterdayWithdraw;
 
       if (value > 0) {
         setProfit(true);
@@ -25,12 +24,11 @@ const ProfitLoss = () => {
 
     // Call the function when the component mounts or when totalDeposit or totalWithdraw changes
     calculateProfit();
-  }, [totalDeposit, totalWithdraw]);
+  }, [yesterdayDeposit, yesterdayWithdraw]);
 
   return (
     <div className="profit_loss_container">
-      <h3 className="profit_loss_title">Profit / Loss</h3>
-
+      <h3 className="profit_loss_title yesterday">YESTERDAY'S Profit / Loss</h3>
       <div className="profit">&#8377; {calculatedValue}</div>
 
       {profit ? (
@@ -50,4 +48,4 @@ const ProfitLoss = () => {
   );
 };
 
-export default ProfitLoss;
+export default YesterdayProfitLoss;

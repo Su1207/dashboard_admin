@@ -125,13 +125,15 @@ const UsersHome: React.FC = () => {
 
   const deadUsers = usersData?.filter((user) => isDead(user.PHONE));
 
+  const activeUsers = usersData?.filter((user) => !isDead(user.PHONE));
+
   return (
     <div className="users">
       <h3 className="user_title">USERS</h3>
       <div className="different_users_details">
         <div className="users_number">
-          <div className="users_number_type">Total Users </div>
-          <div> {usersData?.length}</div>
+          <div className="users_number_type">Active Users </div>
+          <div> {activeUsers?.length}</div>
         </div>
         <div className="users_number">
           <div className="users_number_type">Blocked Users </div>

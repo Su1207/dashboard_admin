@@ -21,6 +21,10 @@ interface UsersDataContextProps {
   setTotalDeposit: React.Dispatch<React.SetStateAction<number | 0>>;
   totalWithdraw: number;
   setTotalWithdraw: React.Dispatch<React.SetStateAction<number | 0>>;
+  yesterdayWithdraw: number;
+  setYesterdayWithdraw: React.Dispatch<React.SetStateAction<number | 0>>;
+  yesterdayDeposit: number;
+  setYesterdayDeposit: React.Dispatch<React.SetStateAction<number | 0>>;
   //   totalWin: number;
   //   setTotalWin: React.Dispatch<React.SetStateAction<number | 0>>;
   //   totalBid: number;
@@ -28,9 +32,7 @@ interface UsersDataContextProps {
 }
 
 //create context
-const UsersDataContext = createContext<UsersDataContextProps | undefined>(
-  undefined
-);
+const UsersDataContext = createContext<UsersDataContextProps | null>(null);
 
 //create a provider component
 export const UsersDataProvider: React.FC<{ children: ReactNode }> = ({
@@ -41,6 +43,8 @@ export const UsersDataProvider: React.FC<{ children: ReactNode }> = ({
   //   const [totalBid, setTotalBid] = useState(0);
   //   const [totalWin, setTotalWin] = useState(0);
   const [totalWithdraw, setTotalWithdraw] = useState(0);
+  const [yesterdayWithdraw, setYesterdayWithdraw] = useState(0);
+  const [yesterdayDeposit, setYesterdayDeposit] = useState(0);
 
   return (
     <UsersDataContext.Provider
@@ -51,6 +55,10 @@ export const UsersDataProvider: React.FC<{ children: ReactNode }> = ({
         setTotalDeposit,
         totalWithdraw,
         setTotalWithdraw,
+        yesterdayWithdraw,
+        setYesterdayWithdraw,
+        yesterdayDeposit,
+        setYesterdayDeposit,
       }}
     >
       {children}

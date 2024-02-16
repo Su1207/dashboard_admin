@@ -62,7 +62,6 @@ const Rewards = (props: Props) => {
     });
     props.setRewards(false);
 
-    // props.setOpenClose(false);
   };
 
   return (
