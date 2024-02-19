@@ -87,6 +87,7 @@
 
     @include sm {
       grid-column: span 1;
+      overflow-x: auto;
     }
   }
 }
