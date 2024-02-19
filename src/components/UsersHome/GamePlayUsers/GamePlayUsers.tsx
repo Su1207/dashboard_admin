@@ -1,75 +1,109 @@
+import { useEffect, useState } from "react";
 import "./GameplayUsers.scss";
+import { get, ref } from "firebase/database";
+import { database } from "../../../firebase";
+
+type UsersGameDataType = {
+  phone: string;
+  name: string;
+  markets: string[];
+};
 
 const GamePlayUsers = () => {
+  const [usersGameData, setUsersGameData] = useState<
+    UsersGameDataType[] | null
+  >(null);
+  const [isLoading, setIsLoading] = useState(true);
+
+  const currentDate = new Date();
+  const year = currentDate.getFullYear();
+  // const month = (currentDate.getMonth() + 1).toString().padStart(2, "0");
+  // const day = currentDate.getDate();
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const userRef = ref(database, "USERS TRANSACTION");
+
+        const snapshot = await get(userRef);
+
+        if (snapshot.exists()) {
+          // const promises: Promise<void>[] = [];
+
+          const usersGameArray: UsersGameDataType[] = [];
+
+          snapshot.forEach((usersSnapshot) => {
+            const gameName: string[] = [];
+            let Name: string = "";
+            let phone: string = "";
+
+            const gamesnapshot = usersSnapshot
+              .child("BID")
+              .child("DATE WISE")
+              .child(`${year}`)
+              .child("01")
+              .child("27");
+
+            if (gamesnapshot.exists()) {
+              gamesnapshot.forEach((gameSnapshot: any) => {
+                if (gameSnapshot.exists()) {
+                  const timestampKey = Object.keys(gameSnapshot.val())[0];
+                  const timestamp = gameSnapshot.child(timestampKey).val();
+                  const name = timestamp.NAME;
+                  const marketName = timestamp.MARKET_NAME;
+                  const number = timestamp.UID;
+                  gameName.push(marketName);
+                  Name = name;
+                  phone = number;
+                }
+              });
+
+              usersGameArray.push({
+                phone: phone,
+                name: Name,
+                markets: gameName,
+              });
+            }
+          });
+
+          setUsersGameData(usersGameArray);
+        }
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+    fetchData();
+  }, []);
+
   return (
     <div className="gamePlay_users">
-      <h4>GAMEPLAY USERS</h4>
+      <h4>TODAY GAMEPLAY USERS</h4>
 
-      {true ? (
+      {isLoading ? (
+        <div className="loader">Loading...</div>
+      ) : usersGameData ? (
         <div className="users_list">
-          <div className="user_data">
-            <img src="user.png" alt="" className="user_img_icon" />
-            <div className="user_detail">
-              <div className="users_name">Anand Suryawanshi</div>
-              <div className="user_phone">+919602787267</div>
-            </div>
-          </div>
+          {usersGameData.map((data) => (
+            <div className="users_game_data" key={data.phone}>
+              <div className="user_data">
+                <img src="user.png" alt="" className="user_img_icon" />
+                <div className="user_detail">
+                  <div className="users_name">{data.name}</div>
+                  <div className="user_phone">+91{data.phone}</div>
+                </div>
+              </div>
 
-          <div className="user_data">
-            <img src="user.png" alt="" className="user_img_icon" />
-            <div className="user_detail">
-              <div className="users_name">Suraj maheshwari</div>
-              <div className="user_phone">+919602787267</div>
+              <div className="game_data">
+                <ul className="games-list">
+                  {data.markets.map((game) => (
+                    <li key={game}>{game}</li>
+                  ))}
+                </ul>
+              </div>
             </div>
-          </div>
-
-          <div className="user_data">
-            <img src="user.png" alt="" className="user_img_icon" />
-            <div className="user_detail">
-              <div className="users_name">Suraj Maheshwari</div>
-              <div className="user_phone">+919602787267</div>
-            </div>
-          </div>
-
-          <div className="user_data">
-            <img src="user.png" alt="" className="user_img_icon" />
-            <div className="user_detail">
-              <div className="users_name">Suraj Maheshwari</div>
-              <div className="user_phone">+919602787267</div>
-            </div>
-          </div>
-
-          <div className="user_data">
-            <img src="user.png" alt="" className="user_img_icon" />
-            <div className="user_detail">
-              <div className="users_name">Suraj Maheshwari</div>
-              <div className="user_phone">+919602787267</div>
-            </div>
-          </div>
-
-          <div className="user_data">
-            <img src="user.png" alt="" className="user_img_icon" />
-            <div className="user_detail">
-              <div className="users_name">Suraj Maheshwari</div>
-              <div className="user_phone">+919602787267</div>
-            </div>
-          </div>
-
-          <div className="user_data">
-            <img src="user.png" alt="" className="user_img_icon" />
-            <div className="user_detail">
-              <div className="users_name">Suraj Maheshwari</div>
-              <div className="user_phone">+919602787267</div>
-            </div>
-          </div>
-
-          <div className="user_data">
-            <img src="user.png" alt="" className="user_img_icon" />
-            <div className="user_detail">
-              <div className="users_name">Suraj Maheshwari</div>
-              <div className="user_phone">+919602787267</div>
-            </div>
-          </div>
+          ))}
         </div>
       ) : (
         <div className="noData">

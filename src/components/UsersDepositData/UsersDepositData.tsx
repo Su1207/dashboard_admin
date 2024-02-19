@@ -42,6 +42,8 @@ const UsersDepositData = () => {
   const [selectedPaymentOption, setSelectedPaymentOption] =
     useState<string>(""); // State to track the selected payment option
 
+  const [loading, setLoading] = useState(true);
+
   useEffect(() => {
     const fetchDepositData = async () => {
       const currentYear = selectedDate?.getFullYear();
@@ -161,6 +163,8 @@ const UsersDepositData = () => {
         }
       } catch (error) {
         console.error("Error fetching users data:", error);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -260,9 +264,14 @@ const UsersDepositData = () => {
           </select>
         </div>
       </div>
-      <div>
-        <UserDepositGrid depositData={depositData} />
-      </div>
+
+      {loading ? (
+        <div>Loading...</div>
+      ) : (
+        <div>
+          <UserDepositGrid depositData={depositData} />
+        </div>
+      )}
     </div>
   );
 };

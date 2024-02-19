@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import "./UsersHome.scss";
 import { get, onValue, ref } from "firebase/database";
 import { database } from "../../../firebase";
@@ -102,30 +102,49 @@ const UsersHome: React.FC = () => {
   };
 
   const isDead = (userId: string) => {
-    return !usersTransactionData?.has(userId) ?? true;
+    return !usersTransactionData?.has(userId);
   };
 
-  const blockedUsers = usersData?.filter((user) => isBlocked(user.PHONE));
-
   const today = new Date().setHours(0, 0, 0, 0);
-  const todayRegistered = usersData?.filter((user) => today < user.CREATED_ON);
-
   const liveThreshold = 1 * 60 * 1000; //1 min in milliseconds
   const currentTimestamp = new Date().getTime();
-  const liveUsers = usersData?.filter(
-    (user) => currentTimestamp - user.LAST_SEEN <= liveThreshold
-  );
-
   const oneDayMilliseconds = 24 * 60 * 60 * 1000;
-  const last24 = usersData?.filter(
-    (user) => currentTimestamp - user.LAST_SEEN <= oneDayMilliseconds
+
+  // Calculate the following values outside of the render method
+  const blockedUsers = useMemo(
+    () => usersData?.filter((user) => isBlocked(user.PHONE)),
+    [usersData]
   );
-
-  const zeroBalanceUsers = usersData?.filter((user) => user.AMOUNT === 0);
-
-  const deadUsers = usersData?.filter((user) => isDead(user.PHONE));
-
-  const activeUsers = usersData?.filter((user) => !isDead(user.PHONE));
+  const todayRegistered = useMemo(
+    () => usersData?.filter((user) => today < user.CREATED_ON),
+    [usersData]
+  );
+  const liveUsers = useMemo(
+    () =>
+      usersData?.filter(
+        (user) => currentTimestamp - user.LAST_SEEN <= liveThreshold
+      ),
+    [usersData]
+  );
+  const last24 = useMemo(
+    () =>
+      usersData?.filter(
+        (user) => currentTimestamp - user.LAST_SEEN <= oneDayMilliseconds
+      ),
+    [usersData]
+  );
+  const zeroBalanceUsers = useMemo(
+    () => usersData?.filter((user) => user.AMOUNT === 0),
+    [usersData]
+  );
+  const deadUsers = useMemo(
+    () => usersData?.filter((user) => isDead(user.PHONE)),
+    [usersData]
+  );
+  const activeUsers = useMemo(
+    () => usersData?.filter((user) => !isDead(user.PHONE)),
+    [usersData]
+  );
 
   return (
     <div className="users">

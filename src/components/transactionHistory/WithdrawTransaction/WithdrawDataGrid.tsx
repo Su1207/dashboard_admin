@@ -34,7 +34,7 @@ const WithdrawDataGrid: React.FC<WithdrawDataGridProps> = ({
     {
       field: "particulars",
       headerName: "Particulars",
-      width: 400,
+      width: 350,
       renderCell: (params) => (
         <div className="row_details">
           Withdraw ( {params.row.app} : {params.row.payoutTo} :{" "}
@@ -42,7 +42,23 @@ const WithdrawDataGrid: React.FC<WithdrawDataGridProps> = ({
         </div>
       ),
     },
-    // { field: "uid", headerName: "UID", width: 150 },
+
+    {
+      field: "pending",
+      headerName: "Status",
+      width: 120,
+      renderCell: (params) => (
+        <div className="status">
+          {params.value === "true" ? (
+            <p className="pending pending_click">PENDING</p>
+          ) : params.value === "false" ? (
+            <p className="accepted">ACCEPTED</p>
+          ) : (
+            <p className="rejected">REJECTED</p>
+          )}
+        </div>
+      ),
+    },
 
     {
       field: "previousPoints",
@@ -50,7 +66,7 @@ const WithdrawDataGrid: React.FC<WithdrawDataGridProps> = ({
       width: 150,
       renderCell: (params) => (
         <div className="points">
-          {params.row.isRejected === "true" ? (
+          {params.row.pending === "REJECTED" ? (
             <div>{params.row.total}</div>
           ) : (
             <div>{params.row.amount + params.row.total}</div>
@@ -82,7 +98,7 @@ const WithdrawDataGrid: React.FC<WithdrawDataGridProps> = ({
     // { field: "isRejected", headerName: "Rejected", width: 120 },
   ];
 
-  const getRowId = (row: CustomRow) => `${row.date}${row.uid}`;
+  const getRowId = (row: CustomRow) => `${row.date}-${row.uid}`;
 
   const filterDataByDate = (data: CustomRow[]) => {
     if (!selectDate) {
@@ -156,13 +172,6 @@ const WithdrawDataGrid: React.FC<WithdrawDataGridProps> = ({
           className="dataGrid_withdraw"
           rows={filtereData}
           columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 7,
-              },
-            },
-          }}
           slots={{ toolbar: GridToolbar }}
           slotProps={{
             toolbar: {
@@ -170,7 +179,6 @@ const WithdrawDataGrid: React.FC<WithdrawDataGridProps> = ({
               quickFilterProps: { debounceMs: 500 },
             },
           }}
-          pageSizeOptions={[7]}
           disableRowSelectionOnClick
           disableColumnFilter
           disableColumnSelector

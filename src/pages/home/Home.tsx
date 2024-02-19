@@ -62,7 +62,7 @@ const Home = () => {
         </div>
 
         <div className="box box1">
-          <GamePlayUsers />
+          <UsersHome />
         </div>
 
         {/* <div className="box box7">Box 7</div> */}
@@ -83,8 +83,8 @@ const Home = () => {
           <YesterdayWin />
         </div>
 
-        <div className="box box1">
-          <UsersHome />
+        <div className="box box10">
+          <GamePlayUsers />
         </div>
       </div>
     </UsersDataProvider>

@@ -270,7 +270,6 @@ const DataGridDemo: React.FC<DataGridDemoProps> = ({ totalData }) => {
           payoutTo: transaction.payoutTo || "",
           type: transaction.type || "",
           uid: transaction.uid || "",
-          isRejected: transaction.isRejected || "",
         };
         return withdrawalDetails;
       }

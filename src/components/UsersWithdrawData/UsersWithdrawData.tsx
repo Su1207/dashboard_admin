@@ -19,11 +19,11 @@ interface WithdrawData {
   TYPE: string;
   TOTAL: number;
   UID: string;
-  isRejecetd: string;
 }
 
 export interface UserWithdraw {
   userPhone: string;
+  timestamp: string;
   AMOUNT: number;
   APP: string;
   DATE: string;
@@ -33,7 +33,6 @@ export interface UserWithdraw {
   TYPE: string;
   TOTAL: number;
   UID: string;
-  isRejecetd: string;
 }
 const UsersWithdrawData = () => {
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
@@ -42,6 +41,12 @@ const UsersWithdrawData = () => {
   const [contributingUsers, setContributingUsers] = useState(0);
   const [selectedPaymentOption, setSelectedPaymentOption] =
     useState<string>("");
+
+  const [checked, setChecked] = useState<boolean>(false);
+
+  const handleDataFromChild = (data: boolean) => {
+    setChecked(data);
+  };
 
   useEffect(() => {
     const fetchWithdrawData = async () => {
@@ -70,13 +75,13 @@ const UsersWithdrawData = () => {
 
             const promise = get(withdrawRef).then((withdrawSnapshot) => {
               if (withdrawSnapshot.exists()) {
-                // const depositedData: DepositData[] = [];
-
                 withdrawSnapshot.forEach((timeSnap) => {
+                  const timestamp = timeSnap.key;
                   const timeData = timeSnap.val() as WithdrawData;
                   total_withdraw += timeData.AMOUNT;
                   withdrawDataArray.push({
                     userPhone,
+                    timestamp,
                     ...timeData,
                   });
 
@@ -114,7 +119,7 @@ const UsersWithdrawData = () => {
     };
 
     fetchWithdrawData();
-  }, [selectedDate, selectedPaymentOption]);
+  }, [selectedDate, selectedPaymentOption, checked]);
 
   const handleDateChange = (newDate: Date) => {
     setSelectedDate(newDate);
@@ -196,7 +201,10 @@ const UsersWithdrawData = () => {
       </div>
       <div></div>
       <div>
-        <UsersWithdrawGrid withdrawData={withdrawData} />
+        <UsersWithdrawGrid
+          withdrawData={withdrawData}
+          onDataFromChild={handleDataFromChild}
+        />
       </div>
     </div>
   );

@@ -1,4 +1,5 @@
 .gamePlay_users {
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: 1.2rem;
@@ -8,35 +9,70 @@
     display: flex;
     flex-direction: column;
     align-items: flex-start;
-    gap: 0.8rem;
+    gap: 1rem;
     max-height: 250px;
+    width: 100%;
     overflow-y: scroll;
 
-    .user_data {
+    .users_game_data {
+      width: 100%;
       display: flex;
       align-items: center;
-      justify-content: flex-start;
-      gap: 15px;
+      gap: 2rem;
 
-      .user_img_icon {
-        height: 25px;
-        width: 25px;
-      }
-
-      .user_detail {
+      .game_data {
+        font-size: 0.8rem;
         display: flex;
         flex-direction: column;
-        align-items: flex-start;
-        gap: 4px;
 
-        .users_name {
-          font-size: 0.8rem;
-          text-transform: capitalize;
+        .games-list {
+          display: flex;
+          flex-wrap: wrap;
+          gap: 5px;
+          list-style-type: none;
+          padding: 0;
+
+          li {
+            font-size: 0.65rem;
+            // border: 1px solid #f0f0f0;
+            background: linear-gradient(
+              to right,
+              rgb(19, 19, 237),
+              rgb(1, 1, 132)
+            );
+
+            padding: 3px 5px;
+            border-radius: 5px;
+          }
+        }
+      }
+
+      .user_data {
+        display: flex;
+        align-items: center;
+        justify-content: flex-start;
+        gap: 15px;
+
+        .user_img_icon {
+          height: 25px;
+          width: 25px;
         }
 
-        .user_phone {
-          font-size: 0.6rem;
-          font-weight: 400;
+        .user_detail {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          gap: 4px;
+
+          .users_name {
+            font-size: 0.8rem;
+            text-transform: capitalize;
+          }
+
+          .user_phone {
+            font-size: 0.6rem;
+            font-weight: 400;
+          }
         }
       }
     }

@@ -1,16 +1,28 @@
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { UserWithdraw } from "./UsersWithdrawData";
 import "./UsersWithdrawData.scss";
+import { ClickPosition } from "../GamesMarket/GamesDetails/GamesDataGrid";
+import { useState } from "react";
+import EditWithdrawStatus from "../transactionHistory/WithdrawTransaction/EditWithdrawStatus/EditWithdrawStatus";
 
 interface withdrawDataGridProps {
   withdrawData: CustomRow[] | null;
+  onDataFromChild: (data: boolean) => void;
 }
 
 type CustomRow = UserWithdraw;
 
 const UsersWithdrawGrid: React.FC<withdrawDataGridProps> = ({
   withdrawData,
+  onDataFromChild,
 }) => {
+  const [phone, setPhone] = useState("");
+  const [date, setDate] = useState("");
+  const [pending, setPending] = useState(false);
+  const [clickPosition, setClickPosition] = useState<ClickPosition | null>(
+    null
+  );
+
   const columns: GridColDef[] = [
     {
       field: "DATE",
@@ -39,7 +51,7 @@ const UsersWithdrawGrid: React.FC<withdrawDataGridProps> = ({
     {
       field: "APP",
       headerName: "App",
-      width: 120,
+      width: 100,
     },
     {
       field: "PAYOUT_TO",
@@ -49,7 +61,30 @@ const UsersWithdrawGrid: React.FC<withdrawDataGridProps> = ({
     {
       field: "TYPE",
       headerName: "Type",
+      width: 110,
+    },
+    {
+      field: "PENDING",
+      headerName: "Status",
       width: 120,
+      renderCell: (params) => (
+        <div className="status">
+          {params.value === "true" ? (
+            <p
+              className="pending pending_click"
+              onClick={(event) =>
+                handlePending(params.row.timestamp, params.row.userPhone, event)
+              }
+            >
+              PENDING
+            </p>
+          ) : params.value === "false" ? (
+            <p className="accepted">ACCEPTED</p>
+          ) : (
+            <p className="rejected">REJECTED</p>
+          )}
+        </div>
+      ),
     },
     {
       field: "previousPoints",
@@ -63,7 +98,7 @@ const UsersWithdrawGrid: React.FC<withdrawDataGridProps> = ({
     },
     {
       field: "AMOUNT",
-      headerName: "Wihthdraw",
+      headerName: "Withdraw",
       width: 120,
       renderCell: (params) => (
         <div>
@@ -83,24 +118,40 @@ const UsersWithdrawGrid: React.FC<withdrawDataGridProps> = ({
     },
   ];
 
+  const handlePending = (
+    timestamp: string,
+    phone: string,
+    event: React.MouseEvent
+  ) => {
+    const rect = event.currentTarget.getBoundingClientRect();
+    const x = event.clientX - rect.left + window.scrollX; // Adjust for horizontal scroll
+    const y = event.clientY - rect.top + window.scrollY;
+    setPhone(phone);
+    setDate(timestamp);
+    setPending(!pending);
+    setClickPosition({ x, y });
+    onDataFromChild(pending);
+  };
+
   const getRowId = (row: CustomRow) => {
     return `${row.DATE}${row.userPhone}`;
   };
 
   return (
     <div className="dataTable_UsersWithdraw">
+      {pending && (
+        <EditWithdrawStatus
+          setPending={setPending}
+          phone={phone}
+          date={date}
+          clickPosition={clickPosition}
+        />
+      )}
       {withdrawData && withdrawData.length > 0 ? (
         <DataGrid
           className="dataGrid_UsersWithdraw"
           rows={withdrawData}
           columns={columns}
-          initialState={{
-            pagination: {
-              paginationModel: {
-                pageSize: 7,
-              },
-            },
-          }}
           slots={{ toolbar: GridToolbar }}
           slotProps={{
             toolbar: {
@@ -111,7 +162,6 @@ const UsersWithdrawGrid: React.FC<withdrawDataGridProps> = ({
               },
             },
           }}
-          pageSizeOptions={[7]}
           disableRowSelectionOnClick
           disableColumnFilter
           disableColumnSelector
