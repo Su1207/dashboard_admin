@@ -43,6 +43,8 @@ const Users: React.FC = () => {
     null
   );
 
+  const [loading, setloading] = useState(true);
+
   const [usersTransactionData, setUsersTransactionData] =
     useState<UsersTransactionData | null>(null);
 
@@ -90,28 +92,34 @@ const Users: React.FC = () => {
   };
 
   useEffect(() => {
-    const usersRef = ref(database, "USERS");
+    try {
+      const usersRef = ref(database, "USERS");
 
-    // Fetch data once
-    get(usersRef).then((snapshot) => {
-      if (snapshot.exists()) {
-        setUsersData(snapshot.val());
-      } else {
-        console.log("No data available");
-      }
-    });
+      // Fetch data once
+      get(usersRef).then((snapshot) => {
+        if (snapshot.exists()) {
+          setUsersData(snapshot.val());
+        } else {
+          console.log("No data available");
+        }
+      });
 
-    // Alternatively, fetch data in real-time
-    const unsubscribe = onValue(usersRef, (snapshot) => {
-      if (snapshot.exists()) {
-        setUsersData(snapshot.val());
-      } else {
-        console.log("No data available");
-      }
-    });
+      // Alternatively, fetch data in real-time
+      const unsubscribe = onValue(usersRef, (snapshot) => {
+        if (snapshot.exists()) {
+          setUsersData(snapshot.val());
+        } else {
+          console.log("No data available");
+        }
+      });
 
-    // Clean up the listener when the component unmounts
-    return () => unsubscribe();
+      // Clean up the listener when the component unmounts
+      return () => unsubscribe();
+    } catch (err) {
+      console.log(err);
+    } finally {
+      setloading(false);
+    }
   }, []); // Run effect only once on component mount
 
   const handleClick = () => {
@@ -251,10 +259,14 @@ const Users: React.FC = () => {
           )}
 
           {/* Display the UserList component with the usersData and filterOption */}
-          <UserList
-            usersData={getFilteredUsers()}
-            filterOption={filterOption}
-          />
+          {loading ? (
+            <div>Loading...</div>
+          ) : (
+            <UserList
+              usersData={getFilteredUsers()}
+              filterOption={filterOption}
+            />
+          )}
         </div>
       ) : (
         <p>No access to this data</p>

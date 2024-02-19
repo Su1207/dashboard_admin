@@ -2,6 +2,7 @@ import { useEffect } from "react";
 import { useUsersDataContext } from "../../UserContext";
 import { onValue, ref } from "firebase/database";
 import { database } from "../../../../firebase";
+import { useNavigate } from "react-router-dom";
 
 const TodayWithdraw = () => {
   const { totalWithdraw, setTotalWithdraw } = useUsersDataContext();
@@ -38,9 +39,15 @@ const TodayWithdraw = () => {
     } catch (err) {
       console.log(err);
     }
-  });
+  }, []);
+
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate("/withdraw");
+  };
+
   return (
-    <div className="total_balance_container">
+    <div className="total_balance_container" onClick={handleClick}>
       <h4 className="total_balance_title">TODAY'S WITHDRAW</h4>
       <div className="total_balance ">
         <div className="amount">&#8377; {totalWithdraw}</div>

@@ -19,6 +19,8 @@ import YesterdayWin from "../../components/UsersHome/TransactionTotal/YesterdayW
 import YesterdayProfitLoss from "../../components/UsersHome/ProfitLoss/YesterdayProfitLoss/YesterdayProfitLoss";
 import UsersHome from "../../components/UsersHome/UsersTypeCount/UsersHome";
 import GamePlayUsers from "../../components/UsersHome/GamePlayUsers/GamePlayUsers";
+import WithdrawReq from "../../components/UsersHome/WithdrawReq/WithdrawReq";
+import DepositReq from "../../components/UsersHome/DepositReq/DepositReq";
 
 const Home = () => {
   const { isAuthenticated } = useAuth();
@@ -85,6 +87,14 @@ const Home = () => {
 
         <div className="box box10">
           <GamePlayUsers />
+        </div>
+
+        <div className="box box9">
+          <DepositReq />
+        </div>
+
+        <div className="box box9">
+          <WithdrawReq />
         </div>
       </div>
     </UsersDataProvider>

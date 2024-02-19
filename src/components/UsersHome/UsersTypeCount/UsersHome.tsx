@@ -102,6 +102,7 @@ const UsersHome: React.FC = () => {
   };
 
   const isDead = (userId: string) => {
+    console.log(usersTransactionData?.has(userId));
     return !usersTransactionData?.has(userId);
   };
 

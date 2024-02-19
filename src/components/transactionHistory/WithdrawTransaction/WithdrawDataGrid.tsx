@@ -49,9 +49,9 @@ const WithdrawDataGrid: React.FC<WithdrawDataGridProps> = ({
       width: 120,
       renderCell: (params) => (
         <div className="status">
-          {params.value === "true" ? (
+          {params.row.pending === "true" ? (
             <p className="pending pending_click">PENDING</p>
-          ) : params.value === "false" ? (
+          ) : params.row.pending === "false" ? (
             <p className="accepted">ACCEPTED</p>
           ) : (
             <p className="rejected">REJECTED</p>

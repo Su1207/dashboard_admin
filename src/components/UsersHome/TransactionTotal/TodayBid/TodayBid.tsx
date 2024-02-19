@@ -1,6 +1,7 @@
 import { get, ref } from "firebase/database";
 import { useEffect, useState } from "react";
 import { database } from "../../../../firebase";
+import { useNavigate } from "react-router-dom";
 
 const TodayBid = () => {
   const [totalBid, setTotalBid] = useState(0);
@@ -55,8 +56,13 @@ const TodayBid = () => {
     fetchBidData();
   }, []);
 
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate("/bid");
+  };
+
   return (
-    <div className="total_balance_container">
+    <div className="total_balance_container" onClick={handleClick}>
       <h4 className="total_balance_title">TODAY'S BID</h4>
       <div className="total_balance ">
         <div className="amount">&#8377; {totalBid}</div>

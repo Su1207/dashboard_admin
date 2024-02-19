@@ -1,4 +1,4 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import DataTable from "./DataTable";
 
 type User = {
@@ -20,6 +20,8 @@ interface UserListProps {
 }
 
 const UserList: React.FC<UserListProps> = ({ usersData, filterOption }) => {
+  const [isLoading, setIsLoading] = useState<boolean>(true);
+
   // Sorting function based on last_seen timestamp in descending order
   const sortByLastSeen = (users: User[]) => {
     return users.sort((a, b) => b.LAST_SEEN - a.LAST_SEEN);
@@ -56,8 +58,20 @@ const UserList: React.FC<UserListProps> = ({ usersData, filterOption }) => {
     }
   }, [filterOption, usersData]);
 
+  useEffect(() => {
+    if (usersData) {
+      setIsLoading(false);
+    }
+  }, [usersData]);
+
   return (
-    <div>{sortedUsers !== null && <DataTable usersData={sortedUsers} />}</div>
+    <div>
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        sortedUsers && <DataTable usersData={sortedUsers} />
+      )}
+    </div>
   );
 };
 

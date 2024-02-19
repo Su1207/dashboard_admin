@@ -1,6 +1,7 @@
 import { onValue, ref } from "firebase/database";
 import { useEffect, useState } from "react";
 import { database } from "../../../../firebase";
+import { useNavigate } from "react-router-dom";
 
 const TodayWin = () => {
   const [totalWin, setTotalWin] = useState(0);
@@ -41,8 +42,13 @@ const TodayWin = () => {
     }
   }, []);
 
+  const navigate = useNavigate();
+  const handleClick = () => {
+    navigate("/win");
+  };
+
   return (
-    <div className="total_balance_container">
+    <div className="total_balance_container" onClick={handleClick}>
       <h4 className="total_balance_title">TODAY'S WIN</h4>
       <div className="total_balance ">
         <div className="amount">&#8377; {totalWin}</div>

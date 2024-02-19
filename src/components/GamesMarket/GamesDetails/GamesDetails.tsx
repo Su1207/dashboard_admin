@@ -30,6 +30,7 @@ const formatResult = (open: string, mid: string, close: string): string => {
 
 const GamesDetails = () => {
   const [gameData, setGameData] = useState<GameData[] | null>(null);
+  const [isLoading, setIsLoading] = useState<boolean>(true);
 
   const currentDate = new Date();
   const year = currentDate.getFullYear().toString();
@@ -81,6 +82,8 @@ const GamesDetails = () => {
         }
       } catch (error) {
         console.error("Error fetching game data:", error);
+      } finally {
+        setIsLoading(false);
       }
     };
 
@@ -98,8 +101,15 @@ const GamesDetails = () => {
     };
   }, [day]);
 
-
-  return <div>{gameData && <GamesDataGrid gameData={gameData} />}</div>;
+  return (
+    <div>
+      {isLoading ? (
+        <p>Loading...</p>
+      ) : (
+        gameData && <GamesDataGrid gameData={gameData} />
+      )}
+    </div>
+  );
 };
 
 export default GamesDetails;

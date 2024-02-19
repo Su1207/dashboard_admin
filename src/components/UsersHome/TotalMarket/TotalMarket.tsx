@@ -1,6 +1,7 @@
 import { get, onValue, ref } from "firebase/database";
 import { useEffect, useState } from "react";
 import { database } from "../../../firebase";
+import { useNavigate } from "react-router-dom";
 
 const TotalMarket = () => {
   const [market, setMarket] = useState(0);
@@ -26,8 +27,14 @@ const TotalMarket = () => {
     }
   }, []);
 
+  const navigate = useNavigate();
+
+  const handleClick = () => {
+    navigate("/market");
+  };
+
   return (
-    <div className="total_balance_container">
+    <div className="total_balance_container" onClick={handleClick}>
       <h4 className="total_balance_title">TOTAL MARKET</h4>
       <div className="total_balance ">
         <div className="amount totalUsers">{market}</div>
