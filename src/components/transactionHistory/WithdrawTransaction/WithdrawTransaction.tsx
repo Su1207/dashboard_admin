@@ -49,7 +49,6 @@ const WithdrawTransaction: React.FC<{ userId: number }> = ({ userId }) => {
           type: withdrawalNode.TYPE,
           total: withdrawalNode.TOTAL,
           uid: withdrawalNode.UID,
-          isRejected: withdrawalNode.isRejected,
         };
 
         withdrawalDetailsArray.push(withdrawalDetails);
