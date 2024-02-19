@@ -84,5 +84,9 @@
     grid-row: span 2;
     border: 2px solid #7b7b7b;
     // width: fit-content;
+
+    @include sm {
+      grid-column: span 1;
+    }
   }
 }
