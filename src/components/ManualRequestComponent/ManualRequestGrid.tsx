@@ -11,10 +11,21 @@ type ManualDataGridProps = {
   manualData: ManualDataTye[] | null;
 };
 
+export type transactionData = {
+  phone: string;
+  DATE: string;
+  amount: number;
+  total: number;
+  paymentApp: string;
+  paymentBy: string;
+  paymentTo: string;
+};
+
 const ManualRequestGrid: React.FC<ManualDataGridProps> = ({ manualData }) => {
   const [editStatus, setEditStatus] = useState(false);
   const [timeStamp, setTimeStamp] = useState("");
   const [status, setStatus] = useState("");
+  const [data, setData] = useState<transactionData | null>(null);
 
   const columns: GridColDef[] = [
     {
@@ -98,6 +109,7 @@ const ManualRequestGrid: React.FC<ManualDataGridProps> = ({ manualData }) => {
                   handleApprove(
                     params.row.id,
                     params.row.Phone,
+                    params.row.DATE,
                     params.row.AMOUNT,
                     params.row.TOTAL,
                     params.row.PAYMENT_APP,
@@ -116,7 +128,19 @@ const ManualRequestGrid: React.FC<ManualDataGridProps> = ({ manualData }) => {
             <img
               src="view.svg"
               alt=""
-              onClick={() => handleEdit(params.row.id, params.row.ACCEPT)}
+              onClick={() =>
+                handleEdit(
+                  params.row.id,
+                  params.row.ACCEPT,
+                  params.row.Phone,
+                  params.row.DATE,
+                  params.row.AMOUNT,
+                  params.row.TOTAL,
+                  params.row.PAYMENT_APP,
+                  params.row.PAYMENT_BY,
+                  params.row.PAYMENT_TO
+                )
+              }
             />
           )}
         </div>
@@ -124,15 +148,35 @@ const ManualRequestGrid: React.FC<ManualDataGridProps> = ({ manualData }) => {
     },
   ];
 
-  const handleEdit = (timestamp: string, currentStatus: string) => {
+  const handleEdit = (
+    timestamp: string,
+    currentStatus: string,
+    phone: string,
+    DATE: string,
+    amount: number,
+    total: number,
+    paymentApp: string,
+    paymentBy: string,
+    paymentTo: string
+  ) => {
     setTimeStamp(timestamp);
     setEditStatus(!editStatus);
     setStatus(currentStatus);
+    setData({
+      phone,
+      DATE,
+      amount,
+      total,
+      paymentApp,
+      paymentBy,
+      paymentTo,
+    });
   };
 
   const handleApprove = async (
     timestamp: string,
     phone: string,
+    DATE: string,
     amount: number,
     total: number,
     paymentApp: string,
@@ -185,7 +229,7 @@ const ManualRequestGrid: React.FC<ManualDataGridProps> = ({ manualData }) => {
 
     const setData = {
       AMOUNT: amount,
-      DATE: date,
+      DATE: DATE,
       NAME: `${phone.split("-")[1]}`,
       PAYMENT_APP: paymentApp,
       PAYMENT_BY: paymentBy,
@@ -252,6 +296,7 @@ const ManualRequestGrid: React.FC<ManualDataGridProps> = ({ manualData }) => {
           timeStamp={timeStamp}
           setEditStatus={setEditStatus}
           accept={status}
+          data={data}
         />
       )}
       {rows && rows.length > 0 ? (

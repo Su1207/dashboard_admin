@@ -54,14 +54,13 @@ const Rewards = (props: Props) => {
     );
 
     get(resultRef).then((snapshot) => {
-      if (snapshot.exists() && snapshot.val() !== "♦♦♦") {
+      if (snapshot.exists() && snapshot.val() !== "✦✦✦") {
         navigate(`/rewards/${props.gameId}___${props.gameName}___CLOSE`);
       } else {
         toast.error("Close result is not declared yet");
       }
     });
     props.setRewards(false);
-
   };
 
   return (

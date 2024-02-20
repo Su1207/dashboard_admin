@@ -37,6 +37,8 @@ import { useEffect } from "react";
 import { get, ref } from "firebase/database";
 import { database } from "./firebase";
 import AdminRole from "./pages/AdminUsers/AdminRoles/AdminRole";
+import GameChart from "./pages/GameChart/GameChart";
+import GameResult from "./pages/GameChart/GameResult";
 
 const Layout = () => {
   const { isAuthenticated } = useAuth();
@@ -189,6 +191,14 @@ const router = createBrowserRouter([
       {
         path: "/subAdmin/:id",
         element: <AdminRole />,
+      },
+      {
+        path: "/gameChart",
+        element: <GameChart />,
+      },
+      {
+        path: "/gameChart/:id",
+        element: <GameResult />,
       },
     ],
   },

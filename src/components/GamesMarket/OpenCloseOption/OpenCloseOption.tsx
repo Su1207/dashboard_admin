@@ -94,13 +94,13 @@ const OpenCloseOption: React.FC<OpenCloseProps> = ({
         await set(resultRef, {
           OPEN: openFormResult,
           MID: midResult,
-          CLOSE: "♦♦♦",
+          CLOSE: "✦✦✦",
         });
 
         await set(totalRef, {
           OPEN: openFormResult,
           MID: midResult,
-          CLOSE: "♦♦♦",
+          CLOSE: "✦✦✦",
         });
 
         setOpenClose(false);

@@ -1,14 +1,16 @@
 import { useState } from "react";
 import "./ManualRequests.scss";
 import ClearIcon from "@mui/icons-material/Clear";
-import { ref, update } from "firebase/database";
+import { ref, remove, set, update } from "firebase/database";
 import { database } from "../../firebase";
 import { toast } from "react-toastify";
+import { transactionData } from "./ManualRequestGrid";
 
 type Props = {
   timeStamp: string;
   setEditStatus: React.Dispatch<React.SetStateAction<boolean>>;
   accept: string;
+  data: transactionData | null;
 };
 const EditStatusReq = (props: Props) => {
   const [selectedStatus, setSelectedStatus] = useState(`${props.accept}`);
@@ -29,6 +31,30 @@ const EditStatusReq = (props: Props) => {
       `MANUAL_REQUEST/TOTAL/${props.timeStamp}`
     );
 
+    const depositRef = ref(
+      database,
+      `USERS TRANSACTION/${
+        props.data?.phone.split("-")[0]
+      }/DEPOSIT/DATE WISE/${year}/${month}/${date}/${props.timeStamp}`
+    );
+
+    const totalRef = ref(
+      database,
+      `USERS TRANSACTION/${props.data?.phone.split("-")[0]}/DEPOSIT/TOTAL/${
+        props.timeStamp
+      }`
+    );
+
+    const totalTransactionDateWiseRef = ref(
+      database,
+      `TOTAL TRANSACTION/DEPOSIT/DATE WISE/${year}/${month}/${date}/${props.timeStamp}`
+    );
+
+    const totalTransactionTotalRef = ref(
+      database,
+      `TOTAL TRANSACTION/DEPOSIT/TOTAL/${props.timeStamp}`
+    );
+
     if (selectedStatus === props.accept) {
       return;
     } else if (selectedStatus === "reject" && props.accept !== selectedStatus) {
@@ -36,10 +62,26 @@ const EditStatusReq = (props: Props) => {
         ACCEPT: selectedStatus,
         MoneyAdded: false,
       });
+
+      if (
+        depositRef &&
+        totalRef &&
+        totalTransactionDateWiseRef &&
+        totalTransactionTotalRef
+      ) {
+        await remove(depositRef).then(() => {
+          remove(totalRef);
+          remove(totalTransactionDateWiseRef);
+          remove(totalTransactionTotalRef);
+        });
+      }
+
       await update(totalReqRef, {
         ACCEPT: selectedStatus,
         MoneyAdded: false,
       });
+
+      toast.success("Manual request rejected");
     } else if (selectedStatus === "true" && props.accept !== selectedStatus) {
       await update(reqRef, {
         ACCEPT: selectedStatus,
@@ -49,17 +91,51 @@ const EditStatusReq = (props: Props) => {
         ACCEPT: selectedStatus,
         MoneyAdded: true,
       });
+
+      const setData = {
+        AMOUNT: props.data?.amount,
+        DATE: props.data?.DATE,
+        NAME: `${props.data?.phone.split("-")[1]}`,
+        PAYMENT_APP: props.data?.paymentApp,
+        PAYMENT_BY: props.data?.paymentBy,
+        PAYMENT_TO: props.data?.paymentTo,
+        TOTAL: props.data?.total,
+        UID: `${props.data?.phone.split("-")[0]}`,
+      };
+
+      await set(depositRef, setData);
+
+      await set(totalRef, setData);
+
+      await set(totalTransactionDateWiseRef, setData);
+
+      await set(totalTransactionTotalRef, setData);
+
+      toast.success("Payment Accepted successfully");
     } else {
       await update(reqRef, {
         ACCEPT: selectedStatus,
-        MoneyAdded: true,
+        MoneyAdded: false,
       });
       await update(totalReqRef, {
         ACCEPT: selectedStatus,
-        MoneyAdded: true,
+        MoneyAdded: false,
       });
+
+      if (
+        depositRef &&
+        totalRef &&
+        totalTransactionDateWiseRef &&
+        totalTransactionTotalRef
+      ) {
+        await remove(depositRef).then(() => {
+          remove(totalRef);
+          remove(totalTransactionDateWiseRef);
+          remove(totalTransactionTotalRef);
+        });
+      }
+      toast.success("Status updated successfully");
     }
-    toast.success("Status updated successfully");
     props.setEditStatus(false);
   };
 
