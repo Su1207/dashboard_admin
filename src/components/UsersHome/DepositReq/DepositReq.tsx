@@ -18,7 +18,7 @@ const DepositReq = () => {
         if (snapshot.exists()) {
           snapshot.forEach((timesnap: any) => {
             if (timesnap.key >= previous) {
-              if (timesnap.val().PENDING === "true") {
+              if (timesnap.val().ACCEPT === "false") {
                 count++;
               }
             }
