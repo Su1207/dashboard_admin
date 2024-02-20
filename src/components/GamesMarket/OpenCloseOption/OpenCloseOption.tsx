@@ -89,7 +89,7 @@ const OpenCloseOption: React.FC<OpenCloseProps> = ({
             parseInt(openFormResult[1]) +
             parseInt(openFormResult[2])) %
           10
-        }♦`;
+        }✦`;
 
         await set(resultRef, {
           OPEN: openFormResult,
