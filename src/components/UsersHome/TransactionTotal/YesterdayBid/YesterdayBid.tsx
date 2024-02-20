@@ -36,7 +36,7 @@ const YesterdayBid = () => {
               if (bidSnapshot.exists()) {
                 bidSnapshot.forEach((gameKey) => {
                   gameKey.forEach((timeSnap) => {
-                    const amount = timeSnap.child("WIN_POINTS").val() as number;
+                    const amount = timeSnap.child("POINTS").val() as number;
 
                     totalBidAmount += amount;
                   });

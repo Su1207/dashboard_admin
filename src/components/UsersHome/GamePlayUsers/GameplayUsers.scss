@@ -20,8 +20,8 @@
       width: 100%;
 
       @include sm {
-        min-width: 350px;
-        overflow-x: scroll;
+        min-width: 480px;
+        // overflow-x: scroll;
       }
       .bottom_border {
         width: 100%;

@@ -29,31 +29,17 @@ const UsersHome: React.FC = () => {
     null
   );
 
+  const [isLoadingUsersTransaction, setIsLoadingUsersTransaction] =
+    useState(true);
+
+  const [loadingUsersData, setLoadingUsersData] = useState(true);
+
   const [usersTransactionData, setUsersTransactionData] =
     useState<UsersTransactionData | null>(null);
 
   useEffect(() => {
     const usersListRef = ref(database, "USERS LIST");
     const transactionRef = ref(database, "USERS TRANSACTION");
-
-    get(usersListRef).then((snapshot) => {
-      if (snapshot.exists()) {
-        setUsersListData(snapshot.val());
-        console.log(snapshot.val());
-      } else {
-        console.log("No data available for USERS LIST");
-      }
-    });
-
-    get(transactionRef).then((snapshot) => {
-      if (snapshot.exists()) {
-        const phoneNumbers = Object.keys(snapshot.val());
-        const transactionData = new Set(phoneNumbers);
-        setUsersTransactionData(transactionData);
-      } else {
-        console.log("No data available for USERS");
-      }
-    });
 
     const unsubscribe = onValue(usersListRef, (snapshot) => {
       if (snapshot.exists()) {
@@ -64,7 +50,21 @@ const UsersHome: React.FC = () => {
       }
     });
 
-    return () => unsubscribe();
+    const unsub = onValue(transactionRef, (snapshot) => {
+      if (snapshot.exists()) {
+        const phoneNumbers = Object.keys(snapshot.val());
+        const transactionData = new Set(phoneNumbers);
+        setUsersTransactionData(transactionData);
+      } else {
+        console.log("No data available for USERS");
+      }
+
+      setIsLoadingUsersTransaction(false);
+    });
+
+    return () => {
+      unsubscribe(), unsub();
+    };
   }, []);
 
   useEffect(() => {
@@ -79,19 +79,21 @@ const UsersHome: React.FC = () => {
         } else {
           console.log("No data available for USERS");
         }
+
+        const unsubscribe = onValue(usersef, (snapshot) => {
+          if (snapshot.exists()) {
+            setUsersData(Object.values(snapshot.val()));
+          } else {
+            console.log("No data available for USERS LIST");
+          }
+        });
+
+        return () => unsubscribe();
       } catch (error) {
         console.error("Error fetching data:", error);
+      } finally {
+        setLoadingUsersData(false);
       }
-
-      const unsubscribe = onValue(usersef, (snapshot) => {
-        if (snapshot.exists()) {
-          setUsersData(Object.values(snapshot.val()));
-        } else {
-          console.log("No data available for USERS LIST");
-        }
-      });
-
-      return () => unsubscribe();
     };
 
     fetchUserData();
@@ -102,8 +104,10 @@ const UsersHome: React.FC = () => {
   };
 
   const isDead = (userId: string) => {
-    console.log(usersTransactionData?.has(userId));
-    return !usersTransactionData?.has(userId);
+    // console.log(usersTransactionData?.has(userId));
+    if (!isLoadingUsersTransaction) {
+      return !usersTransactionData?.has(userId);
+    }
   };
 
   const today = new Date().setHours(0, 0, 0, 0);
@@ -150,36 +154,41 @@ const UsersHome: React.FC = () => {
   return (
     <div className="users">
       <h3 className="user_title">USERS</h3>
-      <div className="different_users_details">
-        <div className="users_number">
-          <div className="users_number_type">Active Users </div>
-          <div> {activeUsers?.length}</div>
+      {!isLoadingUsersTransaction && !loadingUsersData ? (
+        <div className="different_users_details">
+          <div className="users_number">
+            <div className="users_number_type">Active Users </div>
+            <div> {activeUsers?.length}</div>
+          </div>
+          <div className="users_number">
+            <div className="users_number_type">Blocked Users </div>
+            <div> {blockedUsers?.length}</div>
+          </div>
+          <div className="users_number">
+            <div className="users_number_type">Today Registered</div>
+            <div> {todayRegistered?.length}</div>
+          </div>
+          <div className="users_number">
+            <div className="users_number_type">Live Users</div>
+            <div> {liveUsers?.length}</div>
+          </div>
+          <div className="users_number">
+            <div className="users_number_type">24 hours Live</div>
+            <div> {last24?.length}</div>
+          </div>
+          <div className="users_number">
+            <div className="users_number_type">0 Balance Users</div>
+            <div> {zeroBalanceUsers?.length}</div>
+          </div>
+          <div className="users_number">
+            <div className="users_number_type">Dead Users</div>
+            <div> {deadUsers?.length}</div>
+          </div>
         </div>
-        <div className="users_number">
-          <div className="users_number_type">Blocked Users </div>
-          <div> {blockedUsers?.length}</div>
-        </div>
-        <div className="users_number">
-          <div className="users_number_type">Today Registered</div>
-          <div> {todayRegistered?.length}</div>
-        </div>
-        <div className="users_number">
-          <div className="users_number_type">Live Users</div>
-          <div> {liveUsers?.length}</div>
-        </div>
-        <div className="users_number">
-          <div className="users_number_type">24 hours Live</div>
-          <div> {last24?.length}</div>
-        </div>
-        <div className="users_number">
-          <div className="users_number_type">0 Balance Users</div>
-          <div> {zeroBalanceUsers?.length}</div>
-        </div>
-        <div className="users_number">
-          <div className="users_number_type">Dead Users</div>
-          <div> {deadUsers?.length}</div>
-        </div>
-      </div>
+      ) : (
+        <p>Loading...</p>
+      )}
+
       <div className="users_list">
         <div>
           <Link to="/users" className="all_users">
