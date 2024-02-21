@@ -80,9 +80,9 @@ const OpenCloseOption: React.FC<OpenCloseProps> = ({
           `RESULTS/${gameId}/${year}/${month}/${date}`
         );
 
-        const timestamp = Date.now();
+        // const timestamp = Date.now();
 
-        const totalRef = ref(database, `GAME CHART/${gameId}/${timestamp}`);
+        // const totalRef = ref(database, `GAME CHART/${gameId}/${timestamp}`);
 
         const midResult = `${
           (parseInt(openFormResult[0]) +
@@ -92,12 +92,6 @@ const OpenCloseOption: React.FC<OpenCloseProps> = ({
         }✦`;
 
         await set(resultRef, {
-          OPEN: openFormResult,
-          MID: midResult,
-          CLOSE: "✦✦✦",
-        });
-
-        await set(totalRef, {
           OPEN: openFormResult,
           MID: midResult,
           CLOSE: "✦✦✦",
@@ -144,7 +138,8 @@ const OpenCloseOption: React.FC<OpenCloseProps> = ({
               CLOSE: closeFormResult,
             });
 
-            await update(totalRef, {
+            await set(totalRef, {
+              OPEN: open,
               MID: midResult,
               CLOSE: closeFormResult,
             });

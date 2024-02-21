@@ -3,11 +3,15 @@ import "./GameplayUsers.scss";
 import { get, ref } from "firebase/database";
 import { database } from "../../../firebase";
 
+type MarketType = {
+  marketName: string;
+  games: Set<string>;
+};
+
 type UsersGameDataType = {
   phone: string;
   name: string;
-  markets: string[];
-  games: Set<string>;
+  markets: MarketType[];
 };
 
 const GamePlayUsers = () => {
@@ -34,32 +38,37 @@ const GamePlayUsers = () => {
           const usersGameArray: UsersGameDataType[] | null = [];
 
           snapshot.forEach((usersSnapshot) => {
-            const gameName: string[] = [];
+            const gameName: MarketType[] = [];
             let Name: string = "";
             let phone: string = "";
-            const games: Set<string> = new Set();
 
             const gamesnapshot = usersSnapshot
               .child("BID")
               .child("DATE WISE")
               .child(`${year}`)
               .child(`${month}`)
-              .child(`${day}`);
+              .child(`21`);
 
             if (gamesnapshot.exists()) {
               gamesnapshot.forEach((gameSnapshot: any) => {
+                const games: Set<string> = new Set();
+
                 if (gameSnapshot.exists()) {
                   const timestampKey = Object.keys(gameSnapshot.val())[0];
                   const timestamp = gameSnapshot.child(timestampKey).val();
                   const name = timestamp.NAME;
                   const marketName = timestamp.MARKET_NAME;
                   const number = timestamp.UID;
-                  gameName.push(marketName);
                   Name = name;
                   phone = number;
 
                   gameSnapshot.forEach((timesnap: any) => {
                     games.add(timesnap.val().GAME);
+                  });
+
+                  gameName.push({
+                    marketName,
+                    games,
                   });
                 }
               });
@@ -68,7 +77,6 @@ const GamePlayUsers = () => {
                 phone: phone,
                 name: Name,
                 markets: gameName,
-                games: games,
               });
             }
           });
@@ -111,16 +119,17 @@ const GamePlayUsers = () => {
 
                     <div className="game_data">
                       <ul className="games-list">
-                        {data.markets.map((game) => (
-                          <li key={game}>{game}</li>
-                        ))}
-                      </ul>
-                    </div>
-
-                    <div className="game_data">
-                      <ul className="games-list">
-                        {[...data.games].map((game) => (
-                          <li key={game}>{game}</li>
+                        {data.markets.map((market) => (
+                          <li key={market.marketName}>
+                            {market.marketName}
+                            <div className="games_array">
+                              {Array.from(market.games).map((game) => (
+                                <div className="game_name" key={game}>
+                                  {game}
+                                </div>
+                              ))}
+                            </div>
+                          </li>
                         ))}
                       </ul>
                     </div>
