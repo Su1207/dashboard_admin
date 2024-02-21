@@ -47,7 +47,7 @@ const GamePlayUsers = () => {
               .child("DATE WISE")
               .child(`${year}`)
               .child(`${month}`)
-              .child(`21`);
+              .child(`${day}`);
 
             if (gamesnapshot.exists()) {
               gamesnapshot.forEach((gameSnapshot: any) => {
