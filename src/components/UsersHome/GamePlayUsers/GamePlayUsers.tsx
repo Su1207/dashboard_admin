@@ -21,7 +21,6 @@ const GamePlayUsers = () => {
   const month = (currentDate.getMonth() + 1).toString().padStart(2, "0");
   const day = currentDate.getDate();
 
-  
   useEffect(() => {
     const fetchData = async () => {
       try {
@@ -32,7 +31,7 @@ const GamePlayUsers = () => {
         if (snapshot.exists()) {
           // const promises: Promise<void>[] = [];
 
-          const usersGameArray: UsersGameDataType[] = [];
+          const usersGameArray: UsersGameDataType[] | null = [];
 
           snapshot.forEach((usersSnapshot) => {
             const gameName: string[] = [];
@@ -75,6 +74,8 @@ const GamePlayUsers = () => {
           });
 
           setUsersGameData(usersGameArray);
+        } else {
+          setUsersGameData(null);
         }
       } catch (err) {
         console.log(err);
@@ -88,47 +89,51 @@ const GamePlayUsers = () => {
   console.log(usersGameData);
 
   return (
-    <div className="gamePlay_users">
+    <div className="">
       <h4>TODAY GAMEPLAY USERS</h4>
 
       {isLoading ? (
         <div className="loader">Loading...</div>
-      ) : usersGameData ? (
-        <div className="users_list">
-          {usersGameData.map((data) => (
-            <div className="users_game_data_container" key={data.phone}>
-              <div className="users_game_data">
-                <div className="user_data">
-                  <img src="user.png" alt="" className="user_img_icon" />
-                  <div className="user_detail">
-                    <div className="users_name">{data.name}</div>
-                    <div className="user_phone">+91{data.phone}</div>
-                  </div>
-                </div>
-
-                <div className="game_data">
-                  <ul className="games-list">
-                    {data.markets.map((game) => (
-                      <li key={game}>{game}</li>
-                    ))}
-                  </ul>
-                </div>
-
-                <div className="game_data">
-                  <ul className="games-list">
-                    {[...data.games].map((game) => (
-                      <li key={game}>{game}</li>
-                    ))}
-                  </ul>
-                </div>
-              </div>
-              <div className="bottom_border"></div>
-            </div>
-          ))}
-        </div>
       ) : (
-        <div className="noData">
-          <img src="noData.gif" alt="" className="noData-img" />
+        <div className="gamePlay_users">
+          {usersGameData && usersGameData?.length > 0 ? (
+            <div className="users_list">
+              {usersGameData.map((data) => (
+                <div className="users_game_data_container" key={data.phone}>
+                  <div className="users_game_data">
+                    <div className="user_data">
+                      <img src="user.png" alt="" className="user_img_icon" />
+                      <div className="user_detail">
+                        <div className="users_name">{data.name}</div>
+                        <div className="user_phone">+91{data.phone}</div>
+                      </div>
+                    </div>
+
+                    <div className="game_data">
+                      <ul className="games-list">
+                        {data.markets.map((game) => (
+                          <li key={game}>{game}</li>
+                        ))}
+                      </ul>
+                    </div>
+
+                    <div className="game_data">
+                      <ul className="games-list">
+                        {[...data.games].map((game) => (
+                          <li key={game}>{game}</li>
+                        ))}
+                      </ul>
+                    </div>
+                  </div>
+                  <div className="bottom_border"></div>
+                </div>
+              ))}
+            </div>
+          ) : (
+            <div className="noData gamePlayer_noData">
+              <img src="noData.gif" alt="" className="noData-img" />
+            </div>
+          )}
         </div>
       )}
     </div>

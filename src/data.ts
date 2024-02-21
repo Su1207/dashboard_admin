@@ -74,7 +74,7 @@ export const menu = [
         id: "GAME_CHART",
         title: "Game Chart",
         url: "/gameChart",
-        icon: "/element.svg",
+        icon: "/chart.svg",
       },
 
       {

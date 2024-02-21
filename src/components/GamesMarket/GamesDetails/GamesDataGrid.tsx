@@ -87,7 +87,7 @@ const GamesDataGrid: React.FC<gameDataGridProps> = ({ gameData }) => {
     {
       field: "disable",
       headerName: "Holiday",
-      width: 95,
+      width: 90,
       renderCell: (params) => (
         <div>{params.row.disable === "true" ? "Yes" : "No"}</div>
       ),
@@ -95,7 +95,7 @@ const GamesDataGrid: React.FC<gameDataGridProps> = ({ gameData }) => {
     {
       field: "hidden",
       headerName: "Hidden",
-      width: 95,
+      width: 90,
       renderCell: (params) => (
         <div>{params.row.hidden === "true" ? "Yes" : "No"}</div>
       ),
@@ -103,7 +103,7 @@ const GamesDataGrid: React.FC<gameDataGridProps> = ({ gameData }) => {
     {
       field: "result",
       headerName: "Result",
-      width: 120,
+      width: 130,
     },
     {
       field: "actions",
