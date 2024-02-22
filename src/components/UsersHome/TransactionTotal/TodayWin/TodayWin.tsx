@@ -1,10 +1,11 @@
 import { onValue, ref } from "firebase/database";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { database } from "../../../../firebase";
 import { useNavigate } from "react-router-dom";
+import { useUsersDataContext } from "../../UserContext";
 
 const TodayWin = () => {
-  const [totalWin, setTotalWin] = useState(0);
+  const { totalWin, setTotalWin } = useUsersDataContext();
 
   useEffect(() => {
     try {

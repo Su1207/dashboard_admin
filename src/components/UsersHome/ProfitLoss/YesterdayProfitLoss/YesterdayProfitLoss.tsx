@@ -5,13 +5,13 @@ import KeyboardDoubleArrowDownRoundedIcon from "@mui/icons-material/KeyboardDoub
 import RemoveCircleRoundedIcon from "@mui/icons-material/RemoveCircleRounded";
 
 const YesterdayProfitLoss = () => {
-  const { yesterdayDeposit, yesterdayWithdraw } = useUsersDataContext();
+  const { yesterdayBid, yesterdayWin } = useUsersDataContext();
   const [profit, setProfit] = useState(false);
   const [calculatedValue, setCalculatedValue] = useState(0);
 
   useEffect(() => {
     const calculateProfit = () => {
-      const value = yesterdayDeposit - yesterdayWithdraw;
+      const value = yesterdayBid - yesterdayWin;
 
       if (value > 0) {
         setProfit(true);
@@ -24,7 +24,7 @@ const YesterdayProfitLoss = () => {
 
     // Call the function when the component mounts or when totalDeposit or totalWithdraw changes
     calculateProfit();
-  }, [yesterdayDeposit, yesterdayWithdraw]);
+  }, [yesterdayBid, yesterdayWin]);
 
   return (
     <div className="profit_loss_container">

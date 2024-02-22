@@ -1,10 +1,11 @@
 import { get, ref } from "firebase/database";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { database } from "../../../../firebase";
 import { useNavigate } from "react-router-dom";
+import { useUsersDataContext } from "../../UserContext";
 
 const TodayBid = () => {
-  const [totalBid, setTotalBid] = useState(0);
+  const { totalBid, setTotalBid } = useUsersDataContext();
 
   useEffect(() => {
     const fetchBidData = async () => {

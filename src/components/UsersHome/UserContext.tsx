@@ -17,14 +17,14 @@ export type User = {
 interface UsersDataContextProps {
   usersData: User[] | null;
   setUsersData: React.Dispatch<React.SetStateAction<User[] | null>>;
-  totalDeposit: number;
-  setTotalDeposit: React.Dispatch<React.SetStateAction<number | 0>>;
-  totalWithdraw: number;
-  setTotalWithdraw: React.Dispatch<React.SetStateAction<number | 0>>;
-  yesterdayWithdraw: number;
-  setYesterdayWithdraw: React.Dispatch<React.SetStateAction<number | 0>>;
-  yesterdayDeposit: number;
-  setYesterdayDeposit: React.Dispatch<React.SetStateAction<number | 0>>;
+  totalBid: number;
+  setTotalBid: React.Dispatch<React.SetStateAction<number | 0>>;
+  totalWin: number;
+  setTotalWin: React.Dispatch<React.SetStateAction<number | 0>>;
+  yesterdayWin: number;
+  setYesterdayWin: React.Dispatch<React.SetStateAction<number | 0>>;
+  yesterdayBid: number;
+  setYesterdayBid: React.Dispatch<React.SetStateAction<number | 0>>;
   //   totalWin: number;
   //   setTotalWin: React.Dispatch<React.SetStateAction<number | 0>>;
   //   totalBid: number;
@@ -39,26 +39,26 @@ export const UsersDataProvider: React.FC<{ children: ReactNode }> = ({
   children,
 }) => {
   const [usersData, setUsersData] = useState<User[] | null>(null);
-  const [totalDeposit, setTotalDeposit] = useState(0);
+  const [totalBid, setTotalBid] = useState(0);
   //   const [totalBid, setTotalBid] = useState(0);
   //   const [totalWin, setTotalWin] = useState(0);
-  const [totalWithdraw, setTotalWithdraw] = useState(0);
-  const [yesterdayWithdraw, setYesterdayWithdraw] = useState(0);
-  const [yesterdayDeposit, setYesterdayDeposit] = useState(0);
+  const [totalWin, setTotalWin] = useState(0);
+  const [yesterdayWin, setYesterdayWin] = useState(0);
+  const [yesterdayBid, setYesterdayBid] = useState(0);
 
   return (
     <UsersDataContext.Provider
       value={{
         usersData,
         setUsersData,
-        totalDeposit,
-        setTotalDeposit,
-        totalWithdraw,
-        setTotalWithdraw,
-        yesterdayWithdraw,
-        setYesterdayWithdraw,
-        yesterdayDeposit,
-        setYesterdayDeposit,
+        totalBid,
+        setTotalBid,
+        totalWin,
+        setTotalWin,
+        yesterdayWin,
+        setYesterdayWin,
+        yesterdayBid,
+        setYesterdayBid,
       }}
     >
       {children}

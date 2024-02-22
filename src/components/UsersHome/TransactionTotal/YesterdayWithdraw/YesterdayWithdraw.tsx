@@ -1,10 +1,9 @@
 import { onValue, ref } from "firebase/database";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { database } from "../../../../firebase";
-import { useUsersDataContext } from "../../UserContext";
 
 const YesterdayWithdraw = () => {
-  const { yesterdayWithdraw, setYesterdayWithdraw } = useUsersDataContext();
+  const [yesterdayWithdraw, setYesterdayWithdraw] = useState(0);
 
   useEffect(() => {
     try {

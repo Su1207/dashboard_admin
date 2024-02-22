@@ -1,11 +1,10 @@
 import { onValue, ref } from "firebase/database";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { database } from "../../../../firebase";
-import { useUsersDataContext } from "../../UserContext";
 import { useNavigate } from "react-router-dom";
 
 const TodayDeposit = () => {
-  const { totalDeposit, setTotalDeposit } = useUsersDataContext();
+  const [totalDeposit, setTotalDeposit] = useState(0);
 
   useEffect(() => {
     try {

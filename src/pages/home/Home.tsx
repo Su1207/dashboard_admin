@@ -162,12 +162,13 @@ const Home = () => {
           ""
         )}
 
-        {isAuthenticated ||
-          (isSubAuthenticated && permissions?.BID && (
-            <div className="box box9">
-              <YesterdayBid />
-            </div>
-          ))}
+        {isAuthenticated || (isSubAuthenticated && permissions?.BID) ? (
+          <div className="box box9">
+            <YesterdayBid />
+          </div>
+        ) : (
+          ""
+        )}
 
         {isAuthenticated || (isSubAuthenticated && permissions?.WIN) ? (
           <div className="box box9">

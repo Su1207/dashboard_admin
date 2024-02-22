@@ -2,6 +2,7 @@ import { useEffect, useState } from "react";
 import "./GameplayUsers.scss";
 import { get, ref } from "firebase/database";
 import { database } from "../../../firebase";
+import { useNavigate } from "react-router-dom";
 
 type MarketType = {
   marketName: string;
@@ -94,7 +95,11 @@ const GamePlayUsers = () => {
     fetchData();
   }, []);
 
-  console.log(usersGameData);
+  const navigate = useNavigate();
+
+  const handleClick = (userId: string) => {
+    navigate(`/users/${userId}`);
+  };
 
   return (
     <div className="">
@@ -111,7 +116,10 @@ const GamePlayUsers = () => {
                   <div className="users_game_data">
                     <div className="user_data">
                       <img src="user.png" alt="" className="user_img_icon" />
-                      <div className="user_detail">
+                      <div
+                        className="user_detail"
+                        onClick={() => handleClick(data.phone)}
+                      >
                         <div className="users_name">{data.name}</div>
                         <div className="user_phone">+91{data.phone}</div>
                       </div>

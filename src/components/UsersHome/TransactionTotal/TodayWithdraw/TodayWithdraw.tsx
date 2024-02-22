@@ -1,11 +1,10 @@
-import { useEffect } from "react";
-import { useUsersDataContext } from "../../UserContext";
+import { useEffect, useState } from "react";
 import { onValue, ref } from "firebase/database";
 import { database } from "../../../../firebase";
 import { useNavigate } from "react-router-dom";
 
 const TodayWithdraw = () => {
-  const { totalWithdraw, setTotalWithdraw } = useUsersDataContext();
+  const [totalWithdraw, setTotalWithdraw] = useState(0);
 
   useEffect(() => {
     try {

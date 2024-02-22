@@ -1,9 +1,10 @@
 import { get, ref } from "firebase/database";
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import { database } from "../../../../firebase";
+import { useUsersDataContext } from "../../UserContext";
 
 const YesterdayBid = () => {
-  const [yesterdayBid, setYesterdayBid] = useState(0);
+  const { yesterdayBid, setYesterdayBid } = useUsersDataContext();
 
   useEffect(() => {
     const fetchBidData = async () => {

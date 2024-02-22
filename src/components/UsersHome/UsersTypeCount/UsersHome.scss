@@ -23,6 +23,11 @@
 
       .users_number_type {
         font-size: 0.875rem;
+        transition: all 0.3s;
+
+        &:hover {
+          color: rgb(244, 159, 3);
+        }
         // color: rgb(227, 214, 214);
       }
     }

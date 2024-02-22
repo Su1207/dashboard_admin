@@ -30,12 +30,23 @@ type UsersTransactionData = Set<string>;
 type UsersListData = Record<string, boolean>;
 
 const Users: React.FC = () => {
+  // Get the query string from the current URL
+  let queryString = window.location.search;
+
+  // Parse the query string into a URLSearchParams object
+  let searchParams = new URLSearchParams(queryString);
+
+  // Get the value of the 'param' parameter
+  let paramValue = searchParams.get("param");
+
   const [usersData, setUsersData] = useState<
     Record<string, User> | User[] | null
   >(null);
   const [addUser, setAddUser] = useState(false);
   const [filterOption, setFilterOption] = useState("lastSeen"); // Default filter option
-  const [selectedListOption, setSelectedListOption] = useState("total"); // Default list option
+  const [selectedListOption, setSelectedListOption] = useState(
+    paramValue ? paramValue : "total"
+  ); // Default list option
 
   // const [blockedUser,setBlockedUser] = useState(null);
   const [usersListData, setUsersListData] = useState<UsersListData | null>(

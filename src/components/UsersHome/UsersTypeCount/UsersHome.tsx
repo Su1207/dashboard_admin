@@ -6,19 +6,6 @@ import { useUsersDataContext } from "../UserContext";
 import { Link } from "react-router-dom";
 import PeopleIcon from "@mui/icons-material/People";
 
-// type User = {
-//   AMOUNT: number;
-//   APP_VERSION: number;
-//   CREATED_ON: number;
-//   LAST_SEEN: number;
-//   NAME: string;
-//   PASSWORD: string;
-//   PHONE: string;
-//   PIN: string;
-//   UID: string;
-//   isLoggedIn: boolean;
-// };
-
 type UsersListData = Record<string, boolean>;
 
 type UsersTransactionData = Set<string>;
@@ -34,12 +21,13 @@ const UsersHome: React.FC = () => {
 
   const [loadingUsersData, setLoadingUsersData] = useState(true);
 
+  const [isloAdingList, setIsLoadingList] = useState(true);
+
   const [usersTransactionData, setUsersTransactionData] =
     useState<UsersTransactionData | null>(null);
 
   useEffect(() => {
     const usersListRef = ref(database, "USERS LIST");
-    const transactionRef = ref(database, "USERS TRANSACTION");
 
     const unsubscribe = onValue(usersListRef, (snapshot) => {
       if (snapshot.exists()) {
@@ -48,7 +36,15 @@ const UsersHome: React.FC = () => {
       } else {
         console.log("No data available for USERS LIST");
       }
+
+      setIsLoadingList(false);
     });
+
+    return () => unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const transactionRef = ref(database, "USERS TRANSACTION");
 
     const unsub = onValue(transactionRef, (snapshot) => {
       if (snapshot.exists()) {
@@ -62,9 +58,7 @@ const UsersHome: React.FC = () => {
       setIsLoadingUsersTransaction(false);
     });
 
-    return () => {
-      unsubscribe(), unsub();
-    };
+    return () => unsub();
   }, []);
 
   useEffect(() => {
@@ -87,29 +81,31 @@ const UsersHome: React.FC = () => {
   }, []);
 
   const isBlocked = (userId: string) => {
-    return usersListData?.[userId] === false;
+    if (!isloAdingList && usersListData) {
+      return usersListData?.[userId] === false;
+    }
   };
 
   const isDead = (userId: string) => {
     // console.log(usersTransactionData?.has(userId));
-    if (!isLoadingUsersTransaction) {
+    if (!isLoadingUsersTransaction && usersTransactionData) {
       return !usersTransactionData?.has(userId);
     }
   };
 
   const today = new Date().setHours(0, 0, 0, 0);
   const liveThreshold = 1 * 60 * 1000; //1 min in milliseconds
-  const currentTimestamp = new Date().getTime();
+  const currentTimestamp = Date.now();
   const oneDayMilliseconds = 24 * 60 * 60 * 1000;
 
   // Calculate the following values outside of the render method
   const blockedUsers = useMemo(
     () => usersData?.filter((user) => isBlocked(user.PHONE)),
-    [usersData]
+    [usersData, isloAdingList]
   );
   const todayRegistered = useMemo(
     () => usersData?.filter((user) => today < user.CREATED_ON),
-    [usersData]
+    [usersData, today]
   );
   const liveUsers = useMemo(
     () =>
@@ -131,7 +127,7 @@ const UsersHome: React.FC = () => {
   );
   const deadUsers = useMemo(
     () => usersData?.filter((user) => isDead(user.PHONE)),
-    [usersData]
+    [usersData, usersTransactionData]
   );
   const activeUsers = useMemo(
     () => usersData?.filter((user) => !isDead(user.PHONE)),
@@ -144,31 +140,45 @@ const UsersHome: React.FC = () => {
       {!isLoadingUsersTransaction && !loadingUsersData ? (
         <div className="different_users_details">
           <div className="users_number">
-            <div className="users_number_type">Active Users </div>
+            <Link to="/users?param=total" className="users_number_type">
+              Active Users
+            </Link>
             <div> {activeUsers?.length}</div>
           </div>
           <div className="users_number">
-            <div className="users_number_type">Blocked Users </div>
+            <Link to="/users?param=blocked" className="users_number_type">
+              Blocked Users{" "}
+            </Link>
             <div> {blockedUsers?.length}</div>
           </div>
           <div className="users_number">
-            <div className="users_number_type">Today Registered</div>
+            <Link to="/users?param=today" className="users_number_type">
+              Today Registered
+            </Link>
             <div> {todayRegistered?.length}</div>
           </div>
           <div className="users_number">
-            <div className="users_number_type">Live Users</div>
+            <Link to="/users?param=live" className="users_number_type">
+              Live Users
+            </Link>
             <div> {liveUsers?.length}</div>
           </div>
           <div className="users_number">
-            <div className="users_number_type">24 hours Live</div>
+            <Link to="/users?param=last24" className="users_number_type">
+              24 hours Live
+            </Link>
             <div> {last24?.length}</div>
           </div>
           <div className="users_number">
-            <div className="users_number_type">0 Balance Users</div>
+            <Link to="/users?param=0balance" className="users_number_type">
+              0 Balance Users
+            </Link>
             <div> {zeroBalanceUsers?.length}</div>
           </div>
           <div className="users_number">
-            <div className="users_number_type">Dead Users</div>
+            <Link to="/users?param=dead" className="users_number_type">
+              Dead Users
+            </Link>
             <div> {deadUsers?.length}</div>
           </div>
         </div>
