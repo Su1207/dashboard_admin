@@ -1,5 +1,4 @@
 import { useAuth } from "../auth-context";
-import { useSubAuth } from "../subAdmin-authContext";
 import "./navbar.scss";
 import { usePermissionContext } from "../AdmissionPermission";
 import ExpandMoreIcon from "@mui/icons-material/ExpandMore";
@@ -7,12 +6,11 @@ import { useState } from "react";
 import PowerSettingsNewIcon from "@mui/icons-material/PowerSettingsNew";
 
 const Navbar = () => {
-  const { logout, isAuthenticated } = useAuth();
-  const { subLogout, isSubAuthenticated } = useSubAuth();
+  const { logout, isAuthenticated, isSubAuthenticated } = useAuth();
   const [adminClicked, setAdminClicked] = useState(false);
 
   const handleLogout = () => {
-    isAuthenticated ? logout() : subLogout();
+    logout();
   };
 
   const { username } = usePermissionContext();

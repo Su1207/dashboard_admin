@@ -15,7 +15,6 @@ import TemporaryDrawer from "./components/menu/TemporaryDrawer";
 import Deposit from "./pages/Deposit/Deposit";
 import Withdraw from "./pages/Withdraw/Withdraw";
 import { AuthProvider, useAuth } from "./components/auth-context";
-import { SubAuthProvider, useSubAuth } from "./components/subAdmin-authContext";
 import GameRate from "./pages/GameRate/GameRate";
 import GameSettings from "./pages/GameSettings/GameSettings";
 import Notification from "./pages/Notification/Notification";
@@ -41,8 +40,7 @@ import GameChart from "./pages/GameChart/GameChart";
 import GameResult from "./pages/GameChart/GameResult";
 
 const Layout = () => {
-  const { isAuthenticated } = useAuth();
-  const { isSubAuthenticated } = useSubAuth();
+  const { isAuthenticated, isSubAuthenticated } = useAuth();
 
   const { setPermissions } = usePermissionContext();
   const { username, setUsername, switched, permission } =
@@ -208,14 +206,12 @@ function App() {
   return (
     <>
       <AuthProvider>
-        <SubAuthProvider>
-          <PermissionProvider>
-            <>
-              <ToastContainer />
-              <RouterProvider router={router} />
-            </>
-          </PermissionProvider>
-        </SubAuthProvider>
+        <PermissionProvider>
+          <>
+            <ToastContainer />
+            <RouterProvider router={router} />
+          </>
+        </PermissionProvider>
       </AuthProvider>
     </>
   );

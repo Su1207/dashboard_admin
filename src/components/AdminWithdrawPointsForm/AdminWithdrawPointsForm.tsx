@@ -7,7 +7,6 @@ import ClearIcon from "@mui/icons-material/Clear";
 import "./AdminWithdrawPointsForm.scss";
 import { useAuth } from "../auth-context";
 import { usePermissionContext } from "../AdmissionPermission";
-import { useSubAuth } from "../subAdmin-authContext";
 
 interface AdminPointsData {
   phoneNumber: string;
@@ -189,8 +188,7 @@ const AdminWithdrawPointsForm = (props: Props) => {
     withdrawPoints(formData);
   };
 
-  const { isAuthenticated } = useAuth();
-  const { isSubAuthenticated } = useSubAuth();
+  const { isAuthenticated, isSubAuthenticated } = useAuth();
   const { permissions } = usePermissionContext();
 
   return (

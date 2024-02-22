@@ -15,43 +15,43 @@ import {
   //   ListItemIcon,
   //   ListItemText,
 } from "@mui/material";
-import { useSubAuth } from "../subAdmin-authContext";
 import { UsersPermissions, usePermissionContext } from "../AdmissionPermission";
 import { onValue, ref } from "firebase/database";
 import { database } from "../../firebase";
+import { useAuth } from "../auth-context";
 
 type Anchor = "left";
 
 export default function TemporaryDrawer() {
-  const { isSubAuthenticated } = useSubAuth();
   const [permissions, setPermissions] = useState<UsersPermissions | null>(null);
-  const { user } = useSubAuth();
+  const { user, isSubAuthenticated } = useAuth();
   const { permission } = usePermissionContext();
 
   useEffect(() => {
-    try {
-      const perRef = ref(database, `ADMIN/SUB_ADMIN/${user?.ID}/PERMISSIONS`);
+    if (isSubAuthenticated)
+      try {
+        const perRef = ref(database, `ADMIN/SUB_ADMIN/${user?.ID}/PERMISSIONS`);
 
-      // get(perRef).then((snapshot) => {
-      //   if (snapshot.exists()) {
-      //     setPermissions(snapshot.val());
-      //   } else {
-      //     setPermissions(null);
-      //   }
-      // });
+        // get(perRef).then((snapshot) => {
+        //   if (snapshot.exists()) {
+        //     setPermissions(snapshot.val());
+        //   } else {
+        //     setPermissions(null);
+        //   }
+        // });
 
-      const unsub = onValue(perRef, (snapshot) => {
-        if (snapshot.exists()) {
-          setPermissions(snapshot.val());
-        } else {
-          setPermissions(null);
-        }
-      });
+        const unsub = onValue(perRef, (snapshot) => {
+          if (snapshot.exists()) {
+            setPermissions(snapshot.val());
+          } else {
+            setPermissions(null);
+          }
+        });
 
-      return () => unsub();
-    } catch (err) {
-      console.log(err);
-    }
+        return () => unsub();
+      } catch (err) {
+        console.log(err);
+      }
   }, [permission]);
   const filteredMenu = menu
     .map((item) => {

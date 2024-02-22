@@ -1,15 +1,13 @@
 import { Navigate } from "react-router-dom";
 import PayoutComponent from "../../components/PayoutComponent/PayoutComponent";
 import { useAuth } from "../../components/auth-context";
-import { useSubAuth } from "../../components/subAdmin-authContext";
 import "./Payout.scss";
 import { useEffect, useState } from "react";
 import { onValue, ref } from "firebase/database";
 import { database } from "../../firebase";
 
 const Payout = () => {
-  const { isAuthenticated } = useAuth();
-  const { isSubAuthenticated, user } = useSubAuth();
+  const { isAuthenticated, isSubAuthenticated, user } = useAuth();
   const [permission, setPermission] = useState<boolean>();
 
   if (!isAuthenticated && !isSubAuthenticated) {
@@ -17,22 +15,23 @@ const Payout = () => {
   }
 
   useEffect(() => {
-    try {
-      const permissionRef = ref(
-        database,
-        `ADMIN/SUB_ADMIN/${user?.ID}/PERMISSIONS/PAYOUT`
-      );
+    if (isSubAuthenticated)
+      try {
+        const permissionRef = ref(
+          database,
+          `ADMIN/SUB_ADMIN/${user?.ID}/PERMISSIONS/PAYOUT`
+        );
 
-      const unsub = onValue(permissionRef, (snapshot) => {
-        if (snapshot.exists()) {
-          setPermission(snapshot.val());
-        }
-      });
+        const unsub = onValue(permissionRef, (snapshot) => {
+          if (snapshot.exists()) {
+            setPermission(snapshot.val());
+          }
+        });
 
-      return () => unsub();
-    } catch (err) {
-      console.log(err);
-    }
+        return () => unsub();
+      } catch (err) {
+        console.log(err);
+      }
   }, []);
   return (
     <>

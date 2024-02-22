@@ -7,7 +7,6 @@ import AddPoints from "../../assets/wallet.png";
 import { toast } from "react-toastify";
 import { useAuth } from "../auth-context";
 import { usePermissionContext } from "../AdmissionPermission";
-import { useSubAuth } from "../subAdmin-authContext";
 
 interface AdminPointsData {
   phoneNumber: string;
@@ -184,8 +183,7 @@ const AdminAddPointsForm = (props: Props) => {
     addPoints(formData);
   };
 
-  const { isAuthenticated } = useAuth();
-  const { isSubAuthenticated } = useSubAuth();
+  const { isAuthenticated, isSubAuthenticated } = useAuth();
   const { permissions } = usePermissionContext();
 
   return (

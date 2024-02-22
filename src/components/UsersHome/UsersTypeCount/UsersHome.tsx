@@ -1,23 +1,23 @@
 import { useEffect, useMemo, useState } from "react";
 import "./UsersHome.scss";
-import { get, onValue, ref } from "firebase/database";
+import { onValue, ref } from "firebase/database";
 import { database } from "../../../firebase";
 import { useUsersDataContext } from "../UserContext";
 import { Link } from "react-router-dom";
 import PeopleIcon from "@mui/icons-material/People";
 
-type User = {
-  AMOUNT: number;
-  APP_VERSION: number;
-  CREATED_ON: number;
-  LAST_SEEN: number;
-  NAME: string;
-  PASSWORD: string;
-  PHONE: string;
-  PIN: string;
-  UID: string;
-  isLoggedIn: boolean;
-};
+// type User = {
+//   AMOUNT: number;
+//   APP_VERSION: number;
+//   CREATED_ON: number;
+//   LAST_SEEN: number;
+//   NAME: string;
+//   PASSWORD: string;
+//   PHONE: string;
+//   PIN: string;
+//   UID: string;
+//   isLoggedIn: boolean;
+// };
 
 type UsersListData = Record<string, boolean>;
 
@@ -68,35 +68,22 @@ const UsersHome: React.FC = () => {
   }, []);
 
   useEffect(() => {
-    const fetchUserData = async () => {
-      const usersef = ref(database, `USERS`);
-      try {
-        const snapshot = await get(usersef);
+    const usersef = ref(database, `USERS`);
+    try {
+      const unsubscribe = onValue(usersef, (snapshot) => {
         if (snapshot.exists()) {
-          // Assert the type of snapshot.val() to User[]
-          const userData: User[] = Object.values(snapshot.val()) as User[];
-          setUsersData(userData);
+          setUsersData(Object.values(snapshot.val()));
         } else {
-          console.log("No data available for USERS");
+          console.log("No data available for USERS LIST");
         }
+      });
 
-        const unsubscribe = onValue(usersef, (snapshot) => {
-          if (snapshot.exists()) {
-            setUsersData(Object.values(snapshot.val()));
-          } else {
-            console.log("No data available for USERS LIST");
-          }
-        });
-
-        return () => unsubscribe();
-      } catch (error) {
-        console.error("Error fetching data:", error);
-      } finally {
-        setLoadingUsersData(false);
-      }
-    };
-
-    fetchUserData();
+      return () => unsubscribe();
+    } catch (error) {
+      console.error("Error fetching data:", error);
+    } finally {
+      setLoadingUsersData(false);
+    }
   }, []);
 
   const isBlocked = (userId: string) => {

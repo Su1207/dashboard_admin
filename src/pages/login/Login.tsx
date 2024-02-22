@@ -3,7 +3,6 @@ import { useAuth } from "../../components/auth-context";
 import "./login.scss";
 import PersonIcon from "@mui/icons-material/Person";
 import KeyIcon from "@mui/icons-material/Key";
-import { useSubAuth } from "../../components/subAdmin-authContext";
 import { usePermissionContext } from "../../components/AdmissionPermission";
 import { get, ref } from "firebase/database";
 import { database } from "../../firebase";
@@ -11,12 +10,10 @@ import { database } from "../../firebase";
 const Login = () => {
   const { username, setUsername } = usePermissionContext();
   const [password, setPassword] = useState("");
-  const [selectedOption, setSelectedOption] = useState(true);
-  const [admin, setAdmin] = useState(false);
   const { login } = useAuth();
-  const { subLogin } = useSubAuth();
+  // const { subLogin } = useSubAuth();
 
-  const { permissions, setPermissions } = usePermissionContext();
+  const { setPermissions } = usePermissionContext();
 
   const fetchPermissions = async () => {
     if (!username) return;
@@ -34,37 +31,13 @@ const Login = () => {
     }
   };
 
-  console.log(permissions);
-
-  const handleAdmin = () => {
-    setAdmin(true);
-    setSelectedOption(false);
-  };
-
-  const handleSubAdmin = () => {
-    setAdmin(false);
-    setSelectedOption(false);
-  };
-
   const handleLogin = () => {
-    admin
-      ? login(username ?? "", password)
-      : subLogin(username ?? "", password);
+    login(username ?? "", password);
     fetchPermissions();
   };
 
   return (
     <div className="auth">
-      {selectedOption && (
-        <div className="openCloseOption_container">
-          <div className="openCloseOption_main_container">
-            <h2>Select Your Identity</h2>
-            <button onClick={handleAdmin}>ADMIN</button>
-            <button onClick={handleSubAdmin}>SUB-ADMIN</button>
-          </div>
-        </div>
-      )}
-
       <div className="auth_container">
         <div className="login_img_container">
           <img src="login.jpg" alt="" className="login_img" />

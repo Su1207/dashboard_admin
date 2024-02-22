@@ -8,7 +8,7 @@ import AddSubAdmin from "./AddSubAdmin/AddSubAdmin";
 import { toast } from "react-toastify";
 import EditSubAdmin from "./EditSubAdmin/EditSubAdmin";
 import { useNavigate } from "react-router-dom";
-import { useSubAuth } from "../subAdmin-authContext";
+import { useAuth } from "../auth-context";
 
 export type SubAdminDataType = {
   ID: string;
@@ -73,7 +73,7 @@ const AdminUsersComponent = () => {
     navigate(`/subAdmin/adminRoles___${username}`);
   };
 
-  const { isSubAuthenticated } = useSubAuth();
+  const { isSubAuthenticated } = useAuth();
 
   return (
     <>

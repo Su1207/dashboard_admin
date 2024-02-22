@@ -1,42 +1,42 @@
 import "./menu.scss";
 import { Link } from "react-router-dom";
 import { menu } from "../../data";
-import { useSubAuth } from "../../components/subAdmin-authContext";
 import { useEffect, useState } from "react";
 import { UsersPermissions, usePermissionContext } from "../AdmissionPermission";
 import { onValue, ref } from "firebase/database";
 import { database } from "../../firebase";
+import { useAuth } from "../auth-context";
 
 const Menu = () => {
-  const { isSubAuthenticated } = useSubAuth();
   const [permissions, setPermissions] = useState<UsersPermissions | null>(null);
-  const { user } = useSubAuth();
   const { permission } = usePermissionContext();
+  const { isSubAuthenticated, user } = useAuth();
 
   useEffect(() => {
-    try {
-      const perRef = ref(database, `ADMIN/SUB_ADMIN/${user?.ID}/PERMISSIONS`);
+    if (isSubAuthenticated)
+      try {
+        const perRef = ref(database, `ADMIN/SUB_ADMIN/${user?.ID}/PERMISSIONS`);
 
-      // get(perRef).then((snapshot) => {
-      //   if (snapshot.exists()) {
-      //     setPermissions(snapshot.val());
-      //   } else {
-      //     setPermissions(null);
-      //   }
-      // });
+        // get(perRef).then((snapshot) => {
+        //   if (snapshot.exists()) {
+        //     setPermissions(snapshot.val());
+        //   } else {
+        //     setPermissions(null);
+        //   }
+        // });
 
-      const unsub = onValue(perRef, (snapshot) => {
-        if (snapshot.exists()) {
-          setPermissions(snapshot.val());
-        } else {
-          setPermissions(null);
-        } 
-      });
+        const unsub = onValue(perRef, (snapshot) => {
+          if (snapshot.exists()) {
+            setPermissions(snapshot.val());
+          } else {
+            setPermissions(null);
+          }
+        });
 
-      return () => unsub();
-    } catch (err) {
-      console.log(err);
-    }
+        return () => unsub();
+      } catch (err) {
+        console.log(err);
+      }
   }, [permission]);
 
   // Filter the menu based on permissions

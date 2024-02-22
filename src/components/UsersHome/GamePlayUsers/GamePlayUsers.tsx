@@ -125,7 +125,7 @@ const GamePlayUsers = () => {
                             <div className="games_array">
                               {Array.from(market.games).map((game) => (
                                 <div className="game_name" key={game}>
-                                  {game}
+                                  {game},
                                 </div>
                               ))}
                             </div>

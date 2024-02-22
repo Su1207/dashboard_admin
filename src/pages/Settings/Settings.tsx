@@ -5,7 +5,6 @@ import PaymentSetting from "../../components/SettingComponent/PaymentSetting/Pay
 import VersionSetting from "../../components/SettingComponent/VersionSetting/VersionSetting";
 import GeneralSetting from "../../components/SettingComponent/GeneralSetting/GeneralSetting";
 import { useAuth } from "../../components/auth-context";
-import { useSubAuth } from "../../components/subAdmin-authContext";
 import { Navigate } from "react-router-dom";
 import { onValue, ref } from "firebase/database";
 import { database } from "../../firebase";
@@ -33,8 +32,7 @@ const Settings = () => {
     setVersionSetting(!versionSetting);
   };
 
-  const { isAuthenticated } = useAuth();
-  const { isSubAuthenticated, user } = useSubAuth();
+  const { isAuthenticated, isSubAuthenticated, user } = useAuth();
   const [permission, setPermission] = useState<boolean>();
 
   if (!isAuthenticated && !isSubAuthenticated) {
@@ -42,22 +40,23 @@ const Settings = () => {
   }
 
   useEffect(() => {
-    try {
-      const permissionRef = ref(
-        database,
-        `ADMIN/SUB_ADMIN/${user?.ID}/PERMISSIONS/SETTINGS`
-      );
+    if (isSubAuthenticated)
+      try {
+        const permissionRef = ref(
+          database,
+          `ADMIN/SUB_ADMIN/${user?.ID}/PERMISSIONS/SETTINGS`
+        );
 
-      const unsub = onValue(permissionRef, (snapshot) => {
-        if (snapshot.exists()) {
-          setPermission(snapshot.val());
-        }
-      });
+        const unsub = onValue(permissionRef, (snapshot) => {
+          if (snapshot.exists()) {
+            setPermission(snapshot.val());
+          }
+        });
 
-      return () => unsub();
-    } catch (err) {
-      console.log(err);
-    }
+        return () => unsub();
+      } catch (err) {
+        console.log(err);
+      }
   }, []);
 
   return (
