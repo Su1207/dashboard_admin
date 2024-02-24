@@ -266,7 +266,7 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
 
       return `${day}-${month}-${year} | ${formattedHours}:${minutes}:${seconds} ${meridiem}`;
     };
-
+    console.log(id);
     const createdOnDate = user?.CREATED_ON
       ? convertTimestamp(user.CREATED_ON)
       : "";

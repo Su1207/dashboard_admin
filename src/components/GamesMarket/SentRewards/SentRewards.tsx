@@ -358,11 +358,11 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
       }/${timeKey}`
     );
 
-    // await remove(totalTransactionTotalRef).then(() => {
-    //   remove(userTransactionDateWiseRef);
-    //   remove(totalTransactionDateWiseRef);
-    //   remove(userTransactionTotalRef);
-    // });
+    await remove(totalTransactionTotalRef).then(() => {
+      remove(userTransactionDateWiseRef);
+      remove(totalTransactionDateWiseRef);
+      remove(userTransactionTotalRef);
+    });
 
     await checkRewards(phone, gameName, number, openClose);
 
