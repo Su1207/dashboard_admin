@@ -69,6 +69,17 @@ const Layout = () => {
     fetchPermissions();
   }, [username, switched, permission]);
 
+  if ("serviceWorker" in navigator) {
+    navigator.serviceWorker
+      .register("/firebase-messaging-sw.js")
+      .then((registration: any) => {
+        console.log("Service Worker registered", registration);
+      })
+      .catch((error) => {
+        console.error("Service Worker registration failed:", error);
+      });
+  }
+
   return (
     <div>
       {isAuthenticated || isSubAuthenticated ? (

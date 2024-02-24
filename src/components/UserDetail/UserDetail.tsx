@@ -112,7 +112,7 @@ const UserDetail: React.FC<{ userId: number }> = ({ userId }) => {
                   <p>Phone Number </p>
                   <div className="number_detail">
                     <div>+91 {userDetails.PHONE}</div>
-                    <Copy PhoneNumber={userDetails.PHONE} />
+                    <Copy PhoneNumber={userDetails.PHONE} data={null} />
                   </div>
                 </div>
 

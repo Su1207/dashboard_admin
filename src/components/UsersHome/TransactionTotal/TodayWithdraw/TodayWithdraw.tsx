@@ -2,18 +2,20 @@ import { useEffect, useState } from "react";
 import { onValue, ref } from "firebase/database";
 import { database } from "../../../../firebase";
 import { useNavigate } from "react-router-dom";
+import { useUsersDataContext } from "../../UserContext";
 
 const TodayWithdraw = () => {
   const [totalWithdraw, setTotalWithdraw] = useState(0);
+  const { selectedDate } = useUsersDataContext();
 
   useEffect(() => {
     try {
-      const currentDate = new Date();
-      const currentYear = currentDate.getFullYear();
-      const currentMonth = (currentDate.getMonth() + 1)
+      // const selectedDate = new Date();
+      const currentYear = selectedDate.getFullYear();
+      const currentMonth = (selectedDate.getMonth() + 1)
         .toString()
         .padStart(2, "0"); // Ensure two digits
-      const currentDay = currentDate.getDate();
+      const currentDay = selectedDate.getDate();
 
       let totalWithdrawAmount = 0;
 
@@ -31,6 +33,8 @@ const TodayWithdraw = () => {
             //   console.log(totalWithdrawAmount);
           });
           setTotalWithdraw(totalWithdrawAmount);
+        } else {
+          setTotalWithdraw(0);
         }
       });
 
@@ -38,7 +42,7 @@ const TodayWithdraw = () => {
     } catch (err) {
       console.log(err);
     }
-  }, []);
+  }, [selectedDate]);
 
   const navigate = useNavigate();
   const handleClick = () => {

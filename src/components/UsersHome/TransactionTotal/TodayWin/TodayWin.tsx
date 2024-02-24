@@ -6,15 +6,16 @@ import { useUsersDataContext } from "../../UserContext";
 
 const TodayWin = () => {
   const { totalWin, setTotalWin } = useUsersDataContext();
+  const { selectedDate } = useUsersDataContext();
 
   useEffect(() => {
     try {
-      const currentDate = new Date();
-      const currentYear = currentDate.getFullYear();
-      const currentMonth = (currentDate.getMonth() + 1)
+      // const selectedDate = new Date();
+      const currentYear = selectedDate.getFullYear();
+      const currentMonth = (selectedDate.getMonth() + 1)
         .toString()
         .padStart(2, "0"); // Ensure two digits
-      const currentDay = currentDate.getDate();
+      const currentDay = selectedDate.getDate();
 
       let totalWinAmount = 0;
 
@@ -41,7 +42,7 @@ const TodayWin = () => {
     } catch (err) {
       console.log(err);
     }
-  }, []);
+  }, [selectedDate]);
 
   const navigate = useNavigate();
   const handleClick = () => {

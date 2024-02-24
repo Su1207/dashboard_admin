@@ -11,3 +11,11 @@
     }
   }
 }
+
+.item {
+  label {
+    display: flex !important;
+    align-items: center;
+    gap: 8px;
+  }
+}

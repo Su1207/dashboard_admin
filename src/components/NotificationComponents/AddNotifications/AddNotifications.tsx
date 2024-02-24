@@ -4,6 +4,8 @@ import { ref, set } from "firebase/database";
 import { database } from "../../../firebase";
 import { toast } from "react-toastify";
 import ClearIcon from "@mui/icons-material/Clear";
+import { getToken } from "firebase/messaging";
+import { messaging } from "../../../firebase";
 
 type Props = {
   setAddNotification: React.Dispatch<React.SetStateAction<boolean>>;
@@ -13,8 +15,6 @@ type Notification = {
   MSG: string;
   TITLE: string;
 };
-
-// type NotificationType = Record<string, Notification>;
 
 const AddNotifications = (props: Props) => {
   const [notificationContent, setNotificationContent] = useState<Notification>({
@@ -73,14 +73,58 @@ const AddNotifications = (props: Props) => {
     }));
   };
 
-  const handleSubmit = (e: React.ChangeEvent<HTMLFormElement>) => {
+  async function requestPermission() {
+    const permission = await Notification.requestPermission();
+    if (permission === "granted") {
+      // Generate Token
+      const token = await getToken(messaging, {
+        vapidKey:
+          "BM_09SaSw0O-eO_nz2qZBRPsVu3umi9yuCboVWDN3huRJxT9F9SfrZoVubM7-jeVPTcSqNGDFTFIl78gNVXKTOw",
+      });
+      console.log("Token Gen", token);
+      // Send this token  to server ( db)
+    } else if (permission === "denied") {
+      alert("You denied for the notification");
+    }
+  }
+
+  const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
 
-    addNotification(notificationContent);
+    try {
+      const token = await getToken(messaging);
+      console.log(token);
+
+      const message = {
+        notification: {
+          title: "Firebase",
+          body: "Firebase is awesome",
+          click_action: "http://localhost:5173",
+          icon: "http://url-to-an-icon/icon.png",
+        },
+        to: "cmR2AnXzCFCpuKFPXsZiEO:APA91bGXi0a4MJiHfElS2EN-6EdlTU1iMOTIy6Oi1WRf88JcY8ct_zh38ARr_TxHaimDWEBCpfn3tiLUijJIOrlzEAP80T4LEAxaGjXZGnEkKLhvl5sY_v9si1a_zYwGMGKMS66tlO4c",
+      };
+
+      await fetch("https://fcm.googleapis.com/fcm/send", {
+        method: "POST",
+        headers: {
+          Authorization:
+            "key=AAAARNiDo34:APA91bGhxD2nWXPp6RmWkVcqi3pNw0cEfbqrKfDFbmZYCBZKeD002Z7PmhE2uXg3VNGGjK4FmcxlY2Pk0HkagVkSWgPu16WpHSOES9BqHHpbJJ0SpYt3jfVFmncX9b62a1uplMw7VjM3",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(message),
+      });
+
+      addNotification(notificationContent);
+      props.setAddNotification(false);
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
     <div className="addNotifications_background">
+      <button onClick={requestPermission}>Click</button>
       <div className="addNotifications_container">
         <span className="close" onClick={() => props.setAddNotification(false)}>
           <ClearIcon />

@@ -1,28 +1,32 @@
-import { onValue, ref } from "firebase/database";
+import { get, ref } from "firebase/database";
 import { useEffect, useState } from "react";
 import { database } from "../../../../firebase";
 import { useNavigate } from "react-router-dom";
+import { useUsersDataContext } from "../../UserContext";
 
 const TodayDeposit = () => {
   const [totalDeposit, setTotalDeposit] = useState(0);
+  const { selectedDate } = useUsersDataContext();
 
   useEffect(() => {
-    try {
-      const currentDate = new Date();
-      const currentYear = currentDate.getFullYear();
-      const currentMonth = (currentDate.getMonth() + 1)
-        .toString()
-        .padStart(2, "0"); // Ensure two digits
-      const currentDay = currentDate.getDate();
+    const fetchData = async () => {
+      try {
+        // const selectedDate = new Date();
+        const currentYear = selectedDate.getFullYear();
+        const currentMonth = (selectedDate.getMonth() + 1)
+          .toString()
+          .padStart(2, "0"); // Ensure two digits
+        const currentDay = selectedDate.getDate().toString().padStart(2, "0");
 
-      let totalDepositAmount = 0;
+        let totalDepositAmount = 0;
 
-      const depositRef = ref(
-        database,
-        `TOTAL TRANSACTION/DEPOSIT/DATE WISE/${currentYear}/${currentMonth}/${currentDay}`
-      );
+        const depositRef = ref(
+          database,
+          `TOTAL TRANSACTION/DEPOSIT/DATE WISE/${currentYear}/${currentMonth}/${currentDay}`
+        );
 
-      const unsub = onValue(depositRef, (depositSnapshot) => {
+        const depositSnapshot = await get(depositRef);
+
         if (depositSnapshot.exists()) {
           depositSnapshot.forEach((timeSnap) => {
             const amount = timeSnap.child("AMOUNT").val() as number;
@@ -31,14 +35,15 @@ const TodayDeposit = () => {
             //   console.log(totalDepositAmount);
           });
           setTotalDeposit(totalDepositAmount);
+        } else {
+          setTotalDeposit(0);
         }
-      });
-
-      return () => unsub();
-    } catch (err) {
-      console.log(err);
-    }
-  }, []);
+      } catch (err) {
+        console.log(err);
+      }
+    };
+    fetchData();
+  }, [selectedDate]);
 
   const navigate = useNavigate();
   const handleClick = () => {

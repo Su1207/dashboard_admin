@@ -62,8 +62,61 @@
       padding: 10px;
     }
 
-    h4 {
+    .header_winners {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
       margin-bottom: 1rem;
+
+      button {
+        display: flex;
+        align-items: center;
+        padding: 8px;
+        margin: 0;
+        border-radius: 3px;
+        outline: none;
+        border: none;
+        gap: 4px;
+        font-size: 0.8rem;
+        cursor: pointer;
+        background: rgb(2, 2, 83);
+        color: white;
+
+        &:hover {
+          background: #000;
+        }
+
+        @include md {
+          font-size: 0.75rem;
+        }
+
+        @include sm {
+          font-size: 0.65rem;
+          padding: 5px;
+        }
+
+        span {
+          @include sm {
+            display: none;
+          }
+        }
+
+        img {
+          height: 15px;
+
+          @include sm {
+            height: 10px;
+          }
+        }
+      }
+
+      .rewards_sent {
+        background: green;
+
+        &:hover {
+          background: green;
+        }
+      }
     }
 
     ul {
@@ -230,7 +283,7 @@
               gap: 4px;
               font-size: 0.8rem;
               cursor: pointer;
-              background: rgb(2, 2, 83);
+              background: green;
               color: white;
 
               &:hover {
@@ -262,10 +315,10 @@
             }
 
             .rewards_sent {
-              background: green;
+              background: rgb(2, 2, 83);
 
               &:hover {
-                background: green;
+                background: rgb(2, 2, 83);
               }
             }
           }

@@ -1,6 +1,6 @@
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import "./dataTable.scss";
-import { ref, remove, update } from "firebase/database";
+import { onValue, ref, remove, update } from "firebase/database";
 import { database } from "../../firebase";
 import BlockUnblockToggle from "../toggleButton/BlockUnblockToggle";
 import { useNavigate } from "react-router-dom";
@@ -8,7 +8,7 @@ import { toast } from "react-toastify";
 // import AddCardIcon from "@mui/icons-material/AddCard";
 import addPoints from "../../assets/wallet.png";
 import Withdraw from "../../assets/withdrawal.png";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import AdminAddPointsForm from "../AdminAddPointsForm/AdminAddPointsForm";
 import AdminWithdrawPointsForm from "../AdminWithdrawPointsForm/AdminWithdrawPointsForm";
 
@@ -48,6 +48,8 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
   const [isWithdrawPointsFormVisible, setIsWithdrawPointsFormVisible] =
     useState(false);
 
+  const [versionData, setVersionData] = useState(0);
+
   const handleAddPoints = (userId: string) => {
     setSelectedUserId(userId);
     setIsAddPointsFormVisible(!isAddPointsFormVisible);
@@ -60,6 +62,23 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  useEffect(() => {
+    try {
+      const versionRef = ref(database, "ADMIN/GENERAL SETTINGS/LATEST_VERSION");
+      const unsub = onValue(versionRef, (snapshot) => {
+        if (snapshot.exists()) {
+          setVersionData(snapshot.val());
+        }
+      });
+
+      return () => unsub();
+    } catch (err) {
+      console.log(err);
+    }
+  }, []);
+
+  console.log(versionData);
+
   const columns: GridColDef[] = [
     {
       field: "id",
@@ -67,10 +86,21 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
       width: 160,
       renderCell: (params) => (
         <div className="phone_column">
-          <div className="version">V{params.row.appVersion}.0</div>
+          <div
+            className={
+              versionData === params.row.appVersion ? "latest" : "version"
+            }
+          >
+            V{params.row.appVersion}.0
+          </div>
           <div>
             <div>{params.row.id.split("-")[0]}</div>
-            <div className="user_name">{params.row.name}</div>
+            <div
+              className="user_name"
+              onClick={() => handleEdit(params.row.id.split("-")[0])}
+            >
+              {params.row.name}
+            </div>
           </div>
         </div>
       ),
@@ -236,8 +266,6 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
 
       return `${day}-${month}-${year} | ${formattedHours}:${minutes}:${seconds} ${meridiem}`;
     };
-
-    console.log(id);
 
     const createdOnDate = user?.CREATED_ON
       ? convertTimestamp(user.CREATED_ON)

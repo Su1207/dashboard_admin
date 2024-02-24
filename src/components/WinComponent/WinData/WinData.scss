@@ -123,6 +123,8 @@
 
         .winDataDetails {
           .gameName {
+            cursor: pointer;
+
             @include sm {
               font-size: 0.875rem;
             }
@@ -130,9 +132,11 @@
           .openTotal,
           .marketTotal {
             background: rgb(242, 203, 209);
+            cursor: pointer;
           }
 
-          .marketTotal {
+          .marketTotal,
+          .closeTotal {
             cursor: pointer;
           }
         }

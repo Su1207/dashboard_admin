@@ -24,7 +24,7 @@ export type ManualDataTye = {
 const ManualRequests = () => {
   const [manualData, setManualData] = useState<ManualDataTye[] | null>(null);
   const [selectedDate, setSelectedDate] = useState<Date>(new Date());
-  const [selectedOption, setSelectedOption] = useState("");
+  const [selectedOption, setSelectedOption] = useState("false");
 
   useEffect(() => {
     const fetchData = async () => {

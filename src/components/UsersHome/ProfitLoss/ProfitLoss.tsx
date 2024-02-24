@@ -4,11 +4,14 @@ import "./ProfitLoss.scss";
 import KeyboardDoubleArrowUpRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowUpRounded";
 import KeyboardDoubleArrowDownRoundedIcon from "@mui/icons-material/KeyboardDoubleArrowDownRounded";
 import RemoveCircleRoundedIcon from "@mui/icons-material/RemoveCircleRounded";
+import DatePicker from "react-datepicker";
+import { FaCalendarAlt } from "react-icons/fa";
 
 const ProfitLoss = () => {
   const { totalBid, totalWin } = useUsersDataContext();
   const [profit, setProfit] = useState(false);
   const [calculatedValue, setCalculatedValue] = useState(0);
+  const { selectedDate, setSelectedDate } = useUsersDataContext();
 
   useEffect(() => {
     const calculateProfit = () => {
@@ -27,9 +30,36 @@ const ProfitLoss = () => {
     calculateProfit();
   }, [totalBid, totalWin]);
 
+  const handleDateChange = (newDate: Date) => {
+    setSelectedDate(newDate);
+  };
+
+  if (!selectedDate) {
+    const currentDate = new Date();
+    setSelectedDate(currentDate);
+  }
+
   return (
     <div className="profit_loss_container">
-      <h3 className="profit_loss_title">Profit / Loss</h3>
+      <div className="profit_loss_title">
+        <h3 className="">Profit / Loss</h3>
+        <div className="date-picker-container">
+          <div className="date-pic">
+            <DatePicker
+              className="datePicker"
+              selected={selectedDate}
+              onChange={handleDateChange}
+              dateFormat="dd-MMM-yyyy"
+              maxDate={new Date()} // Set the maximum date to the current date
+
+              //   placeholderText="Select a Date"
+            />
+            <div className="calendar">
+              <FaCalendarAlt />
+            </div>
+          </div>
+        </div>
+      </div>
 
       <div className="profit">&#8377; {calculatedValue}</div>
 

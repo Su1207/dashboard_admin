@@ -17,38 +17,45 @@ export type PayoutDataType = {
 
 const PayoutComponent = () => {
   const [payoutData, setPayoutData] = useState<PayoutDataType[] | null>(null);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchPayoutData = () => {
       const payoutRef = ref(database, "WITHDRAW METHODS");
 
-      const unsubscribe = onValue(payoutRef, (snapshot) => {
-        const payoutArray: PayoutDataType[] = [];
-        const promises: Promise<void>[] = [];
+      try {
+        const unsubscribe = onValue(payoutRef, (snapshot) => {
+          const payoutArray: PayoutDataType[] = [];
+          const promises: Promise<void>[] = [];
 
-        snapshot.forEach((snapShot) => {
-          const key = snapShot.key;
+          snapshot.forEach((snapShot) => {
+            const key = snapShot.key;
 
-          if (snapShot.exists()) {
-            const userRef = ref(database, `USERS/${snapShot.key}`);
-            const promise = get(userRef).then((userSnapshot) => {
-              if (userSnapshot.exists()) {
-                const name = userSnapshot.val().NAME;
-                payoutArray.push({
-                  key,
-                  name,
-                  ...snapShot.val(),
-                });
-              }
-            });
-            promises.push(promise);
-          }
+            if (snapShot.exists()) {
+              const userRef = ref(database, `USERS/${snapShot.key}`);
+              const promise = get(userRef).then((userSnapshot) => {
+                if (userSnapshot.exists()) {
+                  const name = userSnapshot.val().NAME;
+                  payoutArray.push({
+                    key,
+                    name,
+                    ...snapShot.val(),
+                  });
+                }
+              });
+              promises.push(promise);
+            }
+          });
+          Promise.all(promises).then(() => {
+            setPayoutData(payoutArray);
+          });
         });
-        Promise.all(promises).then(() => {
-          setPayoutData(payoutArray);
-        });
-      });
-      return () => unsubscribe();
+        return () => unsubscribe();
+      } catch (err) {
+        console.log(err);
+      } finally {
+        setLoading(false);
+      }
     };
 
     fetchPayoutData();
@@ -56,9 +63,15 @@ const PayoutComponent = () => {
 
   console.log(payoutData);
   return (
-    <div>
-      <PayoutGrid payoutData={payoutData} />
-    </div>
+    <>
+      {loading ? (
+        <div>Loading...</div>
+      ) : (
+        <div>
+          <PayoutGrid payoutData={payoutData} />
+        </div>
+      )}
+    </>
   );
 };
 

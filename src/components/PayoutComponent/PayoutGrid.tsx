@@ -21,13 +21,20 @@ const PayoutGrid: React.FC<PyoutGridProps> = ({ payoutData }) => {
       renderCell: (params) => (
         <div>
           <div>{params.row.id.split("-")[0]}</div>
-          <div className="user_name">{params.row.name}</div>
+          <div
+            className="user_name"
+            onClick={() => handleEdit(params.row.id.split("-")[0])}
+          >
+            {params.row.name}
+          </div>
         </div>
       ),
     },
     {
       field: "acc_name",
       headerName: "Account Name",
+      cellClassName: "phone-column",
+
       width: 150,
     },
     {
@@ -38,22 +45,22 @@ const PayoutGrid: React.FC<PyoutGridProps> = ({ payoutData }) => {
     {
       field: "acc_ifsc",
       headerName: "IFSC Code",
-      width: 120,
+      width: 140,
     },
     {
       field: "gpay",
       headerName: "GPay",
-      width: 110,
+      width: 120,
     },
     {
       field: "paytm",
       headerName: "Paytm",
-      width: 110,
+      width: 120,
     },
     {
       field: "phonepe",
       headerName: "PhonePe",
-      width: 110,
+      width: 120,
     },
     {
       field: "upi",

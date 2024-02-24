@@ -5,6 +5,7 @@ import { get, ref, set } from "firebase/database";
 import { database } from "../../../firebase";
 import { toast } from "react-toastify";
 import "./EditorPayout.scss";
+import Copy from "../../copy/Copy";
 
 type PayoutEditDataType = {
   ACC_IFSC: string;
@@ -115,7 +116,9 @@ const EditPayout = (props: Props) => {
 
         <form onSubmit={handleSubmit}>
           <div className="item">
-            <label>Account Name*</label>
+            <label>
+              Account Name* <Copy PhoneNumber={null} data={formData.ACC_NAME} />
+            </label>
             <input
               type="text"
               name="ACC_NAME"
@@ -126,7 +129,10 @@ const EditPayout = (props: Props) => {
           </div>
 
           <div className="item">
-            <label>Account Number*</label>
+            <label>
+              Account Number*{" "}
+              <Copy PhoneNumber={null} data={formData.ACC_NUM} />
+            </label>
             <input
               type="text"
               name="ACC_NUM"
@@ -140,7 +146,9 @@ const EditPayout = (props: Props) => {
           </div>
 
           <div className="item">
-            <label>IFSC Code*</label>
+            <label>
+              IFSC Code* <Copy PhoneNumber={null} data={formData.ACC_IFSC} />
+            </label>
             <input
               type="text"
               name="ACC_IFSC"
@@ -150,7 +158,9 @@ const EditPayout = (props: Props) => {
             />
           </div>
           <div className="item">
-            <label>GPay</label>
+            <label>
+              GPay <Copy PhoneNumber={null} data={formData.GPAY} />
+            </label>
             <input
               type="text"
               name="GPAY"
@@ -164,7 +174,9 @@ const EditPayout = (props: Props) => {
           </div>
 
           <div className="item">
-            <label>Paytm</label>
+            <label>
+              Paytm <Copy PhoneNumber={null} data={formData.PAYTM} />
+            </label>
             <input
               type="text"
               name="PAYTM"
@@ -178,7 +190,9 @@ const EditPayout = (props: Props) => {
           </div>
 
           <div className="item">
-            <label>PhonePe</label>
+            <label>
+              PhonePe <Copy PhoneNumber={null} data={formData.PHONEPE} />
+            </label>
             <input
               type="text"
               name="PHONEPE"
@@ -192,7 +206,9 @@ const EditPayout = (props: Props) => {
           </div>
 
           <div className="item">
-            <label>UPI</label>
+            <label>
+              UPI <Copy PhoneNumber={null} data={formData.UPI} />
+            </label>
             <input
               type="text"
               name="UPI"

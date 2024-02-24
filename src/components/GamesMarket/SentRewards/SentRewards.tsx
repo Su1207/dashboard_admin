@@ -1,4 +1,4 @@
-import { get, onValue, ref, set, update } from "firebase/database";
+import { get, onValue, ref, remove, set, update } from "firebase/database";
 import { useEffect, useState } from "react";
 import { database } from "../../../firebase";
 import "./SentRewards.scss";
@@ -23,7 +23,7 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
   const [usersList, setUsersList] = useState<UserListDataType[] | null>(null);
   const [showOpenWinners, setShowOpenWinners] = useState(false);
   const [rewardSentMap, setRewardSentMap] = useState<{
-    [key: string]: boolean;
+    [key: string]: boolean | null;
   }>({});
 
   const currentDate = new Date();
@@ -176,6 +176,8 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
     await Promise.all(promises);
   };
 
+  const [openLoading, setOpenLoading] = useState(true);
+
   const fetchOpenUsers = async () => {
     try {
       const openSingleNumber =
@@ -194,10 +196,13 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
       setUsersList(userListArray); // Set userListArray after both calls to fetchUsers
     } catch (err) {
       console.log(err);
+    } finally {
+      setOpenLoading(false);
     }
   };
 
   const fetchCloseUsers = async () => {
+    setOpenLoading(true);
     try {
       const openSingleNumber =
         (parseInt(openMarketResult[0]) +
@@ -232,6 +237,8 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
       setUsersList(userListArray);
     } catch (err) {
       console.log(err);
+    } finally {
+      setOpenLoading(false);
     }
   };
 
@@ -268,9 +275,101 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
           ...prevData,
           [`${phone}${gameName}${openClose}${number}`]: true,
         }));
+      } else {
+        setRewardSentMap((prevData) => ({
+          ...prevData,
+          [`${phone}${gameName}${openClose}${number}`]: false,
+        }));
       }
     });
   };
+
+  // useEffect(() => {});
+  const [timeKey, setTimeKey] = useState("");
+
+  const returnRewards = async (
+    phone: string,
+    gameName: string,
+    number: string,
+    winPoints: number
+  ) => {
+    const userRef = ref(database, `USERS/${phone}`);
+    const userDayRef = ref(
+      database,
+      `USERS TRANSACTION/${phone}/WIN/DATE WISE/${year}/${month}/${date}/${
+        gameId.split("___")[0]
+      }`
+    );
+
+    const openClose =
+      gameName === "Jodi Digit" ||
+      gameName === "Half Sangam" ||
+      gameName === "Full Sangam"
+        ? "OPEN"
+        : gameId.split("___")[2];
+
+    console.log(gameName, openClose, number);
+
+    const snapshot = await get(userRef);
+
+    const userDaySnapshot = await get(userDayRef);
+
+    if (snapshot.exists()) {
+      const previousAmount = snapshot.val().AMOUNT;
+
+      const currentAmount = Math.abs(winPoints - previousAmount);
+
+      await update(userRef, { AMOUNT: currentAmount });
+    }
+
+    userDaySnapshot.forEach((timeSnap) => {
+      if (
+        timeSnap.val().OPEN_CLOSE === openClose &&
+        timeSnap.val().NUMBER === number
+      ) {
+        setTimeKey(timeSnap.key);
+      }
+    });
+
+    const totalTransactionTotalRef = ref(
+      database,
+      `TOTAL TRANSACTION/WIN/TOTAL/${gameId.split("___")[0]}/${timeKey}`
+    );
+    const totalTransactionDateWiseRef = ref(
+      database,
+      `TOTAL TRANSACTION/WIN/DATE WISE/${year}/${month}/${date}/${
+        gameId.split("___")[0]
+      }/${timeKey}`
+    );
+
+    console.log(timeKey);
+
+    const userTransactionDateWiseRef = ref(
+      database,
+      `USERS TRANSACTION/${phone}/WIN/DATE WISE/${year}/${month}/${date}/${
+        gameId.split("___")[0]
+      }/${timeKey}`
+    );
+
+    const userTransactionTotalRef = ref(
+      database,
+      `USERS TRANSACTION/${phone}/WIN/TOTAL/${
+        gameId.split("___")[0]
+      }/${timeKey}`
+    );
+
+    // await remove(totalTransactionTotalRef).then(() => {
+    //   remove(userTransactionDateWiseRef);
+    //   remove(totalTransactionDateWiseRef);
+    //   remove(userTransactionTotalRef);
+    // });
+
+    await checkRewards(phone, gameName, number, openClose);
+
+    toast.success("Win points returned");
+  };
+
+  console.log(rewardSentMap);
 
   const sendRewards = async (
     userName: string,
@@ -341,9 +440,52 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
       set(userTransactionTotalRef, transactionData),
     ]);
 
-    checkRewards(phone, gameName, number, openClose);
-    toast.success("Rewards successfully sent");
+    await checkRewards(phone, gameName, number, openClose);
   };
+
+  console.log(usersList);
+
+  const sendAllRewards = async () => {
+    if (usersList) {
+      for (const users of usersList) {
+        await sendRewards(
+          users.userName,
+          users.phone,
+          users.gameName,
+          users.number,
+          users.points,
+          users.points * users.gameRate
+        );
+      }
+    }
+    toast.success("Rewards successfully sent to all winners");
+  };
+
+  const [allRewardsSent, setAllRewardsSent] = useState(false);
+
+  const checkAllRewards = () => {
+    if (
+      usersList &&
+      usersList.every(
+        (user) =>
+          rewardSentMap[
+            `${user.phone}${user.gameName}${
+              user.gameName === "Jodi Digit" ||
+              user.gameName === "Half Sangam" ||
+              user.gameName === "Full Sangam"
+                ? "OPEN"
+                : gameId.split("___")[2]
+            }${user.number}`
+          ]
+      )
+    ) {
+      setAllRewardsSent(true);
+    }
+  };
+
+  useEffect(() => {
+    checkAllRewards();
+  }, [rewardSentMap]);
 
   return (
     <div className="rewards">
@@ -381,81 +523,117 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
         </div>
       )}
 
-      {usersList && usersList.length > 0 ? (
-        <div className="winning_users_container">
-          <h4>Winning Users</h4>
-          <ul>
-            {usersList &&
-              usersList.map((users) => (
-                <li key={`${users.phone}${users.gameName}`}>
-                  <div className="users_list">
-                    <div className="phone_gameName">
-                      <div className="phone">
-                        +91 {users.phone}{" "}
-                        <span>({users.userName.split(" ")[0]})</span>
-                      </div>
-                      <div className="gameName">
-                        {users.gameName} <span>({users.number})</span>
-                      </div>
-                    </div>
-                    <div className="winning_button">
-                      <div className="winning_points">
-                        {users.points} &#8377; x {users.gameRate} Rate{" "}
-                        <span className="equal">=</span>
-                        <span>{users.points * users.gameRate} &#8377;</span>
-                      </div>
-                      <button
-                        onClick={() =>
-                          sendRewards(
-                            users.userName,
-                            users.phone,
-                            users.gameName,
-                            users.number,
-                            users.points,
-                            users.points * users.gameRate
-                          )
-                        }
-                        disabled={
-                          rewardSentMap[
-                            `${users.phone}${users.gameName}${
-                              gameId.split("___")[2]
-                            }${users.number}`
-                          ]
-                        }
-                        className={
-                          rewardSentMap[
-                            `${users.phone}${users.gameName}${
-                              gameId.split("___")[2]
-                            }${users.number}`
-                          ]
-                            ? "rewards_sent"
-                            : ""
-                        }
-                      >
-                        {rewardSentMap[
-                          `${users.phone}${users.gameName}${
-                            gameId.split("___")[2]
-                          }${users.number}`
-                        ] ? (
-                          <p className="button_text">
-                            ✓ Sent <span>Rewards</span>
-                          </p>
-                        ) : (
-                          <>
-                            Send <span>Rewards</span>
-                            <img src="/gift.png" alt="" />
-                          </>
-                        )}
-                      </button>
-                    </div>
-                  </div>
-                </li>
-              ))}
-          </ul>
-        </div>
+      {!showOpenWinners ? (
+        ""
+      ) : openLoading ? (
+        <div>Loading...</div>
       ) : (
-        <div className="no-data">
-          <img src="/noData.gif" alt="" className="no-data-img" />
+        <div>
+          {usersList && usersList.length > 0 ? (
+            <div className="winning_users_container">
+              <div className="header_winners">
+                <h3>Winning Users</h3>
+                <button
+                  onClick={sendAllRewards}
+                  disabled={allRewardsSent}
+                  className={allRewardsSent ? "rewards_sent" : ""}
+                >
+                  {allRewardsSent ? (
+                    <p className="button_text">
+                      ✓ Sent <span>Rewards</span>
+                    </p>
+                  ) : (
+                    <>
+                      Send <span>Rewards</span>
+                      <img src="/gift.png" alt="" />
+                    </>
+                  )}
+                </button>
+              </div>
+
+              <ul>
+                {usersList.map((users) => (
+                  <li key={`${users.phone}${users.gameName}`}>
+                    <div className="users_list">
+                      <div className="phone_gameName">
+                        <div className="phone">
+                          +91 {users.phone}{" "}
+                          <span>({users.userName.split(" ")[0]})</span>
+                        </div>
+                        <div className="gameName">
+                          {users.gameName} <span>({users.number})</span>
+                        </div>
+                      </div>
+                      <div className="winning_button">
+                        <div className="winning_points">
+                          {users.points} &#8377; x {users.gameRate} Rate{" "}
+                          <span className="equal">=</span>
+                          <span>{users.points * users.gameRate} &#8377;</span>
+                        </div>
+                        <button
+                          onClick={() =>
+                            returnRewards(
+                              users.phone,
+                              users.gameName,
+                              users.number,
+                              users.points * users.gameRate
+                            )
+                          }
+                          disabled={
+                            !rewardSentMap[
+                              `${users.phone}${users.gameName}${
+                                users.gameName === "Jodi Digit" ||
+                                users.gameName === "Half Sangam" ||
+                                users.gameName === "Full Sangam"
+                                  ? "OPEN"
+                                  : gameId.split("___")[2]
+                              }${users.number}`
+                            ]
+                          }
+                          className={
+                            rewardSentMap[
+                              `${users.phone}${users.gameName}${
+                                users.gameName === "Jodi Digit" ||
+                                users.gameName === "Half Sangam" ||
+                                users.gameName === "Full Sangam"
+                                  ? "OPEN"
+                                  : gameId.split("___")[2]
+                              }${users.number}`
+                            ] || allRewardsSent
+                              ? "rewards_sent"
+                              : ""
+                          }
+                        >
+                          {rewardSentMap[
+                            `${users.phone}${users.gameName}${
+                              users.gameName === "Jodi Digit" ||
+                              users.gameName === "Half Sangam" ||
+                              users.gameName === "Full Sangam"
+                                ? "OPEN"
+                                : gameId.split("___")[2]
+                            }${users.number}`
+                          ] ? (
+                            <>
+                              <span>Return</span>
+                              <img src="/gift.png" alt="" />
+                            </>
+                          ) : (
+                            <>
+                              <p className="button_text">✓ Returned</p>
+                            </>
+                          )}
+                        </button>
+                      </div>
+                    </div>
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ) : (
+            <div className="no-data">
+              <img src="/noData.gif" alt="" className="no-data-img" />
+            </div>
+          )}
         </div>
       )}
     </div>

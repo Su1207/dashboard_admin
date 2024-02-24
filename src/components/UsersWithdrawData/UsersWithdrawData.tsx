@@ -42,6 +42,9 @@ const UsersWithdrawData = () => {
   const [selectedPaymentOption, setSelectedPaymentOption] =
     useState<string>("");
 
+  const [selectedStatusOption, setSelectedStatusOption] =
+    useState<string>("true");
+
   const [checked, setChecked] = useState<boolean>(false);
 
   const handleDataFromChild = (data: boolean) => {
@@ -102,14 +105,20 @@ const UsersWithdrawData = () => {
           setTotalWithdraw(total_withdraw);
           setContributingUsers(contributingUserSet.size);
 
+          let filteredWithdrawDataArray = withdrawDataArray;
+
           if (selectedPaymentOption !== "") {
-            const filterWithdrawData = withdrawDataArray.filter(
+            filteredWithdrawDataArray = filteredWithdrawDataArray.filter(
               (item) => item.APP === selectedPaymentOption
             );
-            setwithdrawData(filterWithdrawData);
-          } else {
-            setwithdrawData(withdrawDataArray);
           }
+          if (selectedStatusOption !== "") {
+            filteredWithdrawDataArray = filteredWithdrawDataArray.filter(
+              (item) => item.PENDING === selectedStatusOption
+            );
+          }
+
+          setwithdrawData(filteredWithdrawDataArray);
         } else {
           console.log("No users available in the database");
         }
@@ -119,7 +128,7 @@ const UsersWithdrawData = () => {
     };
 
     fetchWithdrawData();
-  }, [selectedDate, selectedPaymentOption, checked]);
+  }, [selectedDate, selectedPaymentOption, selectedStatusOption, checked]);
 
   const handleDateChange = (newDate: Date) => {
     setSelectedDate(newDate);
@@ -167,39 +176,66 @@ const UsersWithdrawData = () => {
           <img src="/UserWithdraw.png" alt="" className="withdraw_image" />
         </div>
       </div>
-      <div className="payment-option">
-        <label>Payment Option</label>
-        <div className="payment-option_input">
-          <div className="filter_icon">
-            <FaFilter size={18} />
+      <div className="options_container">
+        <div className="payment-option">
+          <label>Payment</label>
+          <div className="payment-option_input">
+            <div className="filter_icon">
+              <FaFilter size={18} />
+            </div>
+            <select
+              value={selectedPaymentOption}
+              className="select_filter_option"
+              onChange={(e) => setSelectedPaymentOption(e.target.value)}
+            >
+              <option className="filter_option" value="">
+                All
+              </option>
+              <option className="filter_option" value="Admin">
+                Admin
+              </option>
+              <option className="filter_option" value="GPAY">
+                GPay
+              </option>
+              <option className="filter_option" value="PHONEPE">
+                PhonePay
+              </option>
+              <option className="filter_option" value="PAYTM">
+                Paytm
+              </option>
+              <option className="filter_option" value="MANUAL">
+                Manual
+              </option>
+            </select>
           </div>
-          <select
-            value={selectedPaymentOption}
-            className="select_filter_option"
-            onChange={(e) => setSelectedPaymentOption(e.target.value)}
-          >
-            <option className="filter_option" value="">
-              All
-            </option>
-            <option className="filter_option" value="Admin">
-              Admin
-            </option>
-            <option className="filter_option" value="GPAY">
-              GPay
-            </option>
-            <option className="filter_option" value="PHONEPE">
-              PhonePay
-            </option>
-            <option className="filter_option" value="PAYTM">
-              Paytm
-            </option>
-            <option className="filter_option" value="MANUAL">
-              Manual
-            </option>
-          </select>
+        </div>
+        <div className="payment-option">
+          <label>Status</label>
+          <div className="payment-option_input">
+            <div className="filter_icon">
+              <FaFilter size={18} />
+            </div>
+            <select
+              value={selectedStatusOption}
+              className="select_filter_option"
+              onChange={(e) => setSelectedStatusOption(e.target.value)}
+            >
+              <option className="filter_option" value="">
+                All
+              </option>
+              <option className="filter_option" value="false">
+                ACCEPETD
+              </option>
+              <option className="filter_option" value="true">
+                PENDING
+              </option>
+              <option className="filter_option" value="REJECTED">
+                REJECTED
+              </option>
+            </select>
+          </div>
         </div>
       </div>
-      <div></div>
       <div>
         <UsersWithdrawGrid
           withdrawData={withdrawData}

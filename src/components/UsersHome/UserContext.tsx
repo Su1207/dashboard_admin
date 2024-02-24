@@ -25,6 +25,8 @@ interface UsersDataContextProps {
   setYesterdayWin: React.Dispatch<React.SetStateAction<number | 0>>;
   yesterdayBid: number;
   setYesterdayBid: React.Dispatch<React.SetStateAction<number | 0>>;
+  selectedDate: Date;
+  setSelectedDate: React.Dispatch<React.SetStateAction<Date>>;
   //   totalWin: number;
   //   setTotalWin: React.Dispatch<React.SetStateAction<number | 0>>;
   //   totalBid: number;
@@ -40,6 +42,7 @@ export const UsersDataProvider: React.FC<{ children: ReactNode }> = ({
 }) => {
   const [usersData, setUsersData] = useState<User[] | null>(null);
   const [totalBid, setTotalBid] = useState(0);
+  const [selectedDate, setSelectedDate] = useState<Date>(new Date());
   //   const [totalBid, setTotalBid] = useState(0);
   //   const [totalWin, setTotalWin] = useState(0);
   const [totalWin, setTotalWin] = useState(0);
@@ -59,6 +62,8 @@ export const UsersDataProvider: React.FC<{ children: ReactNode }> = ({
         setYesterdayWin,
         yesterdayBid,
         setYesterdayBid,
+        selectedDate,
+        setSelectedDate,
       }}
     >
       {children}

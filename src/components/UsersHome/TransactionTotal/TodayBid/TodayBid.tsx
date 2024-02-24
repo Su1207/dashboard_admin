@@ -6,16 +6,18 @@ import { useUsersDataContext } from "../../UserContext";
 
 const TodayBid = () => {
   const { totalBid, setTotalBid } = useUsersDataContext();
+  const { selectedDate } = useUsersDataContext();
 
   useEffect(() => {
     const fetchBidData = async () => {
       try {
-        const currentDate = new Date();
-        const currentYear = currentDate.getFullYear();
-        const currentMonth = (currentDate.getMonth() + 1)
+        // const selectedDate = new Date();
+
+        const currentYear = selectedDate.getFullYear();
+        const currentMonth = (selectedDate.getMonth() + 1)
           .toString()
           .padStart(2, "0"); // Ensure two digits
-        const currentDay = currentDate.getDate();
+        const currentDay = selectedDate.getDate().toString().padStart(2, "0");
 
         let totalBidAmount = 0;
 
@@ -55,7 +57,7 @@ const TodayBid = () => {
     };
 
     fetchBidData();
-  }, []);
+  }, [selectedDate]);
 
   const navigate = useNavigate();
   const handleClick = () => {

@@ -193,54 +193,61 @@
     }
   }
 
-  .payment-option {
+  .options_container {
     display: flex;
     align-items: center;
-    gap: 0.5rem;
+    gap: 1rem;
     justify-content: end;
     margin-bottom: 1rem;
-    label {
-      font-size: 0.875rem;
-    }
-    .payment-option_input {
-      position: relative;
+    .payment-option {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      justify-content: end;
 
-      .filter_icon {
-        color: $dark-color;
-        position: absolute;
-        top: 2px;
-        left: 4.2rem;
+      label {
+        font-size: 0.875rem;
       }
-      .select_filter_option {
-        appearance: none;
-        -webkit-appearance: none;
-        -moz-appearance: none;
-        padding: 4px 0 4px 4px;
-        border: 1px solid #ccc;
-        border-radius: 3px;
-        background-color: #fff;
-        cursor: pointer;
-        width: 5.5rem;
-        font-size: 13px;
-        font-weight: 500;
+      .payment-option_input {
+        position: relative;
 
-        &:focus {
-          outline: none;
+        .filter_icon {
+          color: $dark-color;
+          position: absolute;
+          top: 2px;
+          left: 4.2rem;
         }
-      }
-
-      .filter_option {
-        // text-align: center;
-        background-color: #fff;
-        color: $dark-color;
-        font-size: 13px;
-        font-weight: 500;
-        border-radius: 15px;
-        // height: fit-content;
-
-        @include md {
-          font-size: 8px;
+        .select_filter_option {
+          appearance: none;
+          -webkit-appearance: none;
+          -moz-appearance: none;
+          padding: 4px 0 4px 4px;
+          border: 1px solid #ccc;
+          border-radius: 3px;
+          background-color: #fff;
+          cursor: pointer;
+          width: 5.5rem;
+          font-size: 13px;
           font-weight: 500;
+
+          &:focus {
+            outline: none;
+          }
+        }
+
+        .filter_option {
+          // text-align: center;
+          background-color: #fff;
+          color: $dark-color;
+          font-size: 13px;
+          font-weight: 500;
+          border-radius: 15px;
+          // height: fit-content;
+
+          @include md {
+            font-size: 8px;
+            font-weight: 500;
+          }
         }
       }
     }

@@ -23,7 +23,7 @@ const Login = () => {
       `ADMIN/SUB_ADMIN/${username}/PERMISSIONS`
     );
 
-    const permissionSnapshot = await get(permissionRef);
+    const permissionSnapshot = await get(permissionRef); 
     if (permissionSnapshot.exists()) {
       setPermissions(permissionSnapshot.val());
     } else {
