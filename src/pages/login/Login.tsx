@@ -23,7 +23,7 @@ const Login = () => {
       `ADMIN/SUB_ADMIN/${username}/PERMISSIONS`
     );
 
-    const permissionSnapshot = await get(permissionRef); 
+    const permissionSnapshot = await get(permissionRef);
     if (permissionSnapshot.exists()) {
       setPermissions(permissionSnapshot.val());
     } else {
@@ -40,7 +40,7 @@ const Login = () => {
     <div className="auth">
       <div className="auth_container">
         <div className="login_img_container">
-          <img src="login.jpg" alt="" className="login_img" />
+          <img src="login1.png" alt="" className="login_img" />
         </div>
         <div className="login_container">
           <div className="login_title">Login</div>

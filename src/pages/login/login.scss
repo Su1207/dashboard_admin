@@ -8,12 +8,15 @@
   justify-content: center;
   height: 100vh;
   width: 100vw;
-  background: linear-gradient(to right, #6f29f2, #13c6ff);
+  background: #000;
 
   .auth_container {
+    border-radius: 15px;
     display: flex;
     height: 60vh;
-    background-color: #fff; /* Set your desired background color */
+    width: 60vw;
+    background-image: linear-gradient(to right, #8e2de2, #4a00e0);
+    // background: white;
     box-shadow: 0 0 10px rgba(0, 0, 0, 0.1); /* Set your desired shadow */
 
     @include lg {
@@ -31,7 +34,8 @@
     }
 
     .login_img_container {
-      width: 60%;
+      width: 55%;
+      background: #000;
 
       @include md {
         width: 100%;
@@ -46,11 +50,12 @@
         height: 100%;
         object-fit: cover;
         object-position: center;
+        filter: drop-shadow(0 0 0.75rem crimson);
       }
     }
 
     .login_container {
-      width: 40%;
+      width: 45%;
       padding: 20px;
       margin: auto 0;
 
@@ -69,16 +74,20 @@
       form {
         display: flex;
         flex-direction: column;
+        align-items: center;
+        width: 100%;
 
         .input_space {
           margin-bottom: 15px;
           position: relative;
           display: flex;
           align-items: center;
+          // width: 100%;
 
           .user_icon,
           .password_icon {
             position: absolute;
+            left: 5px;
           }
 
           input {
@@ -87,13 +96,16 @@
             outline: none;
             border: none;
             border-bottom: 1px solid #ccc;
+            background: transparent;
             outline: none;
-            padding-left: 2rem;
+            padding-left: 2.5rem;
+            border-radius: 4px;
           }
         }
 
         button {
-          width: 100%;
+          // width: 100%;
+          width: fit-content;
           padding: 10px;
           margin-top: 1rem;
           background-color: #00cea8;
