@@ -28,8 +28,14 @@ const GameChartComponent = ({ marketId }: Props) => {
       const date = dateString.getDate().toString().padStart(2, "0");
       const month = getMonthName(dateString.getMonth());
       const year = dateString.getFullYear();
+      const hour = (dateString.getHours() % 12 || 12)
+        .toString()
+        .padStart(2, "0");
+      const min = dateString.getMinutes().toString().padStart(2, "0");
+      const meridiem = dateString.getHours() >= 12 ? "PM" : "AM";
+      const sec = dateString.getSeconds().toString().padStart(2, "0");
 
-      return `${date}-${month}-${year}`;
+      return `${date}-${month}-${year} | ${hour}:${min}:${sec} ${meridiem}`;
     }
   };
 
@@ -89,6 +95,35 @@ const GameChartComponent = ({ marketId }: Props) => {
     }
   }, []);
 
+  const downloadJson = () => {
+    const jsonData = JSON.stringify(resultData);
+    const blob = new Blob([jsonData], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "game_chart_data.json";
+    a.click();
+    URL.revokeObjectURL(url);
+  };
+
+  // const handleUpload = async () => {
+  //   try {
+  //     // Load the JSON file from the public folder
+  //     const response = await fetch("/game_chart_data.json");
+  //     const jsonData = await response.json();
+
+  //     // Create a new node in the database
+  //     const newUploadRef = push(ref(database, "UPLOAD DATA"));
+
+  //     // Upload the JSON data to the new node
+  //     await set(newUploadRef, jsonData);
+
+  //     console.log("JSON data uploaded successfully!");
+  //   } catch (error) {
+  //     console.error("Error uploading JSON data:", error);
+  //   }
+  // };
+
   return (
     <div className="gameChart">
       {Loading ? (
@@ -102,7 +137,9 @@ const GameChartComponent = ({ marketId }: Props) => {
                   className="gameChart_data"
                   key={`${result.date}${result.open}${result.close}${result.mid}`}
                 >
-                  <div className="gameChart_date">{result.date}</div>
+                  <div className="gameChart_date">
+                    {result.date?.split("|")[0]}
+                  </div>
                   <div className="border"></div>
                   <div className="gameChart_result">
                     {result.open}-{result.mid}-{result.close}
@@ -111,13 +148,18 @@ const GameChartComponent = ({ marketId }: Props) => {
               ))}
           </div>
 
-          <CSVLink
-            data={resultData}
-            filename={"game_chart_data.csv"}
-            className="download_button"
-          >
-            <button>Download</button>
-          </CSVLink>
+          <div className="buttons-download">
+            <CSVLink
+              data={resultData}
+              filename={"game_chart_data.csv"}
+              className="download_button"
+            >
+              <button>Download CSV</button>
+            </CSVLink>
+
+            <button onClick={downloadJson}>Download JSON</button>
+          </div>
+          {/* <button onClick={handleUpload}>Upload</button> */}
         </div>
       )}
     </div>

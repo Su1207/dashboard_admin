@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./AddNotifications.scss";
 import { ref, set } from "firebase/database";
 import { database } from "../../../firebase";
@@ -6,6 +6,7 @@ import { toast } from "react-toastify";
 import ClearIcon from "@mui/icons-material/Clear";
 import { getToken } from "firebase/messaging";
 import { messaging } from "../../../firebase";
+import { onMessage } from "firebase/messaging";
 
 type Props = {
   setAddNotification: React.Dispatch<React.SetStateAction<boolean>>;
@@ -79,22 +80,39 @@ const AddNotifications = (props: Props) => {
       // Generate Token
       const token = await getToken(messaging, {
         vapidKey:
-          "BM_09SaSw0O-eO_nz2qZBRPsVu3umi9yuCboVWDN3huRJxT9F9SfrZoVubM7-jeVPTcSqNGDFTFIl78gNVXKTOw",
+          "BLgQhbEEGr4gmkNECYgjA6F7LmKTCr2ArNWo8Sanh6mNlZ45ccaQIsxfB_cuzp7JbAmvykuFjeSewGrgTWCJzOg",
       });
-      console.log("Token Gen", token);
+      console.log(token);
       // Send this token  to server ( db)
     } else if (permission === "denied") {
       alert("You denied for the notification");
     }
   }
 
+  useEffect(() => {
+    requestPermission();
+    onMessage(messaging, (payload) => {
+      console.log(payload);
+    });
+  }, []);
+
+  useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register("/firebase-messaging-sw.js")
+        .then((registration: any) => {
+          console.log("Service Worker registered", registration);
+        })
+        .catch((error) => {
+          console.error("Service Worker registration failed:", error);
+        });
+    }
+  }, []);
+
   const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
-      const token = await getToken(messaging);
-      console.log(token);
-
       const message = {
         notification: {
           title: "Firebase",
@@ -117,6 +135,7 @@ const AddNotifications = (props: Props) => {
 
       addNotification(notificationContent);
       props.setAddNotification(false);
+      console.log("success");
     } catch (error) {
       console.log(error);
     }
@@ -124,7 +143,6 @@ const AddNotifications = (props: Props) => {
 
   return (
     <div className="addNotifications_background">
-      <button onClick={requestPermission}>Click</button>
       <div className="addNotifications_container">
         <span className="close" onClick={() => props.setAddNotification(false)}>
           <ClearIcon />

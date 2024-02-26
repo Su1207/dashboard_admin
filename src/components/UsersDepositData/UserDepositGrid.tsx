@@ -80,7 +80,7 @@ const UserDepositGrid: React.FC<UserDepositDataProps> = ({ depositData }) => {
   ];
 
   const getRowId = (row: CustomRow) => {
-    return `${row.DATE}${row.userPhone}`;
+    return `${row.DATE}${row.userPhone}${row.PAYMENT_APP}`;
   };
 
   return (

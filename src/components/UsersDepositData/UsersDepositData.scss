@@ -204,6 +204,16 @@
         .deposit_type {
           font-weight: 600;
         }
+
+        .deposit_amount {
+          display: flex;
+          align-items: end;
+          gap: 4px;
+
+          .users_size {
+            font-size: 0.75rem;
+          }
+        }
       }
     }
   }

@@ -97,6 +97,12 @@ const OpenCloseOption: React.FC<OpenCloseProps> = ({
           CLOSE: "✦✦✦",
         });
 
+        // await set(totalRef, {
+        //   OPEN: openFormResult,
+        //   MID: midResult,
+        //   CLOSE: "✦✦✦",
+        // });
+
         setOpenClose(false);
         toast.success("Open Result updated successfully");
       } catch (error) {
@@ -117,9 +123,11 @@ const OpenCloseOption: React.FC<OpenCloseProps> = ({
           `RESULTS/${gameId}/${year}/${month}/${date}`
         );
 
+        const totalRef = ref(database, `GAME CHART/${gameId}`);
+
         const timestamp = Date.now();
 
-        const totalRef = ref(database, `GAME CHART/${gameId}/${timestamp}`);
+        const totalNewRef = ref(database, `GAME CHART/${gameId}/${timestamp}`);
 
         get(resultRef).then(async (snapshot) => {
           if (snapshot.exists()) {
@@ -138,11 +146,57 @@ const OpenCloseOption: React.FC<OpenCloseProps> = ({
               CLOSE: closeFormResult,
             });
 
-            await set(totalRef, {
-              OPEN: open,
-              MID: midResult,
-              CLOSE: closeFormResult,
+            const promises: Promise<void>[] = [];
+
+            const promise = get(totalRef).then((chartSnapshot: any) => {
+              console.log(Object.keys(chartSnapshot.val()));
+
+              if (chartSnapshot.exists()) {
+                const timekeys = Object.keys(chartSnapshot.val());
+                const length = timekeys.length;
+                const timestamp = timekeys[length - 1];
+
+                const dateObj = new Date(Number(timestamp));
+
+                const chartdate = dateObj.getDate().toString().padStart(2, "0");
+                const chartmonth = (dateObj.getMonth() + 1)
+                  .toString()
+                  .padStart(2, "0");
+
+                const chartyear = dateObj.getFullYear();
+
+                if (
+                  chartdate === date &&
+                  chartmonth === month &&
+                  chartyear === year
+                ) {
+                  const totalNew = ref(
+                    database,
+                    `GAME CHART/${gameId}/${timestamp}`
+                  );
+
+                  console.log(timestamp);
+
+                  const promis2 = update(totalNew, {
+                    OPEN: open,
+                    MID: midResult,
+                    CLOSE: closeFormResult,
+                  });
+                  promises.push(promis2);
+                } else {
+                  const promise3 = set(totalNewRef, {
+                    OPEN: open,
+                    MID: midResult,
+                    CLOSE: closeFormResult,
+                  });
+                  promises.push(promise3);
+                }
+              }
             });
+            promises.push(promise);
+
+            await Promise.all(promises);
+
             toast.success("Close Result updated successfully");
             setOpenClose(false);
           }

@@ -299,12 +299,6 @@
                 padding: 5px;
               }
 
-              span {
-                @include sm {
-                  display: none;
-                }
-              }
-
               img {
                 height: 15px;
 

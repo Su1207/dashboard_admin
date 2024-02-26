@@ -42,6 +42,9 @@ const DepositTransaction: React.FC<{ userId: number }> = ({ userId }) => {
       }
 
       depositDetailsArray.sort((a, b) => {
+        if (a.date === b.date) {
+          return b.total - a.total;
+        }
         const dateA = new Date(a.date.replace("|", "")).getTime();
         const dateB = new Date(b.date.replace("|", "")).getTime();
         return dateB - dateA;

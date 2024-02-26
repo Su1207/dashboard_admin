@@ -278,7 +278,9 @@ const DataGridDemo: React.FC<DataGridDemoProps> = ({ totalData }) => {
 
   const getRowId = (row: CustomRow) => {
     // Use a combination of date and number (if it exists) as the unique identifier
-    return `${row.date}${"number" in row ? row.number : ""}`;
+    return `${row.date}${"paymentApp" in row ? row.paymentApp : ""}${
+      "number" in row ? row.number : ""
+    }`;
   };
 
   const filterDataByDate = (data: CustomRow[]) => {

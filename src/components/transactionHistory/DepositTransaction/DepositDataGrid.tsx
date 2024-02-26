@@ -75,7 +75,7 @@ const DepositDataGrid: React.FC<DepositDataGridProps> = ({ depositData }) => {
     },
   ];
 
-  const getRowId = (row: CustomRow) => `${row.date}${row.uid}`;
+  const getRowId = (row: CustomRow) => `${row.date}${row.uid}${row.paymentApp}`;
 
   const filterDataByDate = (data: CustomRow[]) => {
     if (!selectDate) {

@@ -264,6 +264,7 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
         gameId.split("___")[0]
       }`
     );
+
     const snapshot = await get(usersRef);
 
     snapshot.forEach((winSnapshot) => {
@@ -275,17 +276,12 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
           ...prevData,
           [`${phone}${gameName}${openClose}${number}`]: true,
         }));
-      } else {
-        setRewardSentMap((prevData) => ({
-          ...prevData,
-          [`${phone}${gameName}${openClose}${number}`]: false,
-        }));
       }
     });
   };
 
   // useEffect(() => {});
-  const [timeKey, setTimeKey] = useState("");
+  // const [timeKey, setTimeKey] = useState("");
 
   const returnRewards = async (
     phone: string,
@@ -312,8 +308,6 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
 
     const snapshot = await get(userRef);
 
-    const userDaySnapshot = await get(userDayRef);
-
     if (snapshot.exists()) {
       const previousAmount = snapshot.val().AMOUNT;
 
@@ -322,54 +316,74 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
       await update(userRef, { AMOUNT: currentAmount });
     }
 
-    userDaySnapshot.forEach((timeSnap) => {
-      if (
-        timeSnap.val().OPEN_CLOSE === openClose &&
-        timeSnap.val().NUMBER === number
-      ) {
-        setTimeKey(timeSnap.key);
-      }
+    const promises: Promise<void>[] = [];
+
+    const promise = get(userDayRef).then((userDaySnapshot) => {
+      userDaySnapshot.forEach((timeSnap) => {
+        if (
+          timeSnap.val().OPEN_CLOSE === openClose &&
+          timeSnap.val().NUMBER === number
+        ) {
+          const timeKey = timeSnap.key;
+
+          const totalTransactionTotalRef = ref(
+            database,
+            `TOTAL TRANSACTION/WIN/TOTAL/${gameId.split("___")[0]}/${timeKey}`
+          );
+          const totalTransactionDateWiseRef = ref(
+            database,
+            `TOTAL TRANSACTION/WIN/DATE WISE/${year}/${month}/${date}/${
+              gameId.split("___")[0]
+            }/${timeKey}`
+          );
+
+          console.log(timeKey);
+
+          const userTransactionDateWiseRef = ref(
+            database,
+            `USERS TRANSACTION/${phone}/WIN/DATE WISE/${year}/${month}/${date}/${
+              gameId.split("___")[0]
+            }/${timeKey}`
+          );
+
+          const userTransactionTotalRef = ref(
+            database,
+            `USERS TRANSACTION/${phone}/WIN/TOTAL/${
+              gameId.split("___")[0]
+            }/${timeKey}`
+          );
+
+          const promise1 = remove(userTransactionDateWiseRef).then(() => {
+            remove(totalTransactionTotalRef);
+            remove(totalTransactionDateWiseRef);
+            remove(userTransactionTotalRef);
+          });
+
+          setRewardSentMap((prevData) => ({
+            ...prevData,
+            [`${phone}${gameName}${openClose}${number}`]: false,
+          }));
+
+          promises.push(promise1);
+
+          toast.success("Win points returned");
+        }
+      });
     });
+    promises.push(promise);
 
-    const totalTransactionTotalRef = ref(
-      database,
-      `TOTAL TRANSACTION/WIN/TOTAL/${gameId.split("___")[0]}/${timeKey}`
-    );
-    const totalTransactionDateWiseRef = ref(
-      database,
-      `TOTAL TRANSACTION/WIN/DATE WISE/${year}/${month}/${date}/${
-        gameId.split("___")[0]
-      }/${timeKey}`
-    );
-
-    console.log(timeKey);
-
-    const userTransactionDateWiseRef = ref(
-      database,
-      `USERS TRANSACTION/${phone}/WIN/DATE WISE/${year}/${month}/${date}/${
-        gameId.split("___")[0]
-      }/${timeKey}`
-    );
-
-    const userTransactionTotalRef = ref(
-      database,
-      `USERS TRANSACTION/${phone}/WIN/TOTAL/${
-        gameId.split("___")[0]
-      }/${timeKey}`
-    );
-
-    await remove(totalTransactionTotalRef).then(() => {
-      remove(userTransactionDateWiseRef);
-      remove(totalTransactionDateWiseRef);
-      remove(userTransactionTotalRef);
-    });
-
-    await checkRewards(phone, gameName, number, openClose);
-
-    toast.success("Win points returned");
+    await Promise.all(promises);
   };
 
-  console.log(rewardSentMap);
+  // Function to check if all rewards are sent
+  const checkUsersRewards = () => {
+    if (!rewardSentMap) return false;
+    return Object.values(rewardSentMap).every((value) => value === false);
+  };
+
+  useEffect(() => {
+    checkUsersRewards();
+  }, [rewardSentMap]);
 
   const sendRewards = async (
     userName: string,
@@ -443,27 +457,45 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
     await checkRewards(phone, gameName, number, openClose);
   };
 
-  console.log(usersList);
+  // console.log(usersList);
 
   const sendAllRewards = async () => {
     if (usersList) {
       for (const users of usersList) {
-        await sendRewards(
-          users.userName,
-          users.phone,
-          users.gameName,
-          users.number,
-          users.points,
-          users.points * users.gameRate
-        );
+        if (
+          !rewardSentMap[
+            `${users.phone}${users.gameName}${
+              users.gameName === "Jodi Digit" ||
+              users.gameName === "Half Sangam" ||
+              users.gameName === "Full Sangam"
+                ? "OPEN"
+                : gameId.split("___")[2]
+            }${users.number}`
+          ]
+        )
+          await sendRewards(
+            users.userName,
+            users.phone,
+            users.gameName,
+            users.number,
+            users.points,
+            users.points * users.gameRate
+          );
       }
     }
+
+    checkAllRewards();
     toast.success("Rewards successfully sent to all winners");
   };
 
   const [allRewardsSent, setAllRewardsSent] = useState(false);
 
+  useEffect(() => {
+    checkAllRewards();
+  }, [rewardSentMap]);
+
   const checkAllRewards = () => {
+    console.log(usersList);
     if (
       usersList &&
       usersList.every(
@@ -480,12 +512,10 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
       )
     ) {
       setAllRewardsSent(true);
+    } else {
+      setAllRewardsSent(false);
     }
   };
-
-  useEffect(() => {
-    checkAllRewards();
-  }, [rewardSentMap]);
 
   return (
     <div className="rewards">
@@ -619,7 +649,9 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
                             </>
                           ) : (
                             <>
-                              <p className="button_text">✓ Returned</p>
+                              <p className="button_text">
+                                {checkUsersRewards() ? "..." : "✓ Returned"}
+                              </p>
                             </>
                           )}
                         </button>

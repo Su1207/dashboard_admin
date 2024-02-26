@@ -13,8 +13,8 @@ interface DepositData {
   AMOUNT: number;
   DATE: string;
   NAME: string;
-  PAYMENT_BY: string;
   PAYMENT_APP: string;
+  PAYMENT_BY: string;
   PAYMENT_TO: string;
   TOTAL: number;
   UID: string;
@@ -25,8 +25,8 @@ export interface UserDeposit {
   AMOUNT: number;
   DATE: string;
   NAME: string;
-  PAYMENT_BY: string;
   PAYMENT_APP: string;
+  PAYMENT_BY: string;
   PAYMENT_TO: string;
   TOTAL: number;
   UID: string;
@@ -41,6 +41,9 @@ const UsersDepositData = () => {
   const [contributingUsers, setContributingUsers] = useState(0);
   const [selectedPaymentOption, setSelectedPaymentOption] =
     useState<string>(""); // State to track the selected payment option
+
+  const [upiUsers, setUpiUsers] = useState(0);
+  const [nonUpiUsers, setNonUpiUsers] = useState(0);
 
   const [loading, setLoading] = useState(true);
 
@@ -79,6 +82,9 @@ const UsersDepositData = () => {
                   });
 
                   depositDataArray.sort((a, b) => {
+                    if (a.DATE === b.DATE) {
+                      return b.TOTAL - a.TOTAL;
+                    }
                     const dateA = new Date(a.DATE.replace("|", "")).getTime();
                     const dateB = new Date(b.DATE.replace("|", "")).getTime();
                     return dateB - dateA;
@@ -94,27 +100,43 @@ const UsersDepositData = () => {
 
           let upideposit = 0;
           let nonUpiDeposit = 0;
+          const upiUser: Set<string> = new Set();
+          const nonUpiUser: Set<string> = new Set();
+
           const upiData = depositDataArray.filter(
             (data) =>
-              data.PAYMENT_APP !== "Admin" && data.PAYMENT_APP !== "By Admin"
+              data.PAYMENT_APP !== "Admin" &&
+              data.PAYMENT_APP !== "By Admin" &&
+              data.PAYMENT_APP !== "Welcome Bonus" &&
+              data.PAYMENT_APP !== "Refer Bonus" &&
+              data.PAYMENT_APP !== "Referral Bonus"
           );
 
           if (upiData) {
             upiData.map((data) => {
               upideposit += data.AMOUNT;
+              upiUser.add(data.userPhone);
             });
+
             setUpiDeposit(upideposit);
+            setUpiUsers(upiUser.size);
           }
           const nonUpiData = depositDataArray.filter(
             (data) =>
-              data.PAYMENT_APP === "Admin" || data.PAYMENT_APP === "By Admin"
+              data.PAYMENT_APP === "Admin" ||
+              data.PAYMENT_APP === "By Admin" ||
+              data.PAYMENT_APP === "Welcome Bonus" ||
+              data.PAYMENT_APP === "Refer Bonus" ||
+              data.PAYMENT_APP === "Referral Bonus"
           );
 
           if (nonUpiData) {
             nonUpiData.map((data) => {
               nonUpiDeposit += data.AMOUNT;
+              nonUpiUser.add(data.userPhone);
             });
             setNonUpiDeposit(nonUpiDeposit);
+            setNonUpiUsers(nonUpiUser.size);
           }
 
           let total_deposit: number = 0;
@@ -124,7 +146,11 @@ const UsersDepositData = () => {
           if (selectedPaymentOption === "Admin") {
             const filterDepositData = depositDataArray.filter(
               (item) =>
-                item.PAYMENT_APP === "Admin" || item.PAYMENT_APP === "By Admin"
+                item.PAYMENT_APP === "Admin" ||
+                item.PAYMENT_APP === "By Admin" ||
+                item.PAYMENT_APP === "Welcome Bonus" ||
+                item.PAYMENT_APP === "Refer Bonus" ||
+                item.PAYMENT_APP === "Referral Bonus"
             );
 
             filterDepositData.map((data) => {
@@ -224,11 +250,17 @@ const UsersDepositData = () => {
           <h4 className="total_deposit_title1">DEPOSIT DETAILS</h4>
           <div className="total_deposit1">
             <div className="deposit_type">UPI</div>
-            <div className="deposit_amount">&#8377; {upiDeposit}</div>
+            <div className="deposit_amount">
+              <div>&#8377; {upiDeposit}</div>
+              <div className="users_size">({upiUsers})</div>
+            </div>
           </div>
           <div className="total_deposit1">
             <div className="deposit_type">Admin</div>
-            <div className="deposit_amount">&#8377; {nonUpiDeposit}</div>
+            <div className="deposit_amount">
+              <div>&#8377; {nonUpiDeposit}</div>
+              <div className="users_size">({nonUpiUsers})</div>
+            </div>
           </div>
         </div>
       </div>
