@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import "./OpenCloseOption.scss";
-import { get, push, ref, set, update } from "firebase/database";
+import { get, ref, set, update } from "firebase/database";
 import { database } from "../../../firebase";
 import { toast } from "react-toastify";
 import ClearIcon from "@mui/icons-material/Clear";
