@@ -1,22 +1,24 @@
 import { useEffect, useState } from "react";
 import "./GameChart.scss";
-import { onValue, ref } from "firebase/database";
+import { onValue, ref, update } from "firebase/database";
 import { database } from "../../firebase";
 import { CSVLink } from "react-csv";
+import { toast } from "react-toastify";
 
 type Props = {
   marketId: string;
 };
 
 type resultData = {
-  date: string | undefined;
-  open: string;
-  mid: string;
-  close: string;
+  [timestamp: string]: {
+    CLOSE: string;
+    MID: string;
+    OPEN: string;
+  };
 };
 
 const GameChartComponent = ({ marketId }: Props) => {
-  const [resultData, setResultData] = useState<resultData[]>([]);
+  const [resultData, setResultData] = useState<resultData>({});
   const [Loading, setIsLoading] = useState(true);
 
   const previousDate = Date.now() - 90 * 24 * 60 * 60 * 1000;
@@ -61,29 +63,24 @@ const GameChartComponent = ({ marketId }: Props) => {
     try {
       const gameRef = ref(database, `GAME CHART/${marketId.split("___")[1]}`);
 
-      const resultDataArray: resultData[] | null = [];
-
       const unsub = onValue(gameRef, (snapshot) => {
         if (snapshot.exists()) {
           snapshot.forEach((timeSnap) => {
-            const timeStamp = Number(timeSnap.key);
-
-            if (timeStamp >= previousDate) {
-              const date = convertToDate(timeStamp);
-
-              const open = timeSnap.val().OPEN;
-              const mid = timeSnap.val().MID;
-              const close = timeSnap.val().CLOSE;
-              resultDataArray.push({
-                date,
-                open,
-                mid,
-                close,
-              });
+            if (Number(timeSnap.key) >= previousDate) {
+              const timestamp = timeSnap.key;
+              const OPEN = timeSnap.val().OPEN;
+              const MID = timeSnap.val().MID;
+              const CLOSE = timeSnap.val().CLOSE;
+              setResultData((prevResultData) => ({
+                ...prevResultData,
+                [timestamp]: {
+                  OPEN,
+                  MID,
+                  CLOSE,
+                },
+              }));
             }
           });
-
-          setResultData(resultDataArray);
         }
       });
 
@@ -94,6 +91,8 @@ const GameChartComponent = ({ marketId }: Props) => {
       setIsLoading(false);
     }
   }, []);
+
+  console.log(Object.entries(resultData));
 
   const downloadJson = () => {
     const jsonData = JSON.stringify(resultData);
@@ -106,23 +105,28 @@ const GameChartComponent = ({ marketId }: Props) => {
     URL.revokeObjectURL(url);
   };
 
-  // const handleUpload = async () => {
-  //   try {
-  //     // Load the JSON file from the public folder
-  //     const response = await fetch("/game_chart_data.json");
-  //     const jsonData = await response.json();
+  const handleUpload = async () => {
+    try {
+      // Load the JSON file from the public folder
+      const response = await fetch("/game_chart_data.json");
+      const jsonData = await response.json();
 
-  //     // Create a new node in the database
-  //     const newUploadRef = push(ref(database, "UPLOAD DATA"));
+      // Create a new node in the database
+      const newUploadRef = ref(
+        database,
+        `GAME CHART/${marketId.split("___")[1]}`
+      );
 
-  //     // Upload the JSON data to the new node
-  //     await set(newUploadRef, jsonData);
+      // Upload the JSON data to the new node
+      await update(newUploadRef, jsonData);
 
-  //     console.log("JSON data uploaded successfully!");
-  //   } catch (error) {
-  //     console.error("Error uploading JSON data:", error);
-  //   }
-  // };
+      toast.success("Data uploaded");
+
+      console.log("JSON data uploaded successfully!");
+    } catch (error) {
+      console.error("Error uploading JSON data:", error);
+    }
+  };
 
   return (
     <div className="gameChart">
@@ -132,17 +136,14 @@ const GameChartComponent = ({ marketId }: Props) => {
         <div>
           <div className="gameChart_container">
             {resultData &&
-              resultData.map((result) => (
-                <div
-                  className="gameChart_data"
-                  key={`${result.date}${result.open}${result.close}${result.mid}`}
-                >
+              Object.entries(resultData).map(([timestamp, result]) => (
+                <div className="gameChart_data" key={timestamp}>
                   <div className="gameChart_date">
-                    {result.date?.split("|")[0]}
+                    {convertToDate(Number(timestamp))?.split("|")[0]}
                   </div>
                   <div className="border"></div>
                   <div className="gameChart_result">
-                    {result.open}-{result.mid}-{result.close}
+                    {result.OPEN}-{result.MID}-{result.CLOSE}
                   </div>
                 </div>
               ))}
@@ -150,7 +151,7 @@ const GameChartComponent = ({ marketId }: Props) => {
 
           <div className="buttons-download">
             <CSVLink
-              data={resultData}
+              data={Object.entries(resultData)}
               filename={"game_chart_data.csv"}
               className="download_button"
             >
@@ -158,8 +159,8 @@ const GameChartComponent = ({ marketId }: Props) => {
             </CSVLink>
 
             <button onClick={downloadJson}>Download JSON</button>
+            <button onClick={handleUpload}>Upload Data</button>
           </div>
-          {/* <button onClick={handleUpload}>Upload</button> */}
         </div>
       )}
     </div>

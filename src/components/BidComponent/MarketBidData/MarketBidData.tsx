@@ -18,6 +18,7 @@ const MarketBidData = () => {
   const [bidDataType, setBidDataType] = useState<BidDataType[] | null>(null);
   const { selectedBidDate, setSelectedBidDate } = useBidComponentContext();
   const [totalBidPoints, setTotalBidPoints] = useState(0);
+  const [loading, setLoading] = useState(true);
 
   const navigate = useNavigate();
 
@@ -97,6 +98,8 @@ const MarketBidData = () => {
         }
       } catch (err) {
         console.log(err);
+      } finally {
+        setLoading(false);
       }
     };
 
@@ -151,7 +154,9 @@ const MarketBidData = () => {
         </div>
       </div>
 
-      {bidDataType ? (
+      {loading ? (
+        <div>Loading...</div>
+      ) : bidDataType ? (
         <div className="bidDataList">
           <ul>
             {bidDataType && (

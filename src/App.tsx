@@ -72,7 +72,7 @@ const Layout = () => {
   return (
     <div>
       {isAuthenticated || isSubAuthenticated ? (
-        <div className="main">
+        <div className={`main ${isSubAuthenticated ? "sub_main" : ""}`}>
           <div className="main_navbar">
             <div className="menu_drawer">
               <TemporaryDrawer />
@@ -80,7 +80,11 @@ const Layout = () => {
             <Navbar />
           </div>
           <div className="container">
-            <div className="menuContainer">
+            <div
+              className={`menuContainer ${
+                isSubAuthenticated ? "sub_menuContainer" : ""
+              }`}
+            >
               <Menu />
             </div>
             <div className="contentContainer">

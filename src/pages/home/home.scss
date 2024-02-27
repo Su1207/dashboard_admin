@@ -78,6 +78,10 @@
     border: 2px solid #7b7b7b;
   }
 
+  .sub_box {
+    border: 2px solid $soft-color;
+  }
+
   .box10 {
     grid-column: span 2;
     // background: linear-gradient(90deg, #1cb5e0 0%, #000851 100%);

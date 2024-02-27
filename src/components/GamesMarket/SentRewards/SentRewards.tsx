@@ -479,7 +479,7 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
             users.gameName,
             users.number,
             users.points,
-            users.points * users.gameRate
+            users.points * (users.gameRate / 10)
           );
       }
     }
@@ -596,9 +596,11 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
                       </div>
                       <div className="winning_button">
                         <div className="winning_points">
-                          {users.points} &#8377; x {users.gameRate} Rate{" "}
+                          {users.points} &#8377; x {users.gameRate / 10} Rate{" "}
                           <span className="equal">=</span>
-                          <span>{users.points * users.gameRate} &#8377;</span>
+                          <span>
+                            {users.points * (users.gameRate / 10)} &#8377;
+                          </span>
                         </div>
                         <button
                           onClick={() =>
@@ -606,7 +608,7 @@ const SentRewards: React.FC<RewardsProps> = ({ gameId }) => {
                               users.phone,
                               users.gameName,
                               users.number,
-                              users.points * users.gameRate
+                              users.points * (users.gameRate / 10)
                             )
                           }
                           disabled={

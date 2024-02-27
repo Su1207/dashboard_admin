@@ -31,6 +31,10 @@ a {
   flex-direction: column;
 }
 
+.sub_main {
+  background: rgb(2, 41, 73);
+}
+
 .container {
   flex: 1;
   display: flex;
@@ -52,6 +56,10 @@ a {
     border-right: none;
     padding: 0;
   }
+}
+
+.sub_menuContainer {
+  border-right: 1px solid $soft-color;
 }
 
 .main_navbar {

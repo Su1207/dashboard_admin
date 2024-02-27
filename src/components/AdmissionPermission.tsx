@@ -3,6 +3,7 @@ import { createContext, ReactNode, useContext, useState } from "react";
 export type UsersPermissions = {
   BID: boolean;
   DEPOSIT: boolean;
+  GAME_CHART: boolean;
   GAME_RATE: boolean;
   GAME_SETTINGS: boolean;
   MANUAL_REQUEST: boolean;

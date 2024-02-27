@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react";
 import "./OpenCloseOption.scss";
-import { get, ref, set, update } from "firebase/database";
+import { get, push, ref, set, update } from "firebase/database";
 import { database } from "../../../firebase";
 import { toast } from "react-toastify";
 import ClearIcon from "@mui/icons-material/Clear";
@@ -149,8 +149,6 @@ const OpenCloseOption: React.FC<OpenCloseProps> = ({
             const promises: Promise<void>[] = [];
 
             const promise = get(totalRef).then((chartSnapshot: any) => {
-              console.log(Object.keys(chartSnapshot.val()));
-
               if (chartSnapshot.exists()) {
                 const timekeys = Object.keys(chartSnapshot.val());
                 const length = timekeys.length;
@@ -191,6 +189,12 @@ const OpenCloseOption: React.FC<OpenCloseProps> = ({
                   });
                   promises.push(promise3);
                 }
+              } else {
+                set(totalNewRef, {
+                  OPEN: open,
+                  MID: midResult,
+                  CLOSE: closeFormResult,
+                });
               }
             });
             promises.push(promise);

@@ -128,7 +128,7 @@ const Home = () => {
         )}
 
         {(isSubAuthenticated && permissions?.USERS) || isAuthenticated ? (
-          <div className="box box1">
+          <div className={`box box1 ${isSubAuthenticated ? "sub_box" : ""}`}>
             <UsersHome />
           </div>
         ) : (
@@ -139,7 +139,7 @@ const Home = () => {
 
         {isAuthenticated ||
         (isSubAuthenticated && permissions?.BID && permissions.WIN) ? (
-          <div className="box box9">
+          <div className={`box box9 ${isSubAuthenticated ? "sub_box" : ""}`}>
             <YesterdayProfitLoss />
           </div>
         ) : (
@@ -147,7 +147,7 @@ const Home = () => {
         )}
 
         {isAuthenticated || (isSubAuthenticated && permissions?.DEPOSIT) ? (
-          <div className="box box9">
+          <div className={`box box9 ${isSubAuthenticated ? "sub_box" : ""}`}>
             <YesterDayDeposit />
           </div>
         ) : (
@@ -155,7 +155,7 @@ const Home = () => {
         )}
 
         {(isSubAuthenticated && permissions?.WITHDRAW) || isAuthenticated ? (
-          <div className="box box9">
+          <div className={`box box9 ${isSubAuthenticated ? "sub_box" : ""}`}>
             <YesterdayWithdraw />
           </div>
         ) : (
@@ -163,7 +163,7 @@ const Home = () => {
         )}
 
         {isAuthenticated || (isSubAuthenticated && permissions?.BID) ? (
-          <div className="box box9">
+          <div className={`box box9 ${isSubAuthenticated ? "sub_box" : ""}`}>
             <YesterdayBid />
           </div>
         ) : (
@@ -171,20 +171,25 @@ const Home = () => {
         )}
 
         {isAuthenticated || (isSubAuthenticated && permissions?.WIN) ? (
-          <div className="box box9">
+          <div className={`box box9 ${isSubAuthenticated ? "sub_box" : ""}`}>
             <YesterdayWin />
           </div>
         ) : (
           ""
         )}
 
-        <div className="box box10">
-          <GamePlayUsers />
-        </div>
+        {isAuthenticated ||
+        (isSubAuthenticated && permissions?.WIN && permissions.BID) ? (
+          <div className="box box10">
+            <GamePlayUsers />
+          </div>
+        ) : (
+          ""
+        )}
 
         {isAuthenticated ||
         (isSubAuthenticated && permissions?.MANUAL_REQUEST) ? (
-          <div className="box box9">
+          <div className={`box box9 ${isSubAuthenticated ? "sub_box" : ""}`}>
             <DepositReq />
           </div>
         ) : (
@@ -192,7 +197,7 @@ const Home = () => {
         )}
 
         {isAuthenticated || (isSubAuthenticated && permissions?.WITHDRAW) ? (
-          <div className="box box9">
+          <div className={`box box9 ${isSubAuthenticated ? "sub_box" : ""}`}>
             <WithdrawReq />
           </div>
         ) : (
