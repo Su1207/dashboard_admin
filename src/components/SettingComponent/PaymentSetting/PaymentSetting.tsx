@@ -22,7 +22,7 @@ export type PaymentDataType = {
 
 export type UPIDataType = {
   DEFAULT: string;
-  IDS: { [key: string]: boolean };
+  IDS: string;
 };
 
 const PaymentSetting = () => {
@@ -35,7 +35,7 @@ const PaymentSetting = () => {
 
   const [upiData, setUpiData] = useState<UPIDataType>({
     DEFAULT: "",
-    IDS: { [""]: false },
+    IDS: "",
   });
   const [addUpi, setAddUpi] = useState(false);
 
@@ -105,6 +105,10 @@ const PaymentSetting = () => {
     }
   }, []);
 
+  const defaultId = Object.keys(upiData?.IDS).find(
+    (id) => id === upiData?.DEFAULT
+  );
+
   const handleToggle = () => {
     const gpayRef = ref(database, "ADMIN/PAYMENT/GAPY_AUTO");
 
@@ -127,19 +131,7 @@ const PaymentSetting = () => {
   };
 
   const handleClick = async (key: string) => {
-    const updatedIDS: Record<string, boolean> = {};
-
-    // Update all keys with false
-    Object.keys(upiData.IDS).forEach((key) => {
-      updatedIDS[key] = false;
-    });
-
-    // Set the clicked key as true
-    updatedIDS[key] = true;
-
     // Update the database with the new IDS
-    const upiRef = ref(database, "ADMIN/UPI/IDS");
-    await set(upiRef, updatedIDS);
     const defaultRef = ref(database, "ADMIN/UPI/DEFAULT");
     await set(defaultRef, key);
   };
@@ -219,41 +211,51 @@ const PaymentSetting = () => {
       <div className="fourth_container">
         <div className="default_upi">
           <h4>DEFAULT UPI</h4>
-          <div className="default_upi_id">{upiData?.DEFAULT}</div>
+          <div className="default_upi_id">
+            {upiData?.DEFAULT.replace("*", ".")}
+          </div>
         </div>
         <div className="upi_ids_header">
           <h4>ALL UPI IDS</h4>
           <button onClick={handleAddUpi}>Add New UPI</button>
         </div>
-        {upiData &&
-          Object.entries(upiData.IDS)
-            .sort(([, data1], [, data2]) => (data1 ? -1 : data2 ? 1 : 0))
-            .map(([key, data]) => {
-              const formattedKey = key.replace("*", ".");
-              return (
-                <div key={formattedKey} className="upi_id_container">
-                  <div className="upi_id">
-                    {formattedKey}
-                    {data ? (
-                      <button className="default">DEFAULT</button>
-                    ) : (
-                      <button
-                        className="set_as_default"
-                        onClick={() => handleClick(key)}
-                      >
-                        Set as Default
-                      </button>
-                    )}
-                  </div>
-                  <img
-                    className="delete_icon"
-                    src="delete.svg"
-                    alt=""
-                    onClick={() => handleDelete(key)}
-                  />
+
+        <div className="upi_id_container">
+          <div className="upi_id">
+            {defaultId}
+            <button className="default">DEFAULT</button>
+          </div>
+          <img
+            className="delete_icon"
+            src="delete.svg"
+            alt=""
+            onClick={() => handleDelete(defaultId ?? "")}
+          />
+        </div>
+        {Object.keys(upiData.IDS).map((id) => {
+          if (id !== defaultId) {
+            const formattedId = id.replace("*", ".");
+            return (
+              <div key={id} className="upi_id_container">
+                <div className="upi_id">
+                  {formattedId}
+                  <button
+                    className="set_as_default"
+                    onClick={() => handleClick(id)}
+                  >
+                    Set as Default
+                  </button>
                 </div>
-              );
-            })}
+                <img
+                  className="delete_icon"
+                  src="delete.svg"
+                  alt=""
+                  onClick={() => handleDelete(id)}
+                />
+              </div>
+            );
+          }
+        })}
       </div>
     </div>
   );

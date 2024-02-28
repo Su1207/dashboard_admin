@@ -145,6 +145,11 @@ const Users: React.FC = () => {
     setSelectedListOption(value);
   };
 
+  const currentDate = new Date();
+  const currentdate = currentDate.getDate();
+  const currentmonth = currentDate.getMonth();
+  const currentyear = currentDate.getFullYear();
+
   // Filter users based on selected option
   const getFilteredUsers = () => {
     if (usersData === null || usersListData === null) {
@@ -152,7 +157,7 @@ const Users: React.FC = () => {
     }
 
     const currentTimestamp = new Date().getTime();
-    const oneDayMilliseconds = 24 * 60 * 60 * 1000; // Subtract 24 hours in milliseconds
+    // const oneDayMilliseconds = 24 * 60 * 60 * 1000; // Subtract 24 hours in milliseconds
 
     switch (selectedListOption) {
       case "blocked":
@@ -167,9 +172,20 @@ const Users: React.FC = () => {
 
       case "last24":
         // Filter users where "lastSeen" is within the last 24 hours
-        return Object.values(usersData).filter(
-          (user) => currentTimestamp - user.LAST_SEEN <= oneDayMilliseconds
-        );
+        return Object.values(usersData).filter((user) => {
+          const timestamp = user.LAST_SEEN;
+          const dateObj = new Date(Number(timestamp));
+
+          const date = dateObj.getDate();
+          const month = dateObj.getMonth();
+          const year = dateObj.getFullYear();
+
+          return (
+            date === currentdate &&
+            month === currentmonth &&
+            year === currentyear
+          );
+        });
 
       case "0balance":
         return Object.values(usersData).filter((user) => user.AMOUNT === 0);

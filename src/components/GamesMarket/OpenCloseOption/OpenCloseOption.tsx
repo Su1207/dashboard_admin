@@ -80,9 +80,10 @@ const OpenCloseOption: React.FC<OpenCloseProps> = ({
           `RESULTS/${gameId}/${year}/${month}/${date}`
         );
 
-        // const timestamp = Date.now();
+        const timestamp = Date.now();
 
-        // const totalRef = ref(database, `GAME CHART/${gameId}/${timestamp}`);
+        const totalRef = ref(database, `GAME CHART/${gameId}`);
+        const totalNewRef = ref(database, `GAME CHART/${gameId}/${timestamp}`);
 
         const midResult = `${
           (parseInt(openFormResult[0]) +
@@ -97,11 +98,58 @@ const OpenCloseOption: React.FC<OpenCloseProps> = ({
           CLOSE: "✦✦✦",
         });
 
-        // await set(totalRef, {
-        //   OPEN: openFormResult,
-        //   MID: midResult,
-        //   CLOSE: "✦✦✦",
-        // });
+        const promises: Promise<void>[] = [];
+
+        const promise = get(totalRef).then((chartSnapshot: any) => {
+          if (chartSnapshot.exists()) {
+            const timekeys = Object.keys(chartSnapshot.val());
+            const length = timekeys.length;
+            const timestamp = timekeys[length - 1];
+
+            const dateObj = new Date(Number(timestamp));
+
+            const chartdate = dateObj.getDate().toString().padStart(2, "0");
+            const chartmonth = (dateObj.getMonth() + 1)
+              .toString()
+              .padStart(2, "0");
+
+            const chartyear = dateObj.getFullYear();
+
+            if (
+              chartdate === date &&
+              chartmonth === month &&
+              chartyear === year
+            ) {
+              const totalNew = ref(
+                database,
+                `GAME CHART/${gameId}/${timestamp}`
+              );
+
+              const promis2 = update(totalNew, {
+                OPEN: openFormResult,
+                MID: midResult,
+                CLOSE: "✦✦✦",
+              });
+              promises.push(promis2);
+            } else {
+              const promise3 = set(totalNewRef, {
+                OPEN: openFormResult,
+                MID: midResult,
+                CLOSE: "✦✦✦",
+              });
+              promises.push(promise3);
+            }
+          } else {
+            set(totalNewRef, {
+              OPEN: openFormResult,
+              MID: midResult,
+              CLOSE: "✦✦✦",
+            });
+          }
+        });
+        promises.push(promise);
+
+        await Promise.all(promises);
 
         setOpenClose(false);
         toast.success("Open Result updated successfully");
@@ -172,8 +220,6 @@ const OpenCloseOption: React.FC<OpenCloseProps> = ({
                     database,
                     `GAME CHART/${gameId}/${timestamp}`
                   );
-
-                  console.log(timestamp);
 
                   const promis2 = update(totalNew, {
                     OPEN: open,

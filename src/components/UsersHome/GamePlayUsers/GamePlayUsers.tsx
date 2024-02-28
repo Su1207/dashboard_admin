@@ -99,6 +99,7 @@ const GamePlayUsers = () => {
 
   const handleClick = (userId: string) => {
     navigate(`/users/${userId}`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (

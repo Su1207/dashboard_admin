@@ -1,6 +1,10 @@
 @import "../../styles/variables.scss";
 @import "../../styles/responsive.scss";
 
+.payout_options {
+  cursor: pointer;
+}
+
 .dataTable_UsersWithdraw {
   .dataGrid_UsersWithdraw {
     background-color: white;

@@ -1,6 +1,7 @@
 import { WinDetailsType } from "./WinDetails";
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import "./WinDetails.scss";
+import { useNavigate } from "react-router-dom";
 
 interface WinDetailsGridType {
   winDetails: WinDetailsType[];
@@ -9,6 +10,11 @@ interface WinDetailsGridType {
 type CustomRow = WinDetailsType;
 
 const WinDEtailsGrid: React.FC<WinDetailsGridType> = ({ winDetails }) => {
+  const navigate = useNavigate();
+  const handleUserClick = (phone: string) => {
+    navigate(`/users/${phone}`);
+  };
+
   const columns: GridColDef[] = [
     {
       field: "userName",
@@ -17,7 +23,12 @@ const WinDEtailsGrid: React.FC<WinDetailsGridType> = ({ winDetails }) => {
       cellClassName: "phone-column",
       renderCell: (params) => (
         <div>
-          <div className="user_name">{params.row.userName}</div>
+          <div
+            className="user_name"
+            onClick={() => handleUserClick(params.row.phoneNumber)}
+          >
+            {params.row.userName}
+          </div>
           <div>{params.row.phoneNumber}</div>
         </div>
       ),

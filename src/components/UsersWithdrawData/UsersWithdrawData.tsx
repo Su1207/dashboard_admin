@@ -45,7 +45,7 @@ const UsersWithdrawData = () => {
   const [selectedStatusOption, setSelectedStatusOption] =
     useState<string>("true");
 
-  const [checked, setChecked] = useState<boolean>(false);
+  const [checked, setChecked] = useState<boolean>();
 
   const handleDataFromChild = (data: boolean) => {
     setChecked(data);
@@ -129,6 +129,8 @@ const UsersWithdrawData = () => {
 
     fetchWithdrawData();
   }, [selectedDate, selectedPaymentOption, selectedStatusOption, checked]);
+
+  console.log(withdrawData);
 
   const handleDateChange = (newDate: Date) => {
     setSelectedDate(newDate);

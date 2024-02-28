@@ -1,6 +1,7 @@
 import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { UserDeposit } from "./UsersDepositData";
 import "./UsersDepositData.scss";
+import { useNavigate } from "react-router-dom";
 
 interface UserDepositDataProps {
   depositData: CustomRow[] | null;
@@ -9,6 +10,10 @@ interface UserDepositDataProps {
 type CustomRow = UserDeposit;
 
 const UserDepositGrid: React.FC<UserDepositDataProps> = ({ depositData }) => {
+  const navigate = useNavigate();
+  const handleUserClick = (phone: string) => {
+    navigate(`/users/${phone}`);
+  };
   const columns: GridColDef[] = [
     {
       field: "DATE",
@@ -28,7 +33,12 @@ const UserDepositGrid: React.FC<UserDepositDataProps> = ({ depositData }) => {
       width: 120,
       renderCell: (params) => (
         <div>
-          <div className="user_name">{params.row.NAME}</div>
+          <div
+            className="user_name"
+            onClick={() => handleUserClick(params.row.userPhone)}
+          >
+            {params.row.NAME}
+          </div>
           <div>{params.row.userPhone}</div>
         </div>
       ),

@@ -2,8 +2,9 @@ import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { UserWithdraw } from "./UsersWithdrawData";
 import "./UsersWithdrawData.scss";
 import { ClickPosition } from "../GamesMarket/GamesDetails/GamesDataGrid";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import EditWithdrawStatus from "../transactionHistory/WithdrawTransaction/EditWithdrawStatus/EditWithdrawStatus";
+import PayoutOptions from "./PayoutOptions";
 
 interface withdrawDataGridProps {
   withdrawData: CustomRow[] | null;
@@ -19,9 +20,18 @@ const UsersWithdrawGrid: React.FC<withdrawDataGridProps> = ({
   const [phone, setPhone] = useState("");
   const [date, setDate] = useState("");
   const [pending, setPending] = useState(false);
+  const [payoutOption, setPayoutOption] = useState(false);
   const [clickPosition, setClickPosition] = useState<ClickPosition | null>(
     null
   );
+
+  const handlePayout = (payout: string, phone: string, timestamp: string) => {
+    if (payout === "Not Selected") {
+      setPayoutOption(!payoutOption);
+      setPhone(phone);
+      setDate(timestamp);
+    }
+  };
 
   const columns: GridColDef[] = [
     {
@@ -57,6 +67,20 @@ const UsersWithdrawGrid: React.FC<withdrawDataGridProps> = ({
       field: "PAYOUT_TO",
       headerName: "Payout To",
       width: 120,
+      cellClassName: "payout_options",
+      renderCell: (params) => (
+        <div
+          onClick={() =>
+            handlePayout(
+              params.row.PAYOUT_TO,
+              params.row.userPhone,
+              params.row.timestamp
+            )
+          }
+        >
+          {params.row.PAYOUT_TO}
+        </div>
+      ),
     },
     {
       field: "TYPE",
@@ -137,6 +161,10 @@ const UsersWithdrawGrid: React.FC<withdrawDataGridProps> = ({
     return `${row.DATE}${row.userPhone}`;
   };
 
+  useEffect(() => {
+    withdrawData;
+  }, [payoutOption, pending]);
+
   return (
     <div className="dataTable_UsersWithdraw">
       {pending && (
@@ -145,6 +173,14 @@ const UsersWithdrawGrid: React.FC<withdrawDataGridProps> = ({
           phone={phone}
           date={date}
           clickPosition={clickPosition}
+        />
+      )}
+
+      {payoutOption && (
+        <PayoutOptions
+          timestamp={date}
+          phone={phone}
+          setPayoutOption={setPayoutOption}
         />
       )}
       {withdrawData && withdrawData.length > 0 ? (
