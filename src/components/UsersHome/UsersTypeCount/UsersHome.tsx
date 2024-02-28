@@ -94,9 +94,12 @@ const UsersHome: React.FC = () => {
   };
 
   const today = new Date().setHours(0, 0, 0, 0);
+  const currentDate = new Date();
+  const currentdate = currentDate.getDate();
+  const currentmonth = currentDate.getMonth();
+  const currentyear = currentDate.getFullYear();
   const liveThreshold = 1 * 60 * 1000; //1 min in milliseconds
   const currentTimestamp = Date.now();
-  const oneDayMilliseconds = 24 * 60 * 60 * 1000;
 
   // Calculate the following values outside of the render method
   const blockedUsers = useMemo(
@@ -116,9 +119,18 @@ const UsersHome: React.FC = () => {
   );
   const last24 = useMemo(
     () =>
-      usersData?.filter(
-        (user) => currentTimestamp - user.LAST_SEEN <= oneDayMilliseconds
-      ),
+      usersData?.filter((user) => {
+        const timestamp = user.LAST_SEEN;
+        const dateObj = new Date(Number(timestamp));
+
+        const date = dateObj.getDate();
+        const month = dateObj.getMonth();
+        const year = dateObj.getFullYear();
+
+        return (
+          date === currentdate && month === currentmonth && year === currentyear
+        );
+      }),
     [usersData]
   );
   const zeroBalanceUsers = useMemo(
