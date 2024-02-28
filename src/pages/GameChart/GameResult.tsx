@@ -40,6 +40,7 @@ const GameResult = () => {
   const navigate = useNavigate();
   const handleClick = () => {
     navigate("/gameChart");
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   const marketId = id ?? "";

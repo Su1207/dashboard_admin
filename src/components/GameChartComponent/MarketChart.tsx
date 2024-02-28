@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import "./GameChart.scss";
-import { onValue, ref } from "firebase/database";
+import { get, ref } from "firebase/database";
 import { database } from "../../firebase";
 import ArrowForwardIosIcon from "@mui/icons-material/ArrowForwardIos";
 import { useNavigate } from "react-router-dom";
@@ -8,52 +8,83 @@ import { useNavigate } from "react-router-dom";
 type MarketListType = {
   marketName: string;
   marketId: string;
+  resultExists: boolean;
 };
 
 const MarketChart = () => {
   const [marketList, setMarketList] = useState<MarketListType[] | null>(null);
   const [Loading, setIsLoading] = useState(true);
 
+  const currentDate = new Date();
+  const year = currentDate.getFullYear();
+  const month = (currentDate.getMonth() + 1).toString().padStart(2, "0");
+  const day = currentDate.getDate();
+
   useEffect(() => {
     try {
-      const marketRef = ref(database, "GAMES");
+      const marketRef = ref(database, "RESULTS");
 
-      const marketListArray: MarketListType[] | null = [];
+      const fetchMarketData = async () => {
+        const marketListArray: MarketListType[] = [];
+        const promises: Promise<void>[] = [];
 
-      const unsub = onValue(marketRef, (snapshot) => {
+        const snapshot = await get(marketRef);
+
         if (snapshot.exists()) {
           snapshot.forEach((game) => {
             const marketId = game.key;
 
-            let marketName: string = "";
+            const gameNameRef = ref(database, `GAMES/${marketId}/NAME`);
+            const resultRef = ref(
+              database,
+              `RESULTS/${marketId}/${year}/${month}/${day}`
+            );
 
-            if (game.exists()) {
-              marketName = game.val().NAME;
-            }
+            const promise = Promise.all([
+              get(gameNameRef),
+              get(resultRef),
+            ]).then(([nameSnapshot, resultSnapshot]: any) => {
+              if (nameSnapshot.exists()) {
+                const marketName = nameSnapshot.val();
+                const resultExists = resultSnapshot.exists();
 
-            marketListArray.push({
-              marketName,
-              marketId,
+                marketListArray.push({
+                  marketName,
+                  marketId,
+                  resultExists,
+                });
+
+                // Sort the array based on whether the result exists
+                marketListArray.sort((a, b) => {
+                  if (a.resultExists && !b.resultExists) return -1;
+                  else if (!a.resultExists && b.resultExists) return 1;
+                  else return 0;
+                });
+              }
             });
+
+            promises.push(promise);
           });
-
-          setMarketList(marketListArray);
         }
-      });
+        await Promise.all(promises);
+        setMarketList(marketListArray);
+      };
 
-      return () => unsub();
+      fetchMarketData();
+
+      // When all promises are resolved, set the loading state to false
     } catch (err) {
       console.log(err);
     } finally {
       setIsLoading(false);
     }
-  }, []);
+  }, [year, month, day]);
 
-  //   console.log(marketList);
   const navigate = useNavigate();
 
   const handleClick = (marketId: string) => {
     navigate(`gameChartResult___${marketId}`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
   return (
@@ -61,7 +92,7 @@ const MarketChart = () => {
       <h3>Select Market</h3>
 
       {Loading ? (
-        <div>Loading...</div>
+        <div className="loading">Loading...</div>
       ) : (
         <ul>
           {marketList &&
