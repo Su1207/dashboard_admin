@@ -2,32 +2,36 @@ import { DataGrid, GridColDef, GridToolbar } from "@mui/x-data-grid";
 import { UserWithdraw } from "./UsersWithdrawData";
 import "./UsersWithdrawData.scss";
 import { ClickPosition } from "../GamesMarket/GamesDetails/GamesDataGrid";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import EditWithdrawStatus from "../transactionHistory/WithdrawTransaction/EditWithdrawStatus/EditWithdrawStatus";
 import PayoutOptions from "./PayoutOptions";
 
 interface withdrawDataGridProps {
   withdrawData: CustomRow[] | null;
-  onDataFromChild: (data: boolean) => void;
+  payoutOption: boolean;
+  setPayoutOption: React.Dispatch<React.SetStateAction<boolean>>;
+  pending: boolean;
+  setPending: React.Dispatch<React.SetStateAction<boolean>>;
 }
 
 type CustomRow = UserWithdraw;
 
 const UsersWithdrawGrid: React.FC<withdrawDataGridProps> = ({
   withdrawData,
-  onDataFromChild,
+  payoutOption,
+  setPayoutOption,
+  pending,
+  setPending,
 }) => {
   const [phone, setPhone] = useState("");
   const [date, setDate] = useState("");
-  const [pending, setPending] = useState(false);
-  const [payoutOption, setPayoutOption] = useState(false);
   const [clickPosition, setClickPosition] = useState<ClickPosition | null>(
     null
   );
 
   const handlePayout = (payout: string, phone: string, timestamp: string) => {
     if (payout === "Not Selected") {
-      setPayoutOption(!payoutOption);
+      setPayoutOption(true);
       setPhone(phone);
       setDate(timestamp);
     }
@@ -154,16 +158,11 @@ const UsersWithdrawGrid: React.FC<withdrawDataGridProps> = ({
     setDate(timestamp);
     setPending(!pending);
     setClickPosition({ x, y });
-    onDataFromChild(pending);
   };
 
   const getRowId = (row: CustomRow) => {
     return `${row.DATE}${row.userPhone}`;
   };
-
-  useEffect(() => {
-    withdrawData;
-  }, [payoutOption, pending]);
 
   return (
     <div className="dataTable_UsersWithdraw">

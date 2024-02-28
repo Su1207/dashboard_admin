@@ -42,14 +42,11 @@ const UsersWithdrawData = () => {
   const [selectedPaymentOption, setSelectedPaymentOption] =
     useState<string>("");
 
+  const [payoutOption, setPayoutOption] = useState(false);
+  const [pending, setPending] = useState(false);
+
   const [selectedStatusOption, setSelectedStatusOption] =
     useState<string>("true");
-
-  const [checked, setChecked] = useState<boolean>();
-
-  const handleDataFromChild = (data: boolean) => {
-    setChecked(data);
-  };
 
   useEffect(() => {
     const fetchWithdrawData = async () => {
@@ -128,9 +125,15 @@ const UsersWithdrawData = () => {
     };
 
     fetchWithdrawData();
-  }, [selectedDate, selectedPaymentOption, selectedStatusOption, checked]);
+  }, [
+    selectedDate,
+    selectedPaymentOption,
+    selectedStatusOption,
+    pending,
+    payoutOption,
+  ]);
 
-  console.log(withdrawData);
+  console.log(payoutOption);
 
   const handleDateChange = (newDate: Date) => {
     setSelectedDate(newDate);
@@ -241,7 +244,10 @@ const UsersWithdrawData = () => {
       <div>
         <UsersWithdrawGrid
           withdrawData={withdrawData}
-          onDataFromChild={handleDataFromChild}
+          payoutOption={payoutOption}
+          setPayoutOption={setPayoutOption}
+          pending={pending}
+          setPending={setPending}
         />
       </div>
     </div>
