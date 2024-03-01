@@ -104,26 +104,22 @@ const AddNotifications = (props: Props) => {
 
     try {
       const message = {
-        message: {
-          token: `${token}`,
-          notification: {
-            body: "This is an FCM notification message!",
-            title: "FCM Message",
-          },
+        to: `${token}`,
+        notification: {
+          body: `${notificationContent.MSG}`,
+          title: `${notificationContent.TITLE}`,
         },
       };
 
-      await fetch(
-        "https://fcm.googleapis.com/v1/projects/mahadev-cb556/messages:send",
-        {
-          method: "POST",
-          headers: {
-            Authorization: "Bearer c6f18bdb10ca6989ded3f2cca0d868fe8f6b482d",
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(message),
-        }
-      );
+      await fetch(" https://fcm.googleapis.com/fcm/send", {
+        method: "POST",
+        headers: {
+          Authorization:
+            "key=AAAARNiDo34:APA91bGhxD2nWXPp6RmWkVcqi3pNw0cEfbqrKfDFbmZYCBZKeD002Z7PmhE2uXg3VNGGjK4FmcxlY2Pk0HkagVkSWgPu16WpHSOES9BqHHpbJJ0SpYt3jfVFmncX9b62a1uplMw7VjM3",
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(message),
+      });
 
       addNotification(notificationContent);
       props.setAddNotification(false);
