@@ -27,6 +27,20 @@ if ("serviceWorker" in navigator) {
     });
 }
 
+onMessage(messaging, (payload) => {
+  const { notification } = payload;
+  const { body, title } = notification;
+
+  // Customize notification here
+  const notificationOptions = {
+    body,
+    icon: notification.icon,
+    // Add any additional properties as needed
+  };
+
+  self.registration.showNotification(title, notificationOptions);
+});
+
 messaging.onBackgroundMessage((payload) => {
   console.log(
     "[firebase-messaging-sw.js] Received background message ",
