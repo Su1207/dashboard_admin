@@ -33,17 +33,15 @@ messaging.onBackgroundMessage((payload) => {
     payload
   );
 
-  const { collapseKey, data, from, messageId } = payload;
+  const { data } = payload;
+  const { body, title } = data;
 
   // Customize notification here
-  const notificationTitle = data.title;
   const notificationOptions = {
-    body: data.body,
+    body,
     icon: data.icon,
     // Add any additional properties as needed
   };
 
-  console.log(collapseKey, from, messageId);
-
-  self.registration.showNotification(notificationTitle, notificationOptions);
+  self.registration.showNotification(title, notificationOptions);
 });
