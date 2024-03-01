@@ -2,7 +2,6 @@ importScripts("https://www.gstatic.com/firebasejs/8.10.1/firebase-app.js");
 importScripts(
   "https://www.gstatic.com/firebasejs/8.10.1/firebase-messaging.js"
 );
-import { onMessage } from "firebase/messaging";
 
 const firebaseConfig = {
   apiKey: "AIzaSyA1KXF69VSb0iJUmR2JlZfiBZ6fggCyUEc",
@@ -27,20 +26,6 @@ if ("serviceWorker" in navigator) {
       console.log("Service is registered", registration);
     });
 }
-
-onMessage(messaging, (payload) => {
-  const { notification } = payload;
-  const { body, title } = notification;
-
-  // Customize notification here
-  const notificationOptions = {
-    body,
-    icon: notification.icon,
-    // Add any additional properties as needed
-  };
-
-  self.registration.showNotification(title, notificationOptions);
-});
 
 messaging.onBackgroundMessage((payload) => {
   console.log(

@@ -23,7 +23,7 @@ const AddNotifications = (props: Props) => {
     TITLE: "",
   });
 
-  const [token, setToken] = useState("");
+  // const [token, setToken] = useState("");
 
   const addNotification = async (data: Notification) => {
     const { MSG, TITLE } = data;
@@ -84,7 +84,7 @@ const AddNotifications = (props: Props) => {
         vapidKey:
           "BM_09SaSw0O-eO_nz2qZBRPsVu3umi9yuCboVWDN3huRJxT9F9SfrZoVubM7-jeVPTcSqNGDFTFIl78gNVXKTOw",
       });
-      setToken(token);
+      // setToken(token);
       console.log(token);
       // Send this token  to server ( db)
     } else if (permission === "denied") {
@@ -94,6 +94,7 @@ const AddNotifications = (props: Props) => {
 
   useEffect(() => {
     requestPermission();
+
     onMessage(messaging, (payload) => {
       console.log(payload);
     });
@@ -104,7 +105,7 @@ const AddNotifications = (props: Props) => {
 
     try {
       const message = {
-        to: `${token}`,
+        to: `f6OU7qSFKid0FiBW0DdQBZ:APA91bFF73hWHBzYPaSH-brJ5Tmkmqqv4Gn-CaPbk3tjCbMPAKPyRwqkUJvS4NNZTKfojVlg-bAPMTx3F_hPhoGVW36uEoM_lkLnozeBQkbQLWRSYeV0WpSSc_aQARpf_mvIrf1IacJp`,
         notification: {
           body: `${notificationContent.MSG}`,
           title: `${notificationContent.TITLE}`,
