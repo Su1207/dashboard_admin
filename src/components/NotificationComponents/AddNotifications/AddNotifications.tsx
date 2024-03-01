@@ -23,6 +23,8 @@ const AddNotifications = (props: Props) => {
     TITLE: "",
   });
 
+  const [token, setToken] = useState("");
+
   const addNotification = async (data: Notification) => {
     const { MSG, TITLE } = data;
 
@@ -82,6 +84,7 @@ const AddNotifications = (props: Props) => {
         vapidKey:
           "BM_09SaSw0O-eO_nz2qZBRPsVu3umi9yuCboVWDN3huRJxT9F9SfrZoVubM7-jeVPTcSqNGDFTFIl78gNVXKTOw",
       });
+      setToken(token);
       console.log(token);
       // Send this token  to server ( db)
     } else if (permission === "denied") {
@@ -101,11 +104,12 @@ const AddNotifications = (props: Props) => {
 
     try {
       const message = {
-        token:
-          "cmR2AnXzCFCpuKFPXsZiEO:APA91bGXi0a4MJiHfElS2EN-6EdlTU1iMOTIy6Oi1WRf88JcY8ct_zh38ARr_TxHaimDWEBCpfn3tiLUijJIOrlzEAP80T4LEAxaGjXZGnEkKLhvl5sY_v9si1a_zYwGMGKMS66tlO4c",
-        notification: {
-          body: "This is an FCM notification message!",
-          title: "FCM Message",
+        message: {
+          token: `${token}`,
+          notification: {
+            body: "This is an FCM notification message!",
+            title: "FCM Message",
+          },
         },
       };
 

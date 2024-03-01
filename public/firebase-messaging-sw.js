@@ -30,7 +30,7 @@ if ("serviceWorker" in navigator) {
 messaging.onBackgroundMessage((payload) => {
   console.log(
     "[firebase-messaging-sw.js] Received background message ",
-    payload
+    payload.data
   );
   // Customize notification here
   const notificationTitle = payload.notification.title;
