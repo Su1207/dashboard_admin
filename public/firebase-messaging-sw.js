@@ -39,7 +39,7 @@ messaging.onBackgroundMessage((payload) => {
   // Customize notification here
   const notificationOptions = {
     body,
-    icon: data.icon,
+    icon: notification.icon,
     // Add any additional properties as needed
   };
 
