@@ -92,7 +92,6 @@ const GameChartComponent = ({ marketId }: Props) => {
     }
   }, []);
 
-  console.log(Object.entries(resultData));
 
   const downloadJson = () => {
     const jsonData = JSON.stringify(resultData);

@@ -69,6 +69,21 @@ const Layout = () => {
     fetchPermissions();
   }, [username, switched, permission]);
 
+  useEffect(() => {
+    if ("serviceWorker" in navigator) {
+      navigator.serviceWorker
+        .register("/firebase-messaging-sw.js")
+        .then((registration) => {
+          // Use the service worker for push notifications
+          console.log("Service registered", registration);
+          // messaging.useServiceWorker(registration);
+        })
+        .catch((error) => {
+          console.error("Error registering service worker:", error);
+        });
+    }
+  }, []);
+
   return (
     <div>
       {isAuthenticated || isSubAuthenticated ? (

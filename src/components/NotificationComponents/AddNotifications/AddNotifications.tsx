@@ -80,7 +80,7 @@ const AddNotifications = (props: Props) => {
       // Generate Token
       const token = await getToken(messaging, {
         vapidKey:
-          "BLgQhbEEGr4gmkNECYgjA6F7LmKTCr2ArNWo8Sanh6mNlZ45ccaQIsxfB_cuzp7JbAmvykuFjeSewGrgTWCJzOg",
+          "BM_09SaSw0O-eO_nz2qZBRPsVu3umi9yuCboVWDN3huRJxT9F9SfrZoVubM7-jeVPTcSqNGDFTFIl78gNVXKTOw",
       });
       console.log(token);
       // Send this token  to server ( db)
@@ -96,42 +96,30 @@ const AddNotifications = (props: Props) => {
     });
   }, []);
 
-  useEffect(() => {
-    if ("serviceWorker" in navigator) {
-      navigator.serviceWorker
-        .register("/firebase-messaging-sw.js")
-        .then((registration: any) => {
-          console.log("Service Worker registered", registration);
-        })
-        .catch((error) => {
-          console.error("Service Worker registration failed:", error);
-        });
-    }
-  }, []);
-
   const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
       const message = {
+        token:
+          "cmR2AnXzCFCpuKFPXsZiEO:APA91bGXi0a4MJiHfElS2EN-6EdlTU1iMOTIy6Oi1WRf88JcY8ct_zh38ARr_TxHaimDWEBCpfn3tiLUijJIOrlzEAP80T4LEAxaGjXZGnEkKLhvl5sY_v9si1a_zYwGMGKMS66tlO4c",
         notification: {
-          title: "Firebase",
-          body: "Firebase is awesome",
-          click_action: "http://localhost:5173",
-          icon: "http://url-to-an-icon/icon.png",
+          body: "This is an FCM notification message!",
+          title: "FCM Message",
         },
-        to: "cmR2AnXzCFCpuKFPXsZiEO:APA91bGXi0a4MJiHfElS2EN-6EdlTU1iMOTIy6Oi1WRf88JcY8ct_zh38ARr_TxHaimDWEBCpfn3tiLUijJIOrlzEAP80T4LEAxaGjXZGnEkKLhvl5sY_v9si1a_zYwGMGKMS66tlO4c",
       };
 
-      await fetch("https://fcm.googleapis.com/fcm/send", {
-        method: "POST",
-        headers: {
-          Authorization:
-            "key=AAAARNiDo34:APA91bGhxD2nWXPp6RmWkVcqi3pNw0cEfbqrKfDFbmZYCBZKeD002Z7PmhE2uXg3VNGGjK4FmcxlY2Pk0HkagVkSWgPu16WpHSOES9BqHHpbJJ0SpYt3jfVFmncX9b62a1uplMw7VjM3",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(message),
-      });
+      await fetch(
+        "https://fcm.googleapis.com/v1/projects/mahadev-cb556/messages:send",
+        {
+          method: "POST",
+          headers: {
+            Authorization: "Bearer c6f18bdb10ca6989ded3f2cca0d868fe8f6b482d",
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify(message),
+        }
+      );
 
       addNotification(notificationContent);
       props.setAddNotification(false);

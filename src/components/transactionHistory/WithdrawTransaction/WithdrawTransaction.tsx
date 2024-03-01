@@ -1,4 +1,4 @@
-import "./WithdrawTransaction.scss";
+ import "./WithdrawTransaction.scss";
 
 import { useEffect } from "react";
 import { off, onValue, ref } from "firebase/database";
