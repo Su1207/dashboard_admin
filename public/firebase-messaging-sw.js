@@ -33,8 +33,8 @@ messaging.onBackgroundMessage((payload) => {
     payload
   );
 
-  const { data } = payload;
-  const { body, title } = data;
+  const { notification } = payload;
+  const { body, title } = notification;
 
   // Customize notification here
   const notificationOptions = {
