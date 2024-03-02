@@ -5,6 +5,7 @@ import { database } from "../../../firebase";
 import { toast } from "react-toastify";
 import ClearIcon from "@mui/icons-material/Clear";
 import { ClickPosition } from "../GamesDetails/GamesDataGrid";
+import { sendNotificationToTopic } from "../../NotificationService";
 
 type OpenCloseProps = {
   gameId: string;
@@ -80,6 +81,11 @@ const OpenCloseOption: React.FC<OpenCloseProps> = ({
           `RESULTS/${gameId}/${year}/${month}/${date}`
         );
 
+        const gameNameRef = ref(database, `GAMES/${gameId}/NAME`);
+        const gamenameSnapshot = await get(gameNameRef);
+
+        const gameName = gamenameSnapshot.val();
+
         const timestamp = Date.now();
 
         const totalRef = ref(database, `GAME CHART/${gameId}`);
@@ -97,6 +103,8 @@ const OpenCloseOption: React.FC<OpenCloseProps> = ({
           MID: midResult,
           CLOSE: "✦✦✦",
         });
+
+        sendNotificationToTopic(gameName, `${openFormResult}-${midResult}-✦✦✦`);
 
         const promises: Promise<void>[] = [];
 
@@ -171,6 +179,11 @@ const OpenCloseOption: React.FC<OpenCloseProps> = ({
           `RESULTS/${gameId}/${year}/${month}/${date}`
         );
 
+        const gameNameRef = ref(database, `GAMES/${gameId}/NAME`);
+        const gamenameSnapshot = await get(gameNameRef);
+
+        const gameName = gamenameSnapshot.val();
+
         const totalRef = ref(database, `GAME CHART/${gameId}`);
 
         const timestamp = Date.now();
@@ -193,6 +206,11 @@ const OpenCloseOption: React.FC<OpenCloseProps> = ({
               MID: midResult,
               CLOSE: closeFormResult,
             });
+
+            sendNotificationToTopic(
+              gameName,
+              `${open}-${midResult}-${closeFormResult}`
+            );
 
             const promises: Promise<void>[] = [];
 

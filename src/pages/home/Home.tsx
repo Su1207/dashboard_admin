@@ -22,8 +22,9 @@ import WithdrawReq from "../../components/UsersHome/WithdrawReq/WithdrawReq";
 import DepositReq from "../../components/UsersHome/DepositReq/DepositReq";
 import { UsersPermissions } from "../../components/AdmissionPermission";
 import { useEffect, useState } from "react";
-import { database } from "../../firebase";
+import { database, messaging } from "../../firebase";
 import { onValue, ref } from "firebase/database";
+import { getToken, onMessage } from "firebase/messaging";
 
 const Home = () => {
   const { isAuthenticated, isSubAuthenticated, user } = useAuth();
@@ -52,6 +53,41 @@ const Home = () => {
   if (!isAuthenticated && !isSubAuthenticated) {
     return <Navigate to="/login" />;
   }
+
+  async function requestPermission() {
+    const permission = await Notification.requestPermission();
+    if (permission === "granted") {
+      // Generate Token
+      const topic = "Users";
+      const token = await getToken(messaging, {
+        vapidKey:
+          "BM_09SaSw0O-eO_nz2qZBRPsVu3umi9yuCboVWDN3huRJxT9F9SfrZoVubM7-jeVPTcSqNGDFTFIl78gNVXKTOw",
+      });
+
+      console.log(token);
+      const response = await fetch(
+        `https://iid.googleapis.com/iid/v1/${token}/rel/topics/${topic}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization:
+              "key=AAAARNiDo34:APA91bGhxD2nWXPp6RmWkVcqi3pNw0cEfbqrKfDFbmZYCBZKeD002Z7PmhE2uXg3VNGGjK4FmcxlY2Pk0HkagVkSWgPu16WpHSOES9BqHHpbJJ0SpYt3jfVFmncX9b62a1uplMw7VjM3",
+          },
+        }
+      );
+      console.log(response);
+    } else if (permission === "denied") {
+      alert("You denied for the notification");
+    }
+  }
+
+  useEffect(() => {
+    requestPermission();
+
+    onMessage(messaging, (payload) => {
+      console.log(payload);
+    });
+  }, []);
 
   console.log(permissions, isSubAuthenticated, isAuthenticated);
   return (

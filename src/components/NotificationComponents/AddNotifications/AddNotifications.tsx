@@ -1,12 +1,10 @@
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import "./AddNotifications.scss";
 import { ref, set } from "firebase/database";
 import { database } from "../../../firebase";
 import { toast } from "react-toastify";
 import ClearIcon from "@mui/icons-material/Clear";
-import { getToken } from "firebase/messaging";
-import { messaging } from "../../../firebase";
-import { onMessage } from "firebase/messaging";
+import { sendNotificationToTopic } from "../../NotificationService";
 
 type Props = {
   setAddNotification: React.Dispatch<React.SetStateAction<boolean>>;
@@ -76,62 +74,67 @@ const AddNotifications = (props: Props) => {
     }));
   };
 
-  async function requestPermission() {
-    const permission = await Notification.requestPermission();
-    if (permission === "granted") {
-      // Generate Token
-      const topic = "Users";
-      const token = await getToken(messaging, {
-        vapidKey:
-          "BM_09SaSw0O-eO_nz2qZBRPsVu3umi9yuCboVWDN3huRJxT9F9SfrZoVubM7-jeVPTcSqNGDFTFIl78gNVXKTOw",
-      });
+  // async function requestPermission() {
+  //   const permission = await Notification.requestPermission();
+  //   if (permission === "granted") {
+  //     // Generate Token
+  //     const topic = "Users";
+  //     const token = await getToken(messaging, {
+  //       vapidKey:
+  //         "BM_09SaSw0O-eO_nz2qZBRPsVu3umi9yuCboVWDN3huRJxT9F9SfrZoVubM7-jeVPTcSqNGDFTFIl78gNVXKTOw",
+  //     });
 
-      console.log(token);
-      const response = await fetch(
-        `https://iid.googleapis.com/iid/v1/${token}/rel/topics/${topic}`,
-        {
-          method: "POST",
-          headers: {
-            Authorization:
-              "key=AAAARNiDo34:APA91bGhxD2nWXPp6RmWkVcqi3pNw0cEfbqrKfDFbmZYCBZKeD002Z7PmhE2uXg3VNGGjK4FmcxlY2Pk0HkagVkSWgPu16WpHSOES9BqHHpbJJ0SpYt3jfVFmncX9b62a1uplMw7VjM3",
-          },
-        }
-      );
-      console.log(response);
-    } else if (permission === "denied") {
-      alert("You denied for the notification");
-    }
-  }
+  //     console.log(token);
+  //     const response = await fetch(
+  //       `https://iid.googleapis.com/iid/v1/${token}/rel/topics/${topic}`,
+  //       {
+  //         method: "POST",
+  //         headers: {
+  //           Authorization:
+  //             "key=AAAARNiDo34:APA91bGhxD2nWXPp6RmWkVcqi3pNw0cEfbqrKfDFbmZYCBZKeD002Z7PmhE2uXg3VNGGjK4FmcxlY2Pk0HkagVkSWgPu16WpHSOES9BqHHpbJJ0SpYt3jfVFmncX9b62a1uplMw7VjM3",
+  //         },
+  //       }
+  //     );
+  //     console.log(response);
+  //   } else if (permission === "denied") {
+  //     alert("You denied for the notification");
+  //   }
+  // }
 
-  useEffect(() => {
-    requestPermission();
+  // useEffect(() => {
+  //   requestPermission();
 
-    onMessage(messaging, (payload) => {
-      console.log(payload);
-    });
-  }, []);
+  //   onMessage(messaging, (payload) => {
+  //     console.log(payload);
+  //   });
+  // }, []);
 
   const handleSubmit = async (e: React.ChangeEvent<HTMLFormElement>) => {
     e.preventDefault();
 
     try {
-      const message = {
-        to: "/topics/Users",
-        notification: {
-          body: `${notificationContent.MSG}`,
-          title: `${notificationContent.TITLE}`,
-        },
-      };
+      // const message = {
+      //   to: "/topics/Users",
+      //   notification: {
+      //     body: `${notificationContent.MSG}`,
+      //     title: `${notificationContent.TITLE}`,
+      //   },
+      // };
 
-      await fetch("https://fcm.googleapis.com/fcm/send", {
-        method: "POST",
-        headers: {
-          Authorization:
-            "key=AAAARNiDo34:APA91bGhxD2nWXPp6RmWkVcqi3pNw0cEfbqrKfDFbmZYCBZKeD002Z7PmhE2uXg3VNGGjK4FmcxlY2Pk0HkagVkSWgPu16WpHSOES9BqHHpbJJ0SpYt3jfVFmncX9b62a1uplMw7VjM3",
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify(message),
-      });
+      // await fetch("https://fcm.googleapis.com/fcm/send", {
+      //   method: "POST",
+      //   headers: {
+      //     Authorization:
+      //       "key=AAAARNiDo34:APA91bGhxD2nWXPp6RmWkVcqi3pNw0cEfbqrKfDFbmZYCBZKeD002Z7PmhE2uXg3VNGGjK4FmcxlY2Pk0HkagVkSWgPu16WpHSOES9BqHHpbJJ0SpYt3jfVFmncX9b62a1uplMw7VjM3",
+      //     "Content-Type": "application/json",
+      //   },
+      //   body: JSON.stringify(message),
+      // });
+
+      sendNotificationToTopic(
+        notificationContent.TITLE,
+        notificationContent.MSG
+      );
 
       addNotification(notificationContent);
       props.setAddNotification(false);
