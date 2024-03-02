@@ -18,14 +18,14 @@ const firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const messaging = firebase.messaging();
 
-if ("serviceWorker" in navigator) {
-  navigator.serviceWorker
-    .register("/firebase-messaging-sw.js")
-    .then((registration) => {
-      firebase.messaging.useServiceWorker(registration);
-      console.log("Service is registered", registration);
-    });
-}
+// if ("serviceWorker" in navigator) {
+//   navigator.serviceWorker
+//     .register("/firebase-messaging-sw.js")
+//     .then((registration) => {
+//       firebase.messaging.useServiceWorker(registration);
+//       console.log("Service is registered", registration);
+//     });
+// }
 
 messaging.onBackgroundMessage((payload) => {
   console.log(

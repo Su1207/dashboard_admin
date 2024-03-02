@@ -27,4 +27,6 @@ const app = initializeApp(firebaseConfig);
 const database = getDatabase(app);
 const messaging = getMessaging(app);
 
+
+
 export { database, messaging };

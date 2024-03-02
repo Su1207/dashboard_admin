@@ -80,13 +80,24 @@ const AddNotifications = (props: Props) => {
     const permission = await Notification.requestPermission();
     if (permission === "granted") {
       // Generate Token
+      const topic = "Users";
       const token = await getToken(messaging, {
         vapidKey:
           "BM_09SaSw0O-eO_nz2qZBRPsVu3umi9yuCboVWDN3huRJxT9F9SfrZoVubM7-jeVPTcSqNGDFTFIl78gNVXKTOw",
       });
-      // setToken(token);
+
       console.log(token);
-      // Send this token  to server ( db)
+      const response = await fetch(
+        `https://iid.googleapis.com/iid/v1/${token}/rel/topics/${topic}`,
+        {
+          method: "POST",
+          headers: {
+            Authorization:
+              "key=AAAARNiDo34:APA91bGhxD2nWXPp6RmWkVcqi3pNw0cEfbqrKfDFbmZYCBZKeD002Z7PmhE2uXg3VNGGjK4FmcxlY2Pk0HkagVkSWgPu16WpHSOES9BqHHpbJJ0SpYt3jfVFmncX9b62a1uplMw7VjM3",
+          },
+        }
+      );
+      console.log(response);
     } else if (permission === "denied") {
       alert("You denied for the notification");
     }
@@ -105,14 +116,14 @@ const AddNotifications = (props: Props) => {
 
     try {
       const message = {
-        to: `f6OU7qSFKid0FiBW0DdQBZ:APA91bFF73hWHBzYPaSH-brJ5Tmkmqqv4Gn-CaPbk3tjCbMPAKPyRwqkUJvS4NNZTKfojVlg-bAPMTx3F_hPhoGVW36uEoM_lkLnozeBQkbQLWRSYeV0WpSSc_aQARpf_mvIrf1IacJp`,
+        to: "/topics/Users",
         notification: {
           body: `${notificationContent.MSG}`,
           title: `${notificationContent.TITLE}`,
         },
       };
 
-      await fetch(" https://fcm.googleapis.com/fcm/send", {
+      await fetch("https://fcm.googleapis.com/fcm/send", {
         method: "POST",
         headers: {
           Authorization:
