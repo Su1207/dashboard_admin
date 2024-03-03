@@ -38,6 +38,7 @@ import { database } from "./firebase";
 import AdminRole from "./pages/AdminUsers/AdminRoles/AdminRole";
 import GameChart from "./pages/GameChart/GameChart";
 import GameResult from "./pages/GameChart/GameResult";
+import NotFoundPage from "./components/NotFoundComponent/NotFoundPage";
 
 const Layout = () => {
   const { isAuthenticated, isSubAuthenticated } = useAuth();
@@ -216,6 +217,10 @@ const router = createBrowserRouter([
       {
         path: "/gameChart/:id",
         element: <GameResult />,
+      },
+      {
+        path: "*",
+        element: <NotFoundPage />,
       },
     ],
   },
