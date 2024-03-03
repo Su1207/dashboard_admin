@@ -1,5 +1,4 @@
 import ClearIcon from "@mui/icons-material/Clear";
-import AddNew from "../../../assets/add-new.png";
 import { useEffect, useState } from "react";
 import { get, ref, set } from "firebase/database";
 import { database } from "../../../firebase";
@@ -110,7 +109,11 @@ const EditPayout = (props: Props) => {
         <h1>
           Update Payout{" "}
           <span className="addNew">
-            <img src={AddNew} alt="Add New" className="add-new_img" />
+            <img
+              src="/assets/add-new.png"
+              alt="Add New"
+              className="add-new_img"
+            />
           </span>
         </h1>
 

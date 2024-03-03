@@ -5,7 +5,6 @@ import "./EditUser.scss";
 import ClearIcon from "@mui/icons-material/Clear";
 import { database } from "../../firebase";
 import "./EditUser.scss";
-import AddNew from "../../assets/add-new.png";
 
 // Function to update an existing user in the database
 type UserData = {
@@ -153,7 +152,11 @@ const EditUser = (props: Props) => {
           <h1>
             Update User{" "}
             <span className="addNew">
-              <img src={AddNew} alt="Add New" className="add-new_img" />
+              <img
+                src="/assets/add-new.png"
+                alt="Add New"
+                className="add-new_img"
+              />
             </span>
           </h1>
 

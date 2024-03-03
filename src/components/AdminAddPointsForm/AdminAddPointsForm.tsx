@@ -3,7 +3,6 @@ import { database } from "../../firebase";
 import { get, ref, set, update } from "firebase/database";
 import ClearIcon from "@mui/icons-material/Clear";
 import "./AdminAddPointsForm.scss";
-import AddPoints from "../../assets/wallet.png";
 import { toast } from "react-toastify";
 import { useAuth } from "../auth-context";
 import { usePermissionContext } from "../AdmissionPermission";
@@ -196,7 +195,11 @@ const AdminAddPointsForm = (props: Props) => {
           <h1>
             Add Points
             <span className="addNew">
-              <img src={AddPoints} alt="Add New" className="add-new_img" />
+              <img
+                src="/assets/add-new.png"
+                alt="Add New"
+                className="add-new_img"
+              />
             </span>
           </h1>
           <form onSubmit={handleSubmit}>

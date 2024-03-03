@@ -4,7 +4,6 @@ import { database } from "../../firebase";
 import { toast } from "react-toastify";
 import "./AddUser.scss";
 import ClearIcon from "@mui/icons-material/Clear";
-import AddNew from "../../assets/add-new.png";
 
 // Function to add a new user to the database
 type UserData = {
@@ -107,7 +106,11 @@ const AddUser = (props: Props) => {
         <h1>
           Add new{" "}
           <span className="addNew">
-            <img src={AddNew} alt="Add New" className="add-new_img" />
+            <img
+              src="/assets/add-new.png"
+              alt="Add New"
+              className="add-new_img"
+            />
           </span>
         </h1>
 

@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import "./userDetail.scss";
 import { off, onValue, ref } from "firebase/database";
 import { database } from "../../firebase";
-import profile from "../../assets/userProfile.png";
 import { FaEdit } from "react-icons/fa";
 import Copy from "../copy/Copy";
 import BidTransaction from "../transactionHistory/BidTransaction/BidTransaction";
@@ -99,7 +98,11 @@ const UserDetail: React.FC<{ userId: number }> = ({ userId }) => {
             <div className="userDetails_card card">
               <div className="card_top">
                 <div className="card_top_name">
-                  <img src={profile} alt="" className="profile_picture" />
+                  <img
+                    src="/assets/userProfile.png"
+                    alt=""
+                    className="profile_picture"
+                  />
                   <h1 className="user_name">{userDetails.NAME}</h1>
                 </div>
                 <div onClick={handleEditChange} className="edit_option">

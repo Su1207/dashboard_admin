@@ -1,5 +1,4 @@
 import { useState } from "react";
-import WithdrawPoint from "../../assets/withdrawal.png";
 import { get, ref, set, update } from "firebase/database";
 import { database } from "../../firebase";
 import { toast } from "react-toastify";
@@ -202,7 +201,11 @@ const AdminWithdrawPointsForm = (props: Props) => {
           <div className="title-card">
             Withdraw Points{" "}
             <span>
-              <img src={WithdrawPoint} alt="" className="withdraw_img" />
+              <img
+                src="/assets/withdrawal.png"
+                alt=""
+                className="withdraw_img"
+              />
             </span>
           </div>
           <form onSubmit={handleSubmit}>

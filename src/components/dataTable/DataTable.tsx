@@ -6,8 +6,6 @@ import BlockUnblockToggle from "../toggleButton/BlockUnblockToggle";
 import { useNavigate } from "react-router-dom";
 import { toast } from "react-toastify";
 // import AddCardIcon from "@mui/icons-material/AddCard";
-import addPoints from "../../assets/wallet.png";
-import Withdraw from "../../assets/withdrawal.png";
 import { useEffect, useState } from "react";
 import AdminAddPointsForm from "../AdminAddPointsForm/AdminAddPointsForm";
 import AdminWithdrawPointsForm from "../AdminWithdrawPointsForm/AdminWithdrawPointsForm";
@@ -155,7 +153,11 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
           className="add_points_button"
           onClick={() => handleAddPoints(params.row.id.split("-")[0])}
         >
-          <img src={addPoints} alt="Add Points" className="addPointsImage" />
+          <img
+            src="/assets/wallet.png"
+            alt="Add Points"
+            className="addPointsImage"
+          />
         </div>
       ),
     },
@@ -170,7 +172,7 @@ const DataTable: React.FC<DataTableProps> = ({ usersData }) => {
           onClick={() => handleWithdrawPoints(params.row.id.split("-")[0])}
         >
           <img
-            src={Withdraw}
+            src="/assets/withdrawal.png"
             alt="Withdraw Points"
             className="withdrawPointsImage"
           />
